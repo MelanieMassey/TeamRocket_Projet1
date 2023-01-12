@@ -17,7 +17,7 @@ public class Main {
 
         Tree arbreTest = new Tree();
 
-        Stagiaire Celine = new Stagiaire("Hernandez", "Celine", 59, 2022, "CAPEQELLES");
+        /*Stagiaire Celine = new Stagiaire("Hernandez", "Celine", 59, 2022, "CAPEQELLES");
         Stagiaire Aline = new Stagiaire("Lacaze", "Aline", 31, 2022, "CAPEQELLES");
         Stagiaire Lydia = new Stagiaire("Lachenaud", "Lydia", 35, 2022, "CAPEQELLES");
         Stagiaire Melanie = new Stagiaire("Massey", "Melanie", 31, 2022, "CAPEQELLES");
@@ -25,39 +25,43 @@ public class Main {
         arbreTest.add(Celine);
         arbreTest.add(Aline);
         arbreTest.add(Lydia);
-        arbreTest.add(Melanie);
-        Node root = arbreTest.getRoot();
-        //System.out.println(root.data);
-        arbreTest.traverseInOrder(root);
+        arbreTest.add(Melanie);*/
 
 
-        /*String ligne = "";
+
+        String ligne = "";
         String mot;
-        int compteurStagiaires = 0;                     //compteur stagiaires
-        int linenumber = 0;                               //compteur ligne
+        String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="";
+
+        //Initialisation des compteurs pour les lignes du fichier et pour les stagiaires
+        int linenumber = 0;
+        int compteurStagiaires = 0;
+
 
 
         RandomAccessFile raf;
         try {
-            raf = new RandomAccessFile("listeStagiaires.bin", "rw");        //création fichier bin vide
+            // Création d'un fichier bin vide
+            raf = new RandomAccessFile("listeStagiaires.bin", "rw");
 
+            //Lecture du fichier text
             FileReader fichierOriginal = new FileReader("src/stagiaires.txt");
             BufferedReader bf = new BufferedReader(fichierOriginal);
-            //LineNumberReader lnr = new LineNumberReader(bf);
-            //int lineNumber = lnr.getLineNumber();
 
-            *//* Lecture du fichier txt ligne par ligne tant que la ligne n'est pas vide
+
+            /* Lecture du fichier txt ligne par ligne tant que la ligne n'est pas vide
                Récupération des informations sur chaque ligne Ecriture des données dans le fichier bin:
                     Ligne 0: Promo
                     Ligne 1: Année
                     Ligne 2: Nom
                     Ligne 3: Prénom
                     Ligne 4: Département
-                    Ligne 5: réinitialisation du compteur de ligne pour recommencer les informations pour le stagiaire suivant
+                    Ligne 5: réinitialisation du compteur de ligne pour collecter les informations pour le stagiaire suivant
+                             + Création d'un objet de la clsse stagiaire pour stocker les infos
+                             + Création d'un noeud (avec ces données)
                              + incrémentation du compteur stagiaire
 
-             *//*
-
+             */
             while ((ligne = bf.readLine()) != null && (linenumber <= 5)) {
 
                 mot = "";
@@ -65,38 +69,51 @@ public class Main {
                 mot += tokens[0];                            //récupération du premier token (mot)
                 switch (linenumber) {
                     case 0:
-                        mot = completer(mot, PROMO);
-                        raf.writeChars(mot);
+                        mot_promo = mot;
+                        mot_promo= completer(mot_promo, PROMO);
+                       // raf.writeChars(mot);
                         break;
                     case 1:
-                        mot = completer(mot, ANNEE);
-                        raf.writeChars(mot);
+                        mot_annee =mot;
+                        mot_annee = completer(mot_annee, ANNEE);
+                       // raf.writeChars(mot);
                         break;
                     case 2:
-                        mot = completer(mot, NOM);
-                        raf.writeChars(mot);
+                        mot_nom=mot;
+                        mot_nom = completer(mot_nom, NOM);
+                      //  raf.writeChars(mot);
                         break;
                     case 3:
-                        mot = completer(mot, PRENOM);
-                        raf.writeChars(mot);
+                        mot_prenom=mot;
+                        mot_prenom = completer(mot_prenom, PRENOM);
+                     //   raf.writeChars(mot);
                         break;
                     case 4:
-                        mot = completer(mot, DEPARTEMENT);
-                        raf.writeChars(mot);
+                        mot_departement=mot;
+                        mot_departement = completer(mot_departement, DEPARTEMENT);
+                     //   raf.writeChars(mot);
                         break;
                     case 5:
                         // lnr.setLineNumber(0);
                         linenumber = -1;
+                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo);
                         compteurStagiaires += 1;
+                        //stagiaire.afficherStagiaire();
+                        arbreTest.add(stagiaire);
+
                         break;
                     default:
                         break;
                 }
-                linenumber += 1;                                   //incrémentation du compteur de ligne
+                // Incrémentation du compteur de lignes
+                linenumber += 1;
 
             }
-
-            listeStagiaires(compteurStagiaires, raf);             //lecture du fichier bin et affichage de la liste de stagiaires
+            //Tri alphabétique
+            Node root = arbreTest.getRoot();
+            //System.out.println(root.data);
+            arbreTest.traverseInOrder(root);
+            //listeStagiaires(compteurStagiaires, raf);             //lecture du fichier bin et affichage de la liste de stagiaires
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -104,13 +121,13 @@ public class Main {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
 
     // METHODES
 
-    /*public static String completer(String mot, int taille) {
+    public static String completer(String mot, int taille) {
 
         int nbEspace = taille - mot.length();
         for (int i = 0; i < nbEspace; i++) {
@@ -148,6 +165,6 @@ public class Main {
             e.printStackTrace();
         }
 
-    }*/
+    }
 
 }
