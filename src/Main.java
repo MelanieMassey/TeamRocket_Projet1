@@ -15,7 +15,23 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String ligne = "";
+        Tree arbreTest = new Tree();
+
+        Stagiaire Celine = new Stagiaire("Hernandez", "Celine", 59, 2022, "CAPEQELLES");
+        Stagiaire Aline = new Stagiaire("Lacaze", "Aline", 31, 2022, "CAPEQELLES");
+        Stagiaire Lydia = new Stagiaire("Lachenaud", "Lydia", 35, 2022, "CAPEQELLES");
+        Stagiaire Melanie = new Stagiaire("Massey", "Melanie", 31, 2022, "CAPEQELLES");
+
+        arbreTest.add(Celine);
+        arbreTest.add(Aline);
+        arbreTest.add(Lydia);
+        arbreTest.add(Melanie);
+        Node root = arbreTest.getRoot();
+        //System.out.println(root.data);
+        arbreTest.traverseInOrder(root);
+
+
+        /*String ligne = "";
         String mot;
         int compteurStagiaires = 0;                     //compteur stagiaires
         int linenumber = 0;                               //compteur ligne
@@ -30,7 +46,7 @@ public class Main {
             //LineNumberReader lnr = new LineNumberReader(bf);
             //int lineNumber = lnr.getLineNumber();
 
-            /* Lecture du fichier txt ligne par ligne tant que la ligne n'est pas vide
+            *//* Lecture du fichier txt ligne par ligne tant que la ligne n'est pas vide
                Récupération des informations sur chaque ligne Ecriture des données dans le fichier bin:
                     Ligne 0: Promo
                     Ligne 1: Année
@@ -40,7 +56,7 @@ public class Main {
                     Ligne 5: réinitialisation du compteur de ligne pour recommencer les informations pour le stagiaire suivant
                              + incrémentation du compteur stagiaire
 
-             */
+             *//*
 
             while ((ligne = bf.readLine()) != null && (linenumber <= 5)) {
 
@@ -88,13 +104,13 @@ public class Main {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 
     // METHODES
 
-    public static String completer(String mot, int taille) {
+    /*public static String completer(String mot, int taille) {
 
         int nbEspace = taille - mot.length();
         for (int i = 0; i < nbEspace; i++) {
@@ -132,6 +148,6 @@ public class Main {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
 }
