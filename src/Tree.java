@@ -56,7 +56,7 @@ public class Tree {
         if(data.get_nom().compareTo(current.data.get_nom()) < 0 ){
             current.left = addNode(current.left, data);
             current.data.set_gauche(data.get_adresse());
-            System.out.println(current.data);
+            System.out.println("Adresse en String = " + data.get_adresse());
         } else if (data.get_nom().compareTo(current.data.get_nom()) > 0 ) {
             current.right = addNode(current.right, data);
             current.data.set_droite(data.get_adresse());
@@ -82,7 +82,7 @@ public class Tree {
     public void traverseInOrder(Node node) {
         if (node != null) {
             traverseInOrder(node.left);
-            System.out.print(" " + node.data.get_nom());
+            System.out.print("\n" + node.data);
             traverseInOrder(node.right);
         }
     }

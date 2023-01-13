@@ -105,6 +105,7 @@ public class Main {
 
                         linenumber = -1;
 
+                        System.out.println("Adresse in = " + adresse);
                         String adresseToString = Integer.toString(adresse);
 
                         Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresseToString, gauche, droite);
@@ -136,9 +137,9 @@ public class Main {
 
             }
             //Tri alphabétique
-            Node root = arbreTest.getRoot();
-            //System.out.println(root.data);
-//            arbreTest.traverseInOrder(root);
+            /*Node root = arbreTest.getRoot();
+            System.out.println(root.data);
+            arbreTest.traverseInOrder(root);*/
             //listeStagiaires(compteurStagiaires, raf); //lecture du fichier bin et affichage de la liste de stagiaires
 
 //            raf.seek(0);
