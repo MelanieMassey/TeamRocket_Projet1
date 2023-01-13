@@ -22,20 +22,6 @@ class Node {
         this.data = data;
     }
 
-    // Constructeur 2
-    public Node(int gauche, int droite){
-
-        this._left = gauche;
-        this._right = droite;
-    }
-
-    public void set_left(int left){
-        this._left = left;
-    }
-
-    public void set_right(int right){
-        this._right = right;
-    }
 }
 
 /*
@@ -47,28 +33,67 @@ public class Tree {
 
     // Méthode ajout d'un noeud
     public Node addNode(Node current, Stagiaire data) {
-        if (current == null) {
 
+
+        if (current == null) {
+            System.out.println("Plus de noeud, on créé le noeud pour " + data.get_nom());
             return new Node(data);
 
-        }
-        String stagiaire1=data.get_nom();
-        String current1=current.data.get_nom();
-        System.out.println(stagiaire1.compareTo(current1));
-        if(data.get_nom().compareTo(current.data.get_nom()) <0 ){
 
-            current.left = addNode(current.left, data);
-            current.data.set_gauche(data.get_adresse()); //
-            System.out.println("Adresse en String = " + data.get_adresse());
-        } else if (data.get_nom().compareTo(current.data.get_nom()) >0 ) {
-            current.right = addNode(current.right, data);
-            current.data.set_droite(data.get_adresse()); //
-        } else {
-            // La valeur existe déjà
+        }
+
+        try {
+            System.out.println("Stagiaire " + data.get_nom() +
+                    "\n********\nAdresse : " + data.get_adresse() +
+                    "\nGauche : " + data.get_gauche() +
+                    "\nDroite : " + data.get_droite() +
+                    "\n");
+
+            System.out.println("Current " + current.data.get_nom() +
+                    "\n********\nAdresse : " + current.data.get_adresse() +
+                    "\nGauche : " + current.data.get_gauche() +
+                    "\nDroite : " + current.data.get_droite() +
+                    "\n");
+
+
+
+            System.out.println("Condition " + data.get_nom() + " < " + current.data.get_nom() + " ? => " + data.get_nom().compareTo(current.data.get_nom()));
+            System.out.println("Condition " + data.get_nom() + " > " + current.data.get_nom() + " ? => " + data.get_nom().compareTo(current.data.get_nom()));
+            if(data.get_nom().compareTo(current.data.get_nom()) <0 ){
+                current.data.set_gauche(data.get_adresse());
+                current.left = addNode(current.left, data);
+
+
+                //TESTS
+                System.out.println("Current modifie est : " + current.data.get_nom() +
+                        "\n********\nAdresse : " + current.data.get_adresse() +
+                        "\nGauche : " + current.data.get_gauche() +
+                        "\nDroite : " + current.data.get_droite() +
+                        "\n");
+
+            } else if (data.get_nom().compareTo(current.data.get_nom()) >0 ) {
+                current.data.set_droite(data.get_adresse());
+                current.right = addNode(current.right, data);
+
+
+                //TESTS
+                System.out.println("Current modifie est : " + current.data.get_nom() +
+                        "\n********\nAdresse : " + current.data.get_adresse() +
+                        "\nGauche : " + current.data.get_gauche() +
+                        "\nDroite : " + current.data.get_droite() +
+                        "\n");
+            } else {
+                // La valeur existe déjà
+                return current;
+            }
             return current;
+
+
+        }
+        catch(NullPointerException e){
+            System.out.println("NullPointerException caught");
         }
         return current;
-
     }
 
     // Démarre la récursivité depuis le noeud racine

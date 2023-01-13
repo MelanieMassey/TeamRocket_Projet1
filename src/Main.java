@@ -139,7 +139,7 @@ public class Main {
             }
             //Tri alphabétique
             Node root = arbreTest.getRoot();
-            System.out.println(root.data);
+//            System.out.println(root.data);
             arbreTest.traverseInOrder(root);
 
             //listeStagiaires(compteurStagiaires, raf); //lecture du fichier bin et affichage de la liste de stagiaires
