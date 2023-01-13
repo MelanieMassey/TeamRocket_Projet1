@@ -3,12 +3,13 @@ public class Stagiaire {
     // Attributs
     private String _nom;
     private String _prenom;
-    private int _departement;
-    private int _annee;
+    private String _departement;
+    private String _annee;
     private String _promo;
 
     // Constructeur
-    public Stagiaire( String nom, String prenom, int departement, int annee, String promo ) {
+    public Stagiaire( String nom, String prenom, String departement, String annee, String promo ) {
+
         this._nom = nom;
         this._prenom = prenom;
         this._departement = departement;
@@ -31,17 +32,18 @@ public class Stagiaire {
         this._prenom = new_value;
     }
 
-    public int get_departement() {
+    public String get_departement() {
         return this._departement ;
     }
-    public void set_departement( int new_value ) {
+    public void set_departement( String new_value ) {
         this._departement = new_value;
     }
 
-    public int get_annee() {
+    public String get_annee() {
         return this._annee ;
     }
-    public void set_annee( int new_value ) {
+    public void set_annee( String new_value ) {
+
         this._annee = new_value;
     }
 
@@ -62,4 +64,12 @@ public class Stagiaire {
                 "\nPromo : " + _promo;
     }
 
+public void  afficherStagiaire()
+    {
+        System.out.println( "Nom : " + _nom +
+                "\nPrenom : " + _prenom +
+                "\nDepartement : " + _departement +
+                "\nAnnee : " + _annee +
+                "\nPromo : " + _promo);
+    }
 }
