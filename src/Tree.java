@@ -52,14 +52,17 @@ public class Tree {
             return new Node(data);
 
         }
+        String stagiaire1=data.get_nom();
+        String current1=current.data.get_nom();
+        System.out.println(stagiaire1.compareTo(current1));
+        if(data.get_nom().compareTo(current.data.get_nom()) <0 ){
 
-        if(data.get_nom().compareTo(current.data.get_nom()) < 0 ){
             current.left = addNode(current.left, data);
-            current.data.set_gauche(data.get_adresse());
+            current.data.set_gauche(data.get_adresse()); //
             System.out.println("Adresse en String = " + data.get_adresse());
-        } else if (data.get_nom().compareTo(current.data.get_nom()) > 0 ) {
+        } else if (data.get_nom().compareTo(current.data.get_nom()) >0 ) {
             current.right = addNode(current.right, data);
-            current.data.set_droite(data.get_adresse());
+            current.data.set_droite(data.get_adresse()); //
         } else {
             // La valeur existe déjà
             return current;

@@ -1,4 +1,5 @@
 import java.io.*;
+import java.text.Normalizer;
 
 
 public class Main {
@@ -52,7 +53,7 @@ public class Main {
             raf = new RandomAccessFile("listeStagiaires.bin", "rw");
 
             //Lecture du fichier text
-            FileReader fichierOriginal = new FileReader("src/stagiaires.txt");
+            FileReader fichierOriginal = new FileReader("src/stagiaireTest.txt");
             BufferedReader bf = new BufferedReader(fichierOriginal);
 
 
@@ -72,32 +73,32 @@ public class Main {
             while ((ligne = bf.readLine()) != null && (linenumber <= 5)) {
 
                 mot = "";
-                String[] tokens = ligne.split("  ");   //split la ligne en utilisant triple espace comme séparateur
+                String[] tokens = stripAccents(ligne.toLowerCase()).split("  ");   //met tout en minuscule et split la ligne en utilisant triple espace comme séparateur
                 mot += tokens[0];                            //récupération du premier token (mot)
                 switch (linenumber) {
                     case 0:
                         mot_promo = mot;
-                        mot_promo= completer(mot_promo, PROMO);
+                        //mot_promo= completer(mot_promo, PROMO);
 
                         break;
                     case 1:
                         mot_annee =mot;
-                        mot_annee = completer(mot_annee, ANNEE);
+                        //mot_annee = completer(mot_annee, ANNEE);
 
                         break;
                     case 2:
                         mot_nom=mot;
-                        mot_nom = completer(mot_nom, NOM);
+                        //mot_nom = completer(mot_nom, NOM);
 
                         break;
                     case 3:
                         mot_prenom=mot;
-                        mot_prenom = completer(mot_prenom, PRENOM);
+                        //mot_prenom = completer(mot_prenom, PRENOM);
 
                         break;
                     case 4:
                         mot_departement=mot;
-                        mot_departement = completer(mot_departement, DEPARTEMENT);
+                       // mot_departement = completer(mot_departement, DEPARTEMENT);
 
                         break;
                     case 5:
@@ -105,8 +106,8 @@ public class Main {
 
                         linenumber = -1;
 
-                        System.out.println("Adresse in = " + adresse);
-                        String adresseToString = Integer.toString(adresse);
+                       // System.out.println("Adresse in = " + adresse);
+                       String adresseToString = Integer.toString(adresse);
 
                         Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresseToString, gauche, droite);
                         arbreTest.add(stagiaire); // Ajout du stagiaire dans l'arbre
@@ -137,9 +138,10 @@ public class Main {
 
             }
             //Tri alphabétique
-            /*Node root = arbreTest.getRoot();
+            Node root = arbreTest.getRoot();
             System.out.println(root.data);
-            arbreTest.traverseInOrder(root);*/
+            arbreTest.traverseInOrder(root);
+
             //listeStagiaires(compteurStagiaires, raf); //lecture du fichier bin et affichage de la liste de stagiaires
 
 //            raf.seek(0);
@@ -150,6 +152,7 @@ public class Main {
                 motRecherche += raf.readChar();
             }
             System.out.println(motRecherche);*/
+
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -162,6 +165,13 @@ public class Main {
 
 
     // METHODES
+
+    public static String stripAccents(String s)
+    {
+        s = Normalizer.normalize(s, Normalizer.Form.NFD);
+        s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+        return s;
+    }
 
     public static String completer(String mot, int taille) {
 
