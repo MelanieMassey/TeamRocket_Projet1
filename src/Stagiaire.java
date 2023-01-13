@@ -53,6 +53,7 @@ public class Stagiaire {
         return this._annee ;
     }
     public void set_annee( String new_value ) {
+
         this._annee = new_value;
     }
 
@@ -95,7 +96,7 @@ public class Stagiaire {
                 "\nPromo : " + _promo;
     }
 
-    public void  afficherStagiaire()
+public void  afficherStagiaire()
     {
         System.out.println( "Nom : " + _nom +
                 "\nPrenom : " + _prenom +
@@ -107,5 +108,4 @@ public class Stagiaire {
         /*"\nGauche : " + _gauche +
                 "\nDroite : " + _droite)*/
     }
-
 }
