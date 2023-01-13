@@ -55,11 +55,11 @@ public class Tree {
 
         if(data.get_nom().compareTo(current.data.get_nom()) < 0 ){
             current.left = addNode(current.left, data);
-            current.set_left(data.get_adresse());
-            System.out.println(current);
+            current.data.set_gauche(data.get_adresse());
+            System.out.println(current.data);
         } else if (data.get_nom().compareTo(current.data.get_nom()) > 0 ) {
             current.right = addNode(current.right, data);
-            current.set_right(data.get_adresse());
+            current.data.set_droite(data.get_adresse());
         } else {
             // La valeur existe déjà
             return current;

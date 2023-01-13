@@ -9,9 +9,9 @@ public class Main {
     public static final int NOM = 20;
     public static final int DEPARTEMENT = 2;
 
-    public static final int ADRESSE = 5;
-    public static final int GAUCHE = 5;
-    public static final int DROITE = 5;
+    public static final int ADRESSE = 10;
+    public static final int GAUCHE = 10;
+    public static final int DROITE = 10;
 
     //Allocation espace total saisie infos stagiaire
     public static final int STAGIAIRELENGTH = ((PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT) * 2 + 3); // +3 = espace pris par les 3 int Adresse, Gauche et Droite
@@ -36,7 +36,8 @@ public class Main {
         String ligne = "";
         String mot;
         String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="";
-        int adresse, gauche, droite;
+        int adresse = 0;
+        String gauche = "", droite = "";
 
 
         //Initialisation des compteurs pour les lignes du fichier et pour les stagiaires
@@ -103,11 +104,17 @@ public class Main {
                         // lnr.setLineNumber(0);
 
                         linenumber = -1;
-                        adresse = STAGIAIRELENGTH*compteurStagiaires-STAGIAIRELENGTH;
-                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresse);
-                        compteurStagiaires += 1;
 
-                        // Tentative récupération left/gauche Noeud "current"
+                        String adresseToString = Integer.toString(adresse);
+
+                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresseToString, gauche, droite);
+                        arbreTest.add(stagiaire); // Ajout du stagiaire dans l'arbre
+
+
+                        compteurStagiaires += 1;
+                        adresse += STAGIAIRELENGTH;
+
+
 
 
                         // Ecriture dans le fichier binaire
@@ -119,7 +126,6 @@ public class Main {
                         raf.writeInt(adresse);*/
 
                         //stagiaire.afficherStagiaire();
-                        arbreTest.add(stagiaire);
 
                         break;
                     default:

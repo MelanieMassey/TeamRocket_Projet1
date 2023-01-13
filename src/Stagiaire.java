@@ -6,18 +6,20 @@ public class Stagiaire {
     private String _departement;
     private String _annee;
     private String _promo;
-    private int _adresse;
-   /* private int _gauche;
-    private int _droite;*/
+    private String _adresse;
+    private String _gauche;
+    private String _droite;
 
     // Constructeur
-    public Stagiaire( String nom, String prenom, String departement, String annee, String promo, int adresse) {
+    public Stagiaire( String nom, String prenom, String departement, String annee, String promo, String adresse, String gauche, String droite) {
         this._nom = nom;
         this._prenom = prenom;
         this._departement = departement;
         this._annee = annee;
         this._promo = promo;
         this._adresse = adresse;
+        this._gauche = gauche;
+        this._droite = droite;
     }
 
 
@@ -64,26 +66,26 @@ public class Stagiaire {
         this._promo = new_value;
     }
 
-    public int get_adresse(){
+    public String get_adresse(){
         return this._adresse;
     }
-    public void set_adresse( int new_value ) {
+    public void set_adresse( String new_value ) {
         this._adresse = new_value;
     }
 
-   /* public int get_gauche(){
+    public String get_gauche(){
         return this._gauche;
     }
-    public void set_gauche( int new_value ) {
+    public void set_gauche( String new_value ) {
         this._gauche = new_value;
     }
 
-    public int get_droite(){
+    public String get_droite(){
         return this._droite;
     }
-    public void set_droite( int new_value ) {
+    public void set_droite( String new_value ) {
         this._droite = new_value;
-    }*/
+    }
 
 
     // Méthodes
@@ -93,7 +95,10 @@ public class Stagiaire {
                 "\nPrenom : " + _prenom +
                 "\nDepartement : " + _departement +
                 "\nAnnee : " + _annee +
-                "\nPromo : " + _promo;
+                "\nPromo : " + _promo +
+                "\nAdresse : " + _adresse +
+                "\nGauche : " + _gauche +
+                "\nDroite : " + _droite;
     }
 
 public void  afficherStagiaire()
