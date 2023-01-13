@@ -6,14 +6,20 @@ public class Stagiaire {
     private String _departement;
     private String _annee;
     private String _promo;
+    private int _adresse;
+    private int _gauche;
+    private String _droite;
 
     // Constructeur
-    public Stagiaire( String nom, String prenom, String departement, String annee, String promo ) {
+    public Stagiaire( String nom, String prenom, String departement, String annee, String promo, int adresse) {
         this._nom = nom;
         this._prenom = prenom;
         this._departement = departement;
         this._annee = annee;
         this._promo = promo;
+        this._adresse = adresse;
+        /*this._gauche;
+        this._droite;*/
     }
 
     // Accesseurs
@@ -51,6 +57,28 @@ public class Stagiaire {
     public void set_promo( String new_value ) {
         this._promo = new_value;
     }
+
+    public int get_adresse(){
+        return this._adresse;
+    }
+    public void set_adresse( int new_value ) {
+        this._adresse = new_value;
+    }
+
+    /*public String get_gauche(){
+        return this._gauche;
+    }
+    public void set_gauche( String new_value ) {
+        this._gauche = new_value;
+    }
+
+    public String get_droite(){
+        return this._droite;
+    }
+    public void set_droite( String new_value ) {
+        this._droite = new_value;
+    }*/
+
 
     // Méthodes
     public String toString()

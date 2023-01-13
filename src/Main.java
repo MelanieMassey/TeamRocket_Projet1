@@ -32,6 +32,7 @@ public class Main {
         String ligne = "";
         String mot;
         String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="";
+        int adresse;
 
         //Initialisation des compteurs pour les lignes du fichier et pour les stagiaires
         int linenumber = 0;
@@ -71,33 +72,44 @@ public class Main {
                     case 0:
                         mot_promo = mot;
                         mot_promo= completer(mot_promo, PROMO);
-                       // raf.writeChars(mot);
+
                         break;
                     case 1:
                         mot_annee =mot;
                         mot_annee = completer(mot_annee, ANNEE);
-                       // raf.writeChars(mot);
+
                         break;
                     case 2:
                         mot_nom=mot;
                         mot_nom = completer(mot_nom, NOM);
-                      //  raf.writeChars(mot);
+
                         break;
                     case 3:
                         mot_prenom=mot;
                         mot_prenom = completer(mot_prenom, PRENOM);
-                     //   raf.writeChars(mot);
+
                         break;
                     case 4:
                         mot_departement=mot;
                         mot_departement = completer(mot_departement, DEPARTEMENT);
-                     //   raf.writeChars(mot);
+
                         break;
                     case 5:
                         // lnr.setLineNumber(0);
+
                         linenumber = -1;
-                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo);
+                        adresse = STAGIAIRELENGTH*compteurStagiaires-STAGIAIRELENGTH;
+                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresse);
                         compteurStagiaires += 1;
+
+                        // Ecriture dans le fichier binaire
+                        raf.writeChars(mot_nom);
+                        raf.writeChars(mot_prenom);
+                        raf.writeChars(mot_departement);
+                        raf.writeChars(mot_annee);
+                        raf.writeChars(mot_promo);
+                        raf.writeInt(adresse);
+
                         //stagiaire.afficherStagiaire();
                         arbreTest.add(stagiaire);
 
@@ -114,6 +126,15 @@ public class Main {
             //System.out.println(root.data);
             arbreTest.traverseInOrder(root);
             //listeStagiaires(compteurStagiaires, raf);             //lecture du fichier bin et affichage de la liste de stagiaires
+
+            raf.seek(0);
+            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
+
+            String motRecherche = "";
+            for(int i=0 ; i<20 ; i++){
+                motRecherche += raf.readChar();
+            }
+            System.out.println(motRecherche);
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
