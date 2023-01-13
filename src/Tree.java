@@ -9,13 +9,32 @@ class Node {
     //String data;
     Stagiaire data;
 
-    // ATTRIBUTS
+    // Permettront de circuler dans l'arbre
     Node left;
     Node right;
+
+    // ATTRIBUTS
+    private int _left;
+    private int _right;
 
     // CONSTRUCTEUR Pour attribuer les données au noeud
     public Node(Stagiaire data) {
         this.data = data;
+    }
+
+    // Constructeur 2
+    public Node(int gauche, int droite){
+
+        this._left = gauche;
+        this._right = droite;
+    }
+
+    public void set_left(int left){
+        this._left = left;
+    }
+
+    public void set_right(int right){
+        this._right = right;
     }
 }
 
@@ -29,13 +48,18 @@ public class Tree {
     // Méthode ajout d'un noeud
     public Node addNode(Node current, Stagiaire data) {
         if (current == null) {
+
             return new Node(data);
+
         }
 
         if(data.get_nom().compareTo(current.data.get_nom()) < 0 ){
             current.left = addNode(current.left, data);
+            current.set_left(data.get_adresse());
+            System.out.println(current);
         } else if (data.get_nom().compareTo(current.data.get_nom()) > 0 ) {
             current.right = addNode(current.right, data);
+            current.set_right(data.get_adresse());
         } else {
             // La valeur existe déjà
             return current;

@@ -9,8 +9,12 @@ public class Main {
     public static final int NOM = 20;
     public static final int DEPARTEMENT = 2;
 
+    public static final int ADRESSE = 5;
+    public static final int GAUCHE = 5;
+    public static final int DROITE = 5;
+
     //Allocation espace total saisie infos stagiaire
-    public static final int STAGIAIRELENGTH = ((PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT) * 2);
+    public static final int STAGIAIRELENGTH = ((PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT) * 2 + 3); // +3 = espace pris par les 3 int Adresse, Gauche et Droite
 
 
     public static void main(String[] args) {
@@ -32,7 +36,8 @@ public class Main {
         String ligne = "";
         String mot;
         String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="";
-        int adresse;
+        int adresse, gauche, droite;
+
 
         //Initialisation des compteurs pour les lignes du fichier et pour les stagiaires
         int linenumber = 0;
@@ -102,13 +107,16 @@ public class Main {
                         Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresse);
                         compteurStagiaires += 1;
 
+                        // Tentative récupération left/gauche Noeud "current"
+
+
                         // Ecriture dans le fichier binaire
-                        raf.writeChars(mot_nom);
+                        /*raf.writeChars(mot_nom);
                         raf.writeChars(mot_prenom);
                         raf.writeChars(mot_departement);
                         raf.writeChars(mot_annee);
                         raf.writeChars(mot_promo);
-                        raf.writeInt(adresse);
+                        raf.writeInt(adresse);*/
 
                         //stagiaire.afficherStagiaire();
                         arbreTest.add(stagiaire);
@@ -124,17 +132,17 @@ public class Main {
             //Tri alphabétique
             Node root = arbreTest.getRoot();
             //System.out.println(root.data);
-            arbreTest.traverseInOrder(root);
-            //listeStagiaires(compteurStagiaires, raf);             //lecture du fichier bin et affichage de la liste de stagiaires
+//            arbreTest.traverseInOrder(root);
+            //listeStagiaires(compteurStagiaires, raf); //lecture du fichier bin et affichage de la liste de stagiaires
 
-            raf.seek(0);
-            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
+//            raf.seek(0);
+//            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
 
-            String motRecherche = "";
+            /*String motRecherche = "";
             for(int i=0 ; i<20 ; i++){
                 motRecherche += raf.readChar();
             }
-            System.out.println(motRecherche);
+            System.out.println(motRecherche);*/
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();

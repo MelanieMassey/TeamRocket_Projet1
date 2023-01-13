@@ -7,8 +7,8 @@ public class Stagiaire {
     private String _annee;
     private String _promo;
     private int _adresse;
-    private int _gauche;
-    private String _droite;
+   /* private int _gauche;
+    private int _droite;*/
 
     // Constructeur
     public Stagiaire( String nom, String prenom, String departement, String annee, String promo, int adresse) {
@@ -18,9 +18,14 @@ public class Stagiaire {
         this._annee = annee;
         this._promo = promo;
         this._adresse = adresse;
-        /*this._gauche;
-        this._droite;*/
     }
+
+
+    /*public Stagiaire(String nom, String prenom, String departement, String annee, String promo, int adresse, int gauche, int droite){
+        this(nom, prenom, departement, annee, promo, adresse);
+        this._gauche = gauche;
+        this._droite = droite;
+    }*/
 
     // Accesseurs
     public String get_nom() {
@@ -65,17 +70,17 @@ public class Stagiaire {
         this._adresse = new_value;
     }
 
-    /*public String get_gauche(){
+   /* public int get_gauche(){
         return this._gauche;
     }
-    public void set_gauche( String new_value ) {
+    public void set_gauche( int new_value ) {
         this._gauche = new_value;
     }
 
-    public String get_droite(){
+    public int get_droite(){
         return this._droite;
     }
-    public void set_droite( String new_value ) {
+    public void set_droite( int new_value ) {
         this._droite = new_value;
     }*/
 
@@ -96,7 +101,11 @@ public class Stagiaire {
                 "\nPrenom : " + _prenom +
                 "\nDepartement : " + _departement +
                 "\nAnnee : " + _annee +
-                "\nPromo : " + _promo);
+                "\nPromo : " + _promo +
+                "\nAdresse : " + _adresse
+        );
+        /*"\nGauche : " + _gauche +
+                "\nDroite : " + _droite)*/
     }
 
 }
