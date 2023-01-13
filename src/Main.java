@@ -110,7 +110,7 @@ public class Main {
                        String adresseToString = Integer.toString(adresse);
 
                         Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresseToString, gauche, droite);
-                        arbreTest.add(stagiaire); // Ajout du stagiaire dans l'arbre
+                        arbreTest.addNode(stagiaire); // Ajout du stagiaire dans l'arbre
 
 
                         compteurStagiaires += 1;
@@ -138,9 +138,9 @@ public class Main {
 
             }
             //Tri alphabétique
-            Node root = arbreTest.getRoot();
+            //Node root = arbreTest.getRoot();
 //            System.out.println(root.data);
-            arbreTest.traverseInOrder(root);
+            arbreTest.traverseInOrder(arbreTest.root);
 
             //listeStagiaires(compteurStagiaires, raf); //lecture du fichier bin et affichage de la liste de stagiaires
 

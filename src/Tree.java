@@ -4,18 +4,19 @@ import java.util.*;
 CLASSE NOEUD
 Création d'un noeud à partir de données
 */
+
 class Node {
     // DONNEES du Stagiaire => Test avec un string
     //String data;
     Stagiaire data;
 
     // Permettront de circuler dans l'arbre
-    Node left;
-    Node right;
+    Node leftChild;
+    Node rightChild;
 
     // ATTRIBUTS
-    private int _left;
-    private int _right;
+   /* private int _left;
+    private int _right;*/
 
     // CONSTRUCTEUR Pour attribuer les données au noeud
     public Node(Stagiaire data) {
@@ -28,21 +29,47 @@ class Node {
 CLASSE ARBRE
 */
 public class Tree {
+
+
     Node root;
 
 
     // Méthode ajout d'un noeud
-    public Node addNode(Node current, Stagiaire data) {
+    //public Node addNode(Node current, Stagiaire data) {
+    public void addNode(Stagiaire data) {
+        Node newNode= new Node(data);
 
-
-        if (current == null) {
-            System.out.println("Plus de noeud, on créé le noeud pour " + data.get_nom());
-            return new Node(data);
-
-
+        if (root == null) {
+            System.out.println("Pas d'arbre, on créé la racine pour " + data.get_nom());
+           // return new Node(data);
+            root= newNode;
         }
 
-        try {
+        else{
+            Node currentNode=root;
+            Node parent;
+
+            while(true){
+                parent=currentNode;
+                if (data.get_nom().compareTo(currentNode.data.get_nom()) <0){
+                    currentNode=currentNode.leftChild;
+                    if(currentNode==null){
+                        parent.leftChild=newNode;
+                        parent.data.set_gauche(data.get_adresse());
+                        return;
+                    }
+                } else {
+                    currentNode=currentNode.rightChild;
+                    if(currentNode==null){
+                        parent.rightChild=newNode;
+                        parent.data.set_droite(data.get_adresse());
+                        return; //return None
+                    }
+                }
+            }
+        }
+
+        /*try {
             System.out.println("Stagiaire " + data.get_nom() +
                     "\n********\nAdresse : " + data.get_adresse() +
                     "\nGauche : " + data.get_gauche() +
@@ -93,25 +120,25 @@ public class Tree {
         catch(NullPointerException e){
             System.out.println("NullPointerException caught");
         }
-        return current;
+        return current;*/
     }
 
     // Démarre la récursivité depuis le noeud racine
-    public void add(Stagiaire data) {
+    /*public void add(Stagiaire data) {
         root = addNode(root, data);
-    }
+    }*/
 
     // Récupération du noeud de l'arbre
-    public Node getRoot(){
+ /*   public Node getRoot(){
         return root;
-    }
+    }*/
 
     // Lecture de l'arbre par ordre alphabétique
     public void traverseInOrder(Node node) {
         if (node != null) {
-            traverseInOrder(node.left);
+            traverseInOrder(node.leftChild);
             System.out.print("\n" + node.data);
-            traverseInOrder(node.right);
+            traverseInOrder(node.rightChild);
         }
     }
 }
