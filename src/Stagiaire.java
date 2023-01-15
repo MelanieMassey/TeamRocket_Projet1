@@ -11,7 +11,7 @@ public class Stagiaire {
     private String _droite;
 
     // Constructeur
-    public Stagiaire( String nom, String prenom, String departement, String annee, String promo, String adresse, String gauche, String droite) {
+    public Stagiaire( String nom, String prenom, String departement, String annee, String promo,  String adresse, String gauche, String droite) {
         this._nom = nom;
         this._prenom = prenom;
         this._departement = departement;
@@ -54,10 +54,7 @@ public class Stagiaire {
     public String get_annee() {
         return this._annee ;
     }
-    public void set_annee( String new_value ) {
-
-        this._annee = new_value;
-    }
+    public void set_annee( String new_value ) { this._annee = new_value; }
 
     public String get_promo() {
         return this._promo ;
@@ -100,6 +97,18 @@ public class Stagiaire {
                 "\nGauche : " + _gauche +
                 "\nDroite : " + _droite;
     }
+
+    /*public String toString()
+    {
+        return "Nom : " + _nom +
+                "\nPrenom : " + _prenom +
+                "\nDepartement : " + _departement +
+                "\nAnnee : " + _annee +
+                "\nPromo : " + _promo +
+                "\nAdresse : " + _adresse +
+                "\nGauche : " + _gauche +
+                "\nDroite : " + _droite;
+    }*/
 
 public void  afficherStagiaire()
     {

@@ -1,3 +1,6 @@
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.*;
 
 /*
@@ -38,31 +41,32 @@ public class Tree {
     //public Node addNode(Node current, Stagiaire data) {
     public void addNode(Stagiaire data) {
         Node newNode= new Node(data);
-
+        //cas où le nouveau noeud est la racine
         if (root == null) {
-            System.out.println("Pas d'arbre, on créé la racine pour " + data.get_nom());
            // return new Node(data);
             root= newNode;
         }
-
         else{
+            //on démarre de la racine
             Node currentNode=root;
+            //on crée un noeud parent
             Node parent;
-
             while(true){
                 parent=currentNode;
+                //compare la valeur des nouvelles ddonnées avec la valeur du noeud parent
                 if (data.get_nom().compareTo(currentNode.data.get_nom()) <0){
-                    currentNode=currentNode.leftChild;
-                    if(currentNode==null){
-                        parent.leftChild=newNode;
-                        parent.data.set_gauche(data.get_adresse());
+                    //la valeur est inférieure: on focus sur le noeud enfant gauche
+                    currentNode=currentNode.leftChild;                    //on se place à gauche du noeud parent
+                    if(currentNode==null){                               //leftchild node n'a pas d'enfant:
+                        parent.leftChild=newNode;                        //on attribue le noeud gauche au parent
+                        parent.data.set_gauche(data.get_adresse());     //on attribue l'adresse au parent l'adresse du leftchild node
                         return;
                     }
-                } else {
-                    currentNode=currentNode.rightChild;
-                    if(currentNode==null){
-                        parent.rightChild=newNode;
-                        parent.data.set_droite(data.get_adresse());
+                } else {                                                //la valeur est supérieure au noeud parent
+                    currentNode=currentNode.rightChild;                 //on se place à droite du parent
+                    if(currentNode==null){                              //rightChild node n'a pas d'enfants
+                        parent.rightChild=newNode;                      //on attribue le noeud droit au parent
+                        parent.data.set_droite(data.get_adresse());     //on attribue au parent l'adresse du noeud droit
                         return; //return None
                     }
                 }
@@ -137,8 +141,33 @@ public class Tree {
     public void traverseInOrder(Node node) {
         if (node != null) {
             traverseInOrder(node.leftChild);
-            System.out.print("\n" + node.data);
+            System.out.println("\n" + node.data);
             traverseInOrder(node.rightChild);
+
         }
     }
-}
+
+    public void traverseInOrderAndWrite (Node node, RandomAccessFile raf){
+
+        if (node != null) {
+            traverseInOrderAndWrite(node.leftChild,raf);
+            try {
+                raf.writeChars(node.data.get_nom()
+                                +node.data.get_prenom()
+                                +node.data.get_departement()
+                                +node.data.get_annee()
+                                +node.data.get_promo()
+                                +node.data.get_adresse()
+                                +node.data.get_gauche()
+                                +node.data.get_droite());
+                traverseInOrderAndWrite(node.rightChild,raf);
+            }  catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        }
+
+    }
+

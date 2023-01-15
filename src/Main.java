@@ -8,35 +8,72 @@ public class Main {
     public static final int ANNEE = 10;
     public static final int PRENOM = 20;
     public static final int NOM = 20;
-    public static final int DEPARTEMENT = 2;
+    public static final int DEPARTEMENT = 5;
+    public static final int ADRESSE = 10;           //position du noeud
+    public static final int LEFTCHILD = 10;         //pointeur noeud enfant gauche
+    public static final int RIGHTCHILD = 10;        //pointeur noeud enfant droit
 
-    public static final int ADRESSE = 10;
-    public static final int GAUCHE = 10;
-    public static final int DROITE = 10;
-
-    //Allocation espace total saisie infos stagiaire
-    public static final int STAGIAIRELENGTH = ((PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT) * 2 + 3); // +3 = espace pris par les 3 int Adresse, Gauche et Droite
-
+    //Allocation espace total par stagiaire (incluant informations et pointeurs)
+    public static final int STAGIAIRELENGTH = (PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT
+            + ADRESSE+LEFTCHILD+RIGHTCHILD) * 2 ;
 
     public static void main(String[] args) {
 
-        Tree arbreTest = new Tree();
+        try{
+            // Création d'un fichier bin vide
+            RandomAccessFile raf;
 
-        /*Stagiaire Celine = new Stagiaire("Hernandez", "Celine", 59, 2022, "CAPEQELLES");
-        Stagiaire Aline = new Stagiaire("Lacaze", "Aline", 31, 2022, "CAPEQELLES");
-        Stagiaire Lydia = new Stagiaire("Lachenaud", "Lydia", 35, 2022, "CAPEQELLES");
-        Stagiaire Melanie = new Stagiaire("Massey", "Melanie", 31, 2022, "CAPEQELLES");
-
-        arbreTest.add(Celine);
-        arbreTest.add(Aline);
-        arbreTest.add(Lydia);
-        arbreTest.add(Melanie);*/
+            raf = new RandomAccessFile("listeStagiaires.bin", "rw");
 
 
+            txtFileToBinFile("src/stagiaireTest.txt", raf);
 
+
+            System.out.println("\n****Ajouter de nouvelles données:");
+            appendToBinary(new Stagiaire(completer("Hernandez",NOM),
+                    completer("Céline",PRENOM),
+                    completer("59", DEPARTEMENT),
+                    completer("2022", ANNEE),
+                    completer("EQELLES",PROMO),
+                    completer("1000", ADRESSE),
+                    completer("50", LEFTCHILD),
+                    completer("600", RIGHTCHILD)), raf);
+
+            System.out.println("\n****Lecture du fichier binaire:");
+
+            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires
+
+
+            //raf.close();
+//            raf.seek(0);
+//            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
+
+            /*String motRecherche = "";
+            for(int i=0 ; i<20 ; i++){
+                motRecherche += raf.readChar();
+            }
+            System.out.println(motRecherche);*/
+
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    // METHODES
+
+    public static void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
+
+        //Déclaration variables (et initialisation)
         String ligne = "";
         String mot;
-        String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="";
+        String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="", mot_adresse="";
         int adresse = 0;
         String gauche = "", droite = "";
 
@@ -46,14 +83,14 @@ public class Main {
         int compteurStagiaires = 0;
 
 
+        // Creation d'un nouvel arbre
+        Tree arbre = new Tree();
 
-        RandomAccessFile raf;
         try {
-            // Création d'un fichier bin vide
-            raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+
 
             //Lecture du fichier text
-            FileReader fichierOriginal = new FileReader("src/stagiaireTest.txt");
+            FileReader fichierOriginal = new FileReader(PathTxtFile);
             BufferedReader bf = new BufferedReader(fichierOriginal);
 
 
@@ -65,8 +102,8 @@ public class Main {
                     Ligne 3: Prénom
                     Ligne 4: Département
                     Ligne 5: réinitialisation du compteur de ligne pour collecter les informations pour le stagiaire suivant
-                             + Création d'un objet de la clsse stagiaire pour stocker les infos
-                             + Création d'un noeud (avec ces données)
+                             + Création d'un objet de la classe Stagiaire pour stocker les infos relatives à chaque stagiaire
+                             + Création d'un noeud (avec les données d'un stagiaire)
                              + incrémentation du compteur stagiaire
 
              */
@@ -78,56 +115,48 @@ public class Main {
                 switch (linenumber) {
                     case 0:
                         mot_promo = mot;
-                        //mot_promo= completer(mot_promo, PROMO);
+                        mot_promo= completer(mot_promo, PROMO);
 
                         break;
                     case 1:
                         mot_annee =mot;
-                        //mot_annee = completer(mot_annee, ANNEE);
+                        mot_annee = completer(mot_annee, ANNEE);
 
                         break;
                     case 2:
                         mot_nom=mot;
-                        //mot_nom = completer(mot_nom, NOM);
+                        mot_nom = completer(mot_nom, NOM);
 
                         break;
                     case 3:
                         mot_prenom=mot;
-                        //mot_prenom = completer(mot_prenom, PRENOM);
+                        mot_prenom = completer(mot_prenom, PRENOM);
 
                         break;
                     case 4:
                         mot_departement=mot;
-                       // mot_departement = completer(mot_departement, DEPARTEMENT);
+                        mot_departement = completer(mot_departement, DEPARTEMENT);
 
                         break;
                     case 5:
-                        // lnr.setLineNumber(0);
 
-                        linenumber = -1;
+                        // System.out.println("Adresse in = " + adresse);
+                        String adresseToString = Integer.toString(adresse);
+                        mot_adresse =  completer(adresseToString, ADRESSE);
+                        gauche=completer(gauche, LEFTCHILD);
+                        droite=completer(droite, RIGHTCHILD);
 
-                       // System.out.println("Adresse in = " + adresse);
-                       String adresseToString = Integer.toString(adresse);
+                        //Creation d'un objet stagiaire
+                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, mot_adresse, gauche, droite);
+                        //Ajout de l'objet dans l'arbre
+                        arbre.addNode(stagiaire);
 
-                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, adresseToString, gauche, droite);
-                        arbreTest.addNode(stagiaire); // Ajout du stagiaire dans l'arbre
-
-
+                        //Incrémentation du compteur stagiaire
                         compteurStagiaires += 1;
+                        //Réinitialisation du compteur de ligne
+                        linenumber = -1;
+                        //Positionnement du pointeur pour l'écriture des données
                         adresse += STAGIAIRELENGTH;
-
-
-
-
-                        // Ecriture dans le fichier binaire
-                        /*raf.writeChars(mot_nom);
-                        raf.writeChars(mot_prenom);
-                        raf.writeChars(mot_departement);
-                        raf.writeChars(mot_annee);
-                        raf.writeChars(mot_promo);
-                        raf.writeInt(adresse);*/
-
-                        //stagiaire.afficherStagiaire();
 
                         break;
                     default:
@@ -137,21 +166,14 @@ public class Main {
                 linenumber += 1;
 
             }
-            //Tri alphabétique
-            //Node root = arbreTest.getRoot();
-//            System.out.println(root.data);
-            arbreTest.traverseInOrder(arbreTest.root);
 
-            //listeStagiaires(compteurStagiaires, raf); //lecture du fichier bin et affichage de la liste de stagiaires
 
-//            raf.seek(0);
-//            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
+            System.out.println("\n****Lecture arbre binaire créé (avant écriture dans le fichier bin):");
+            arbre.traverseInOrder(arbre.root);
 
-            /*String motRecherche = "";
-            for(int i=0 ; i<20 ; i++){
-                motRecherche += raf.readChar();
-            }
-            System.out.println(motRecherche);*/
+            //ecriture des données dans le fichier binaire
+            arbre.traverseInOrderAndWrite(arbre.root, raf);
+
 
 
         } catch (FileNotFoundException e) {
@@ -162,9 +184,6 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-
-    // METHODES
 
     public static String stripAccents(String s)
     {
@@ -195,11 +214,12 @@ public class Main {
         return chaine;
     }
 
-    public static void listeStagiaires(int compteurStagiaire, RandomAccessFile raf) {
+    public static void listeStagiaires(RandomAccessFile raf) {
 
         try {
             raf.seek(0);
-            int taille1 = PROMO + ANNEE + NOM + PRENOM + DEPARTEMENT;
+            int compteurStagiaire = (int) raf.length()/STAGIAIRELENGTH ;
+            int taille1 = NOM + PRENOM + DEPARTEMENT+ANNEE +PROMO + ADRESSE +LEFTCHILD+ RIGHTCHILD  ;
 
             for (int j = 0; j <= compteurStagiaire; j++) {
                 String chaine = "";
@@ -213,4 +233,28 @@ public class Main {
 
     }
 
+    public static void appendToBinary(Stagiaire stagiaire, RandomAccessFile raf){
+        try  {
+            raf.seek(raf.length());
+            raf.writeChars(stagiaire.get_nom());           //write UTF ???
+            raf.writeChars(stagiaire.get_prenom());
+            raf.writeChars(stagiaire.get_departement());
+            raf.writeChars(stagiaire.get_annee());
+            raf.writeChars(stagiaire.get_promo());
+            raf.writeChars(stagiaire.get_adresse());
+            raf.writeChars(stagiaire.get_gauche());
+            raf.writeChars(stagiaire.get_gauche());
+            raf.seek(0);
+            //raf.close();
+            System.out.println("Données sauvegardées");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'écriture des données");
+            e.printStackTrace();
+        }
+    }
+
 }
+
+
+
+
