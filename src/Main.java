@@ -357,7 +357,9 @@ public class Main {
                 mot += raf.readChar();
                 System.out.println("\nLe mot lu est : " + mot);
 
+                // 2.1. Comparaison du nom récupéré avec le nom recherché formaté
                 if(mot.equals(motSearchedComplete)){
+                    // 2.2. Si nom correspond, alors on garde toutes les infos du stagiaire
                     System.out.println("\nNom cherché =  nom stagiaire parcouru");
                     String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
                     extractionDonneesStagiaire(raf,position);
@@ -366,16 +368,12 @@ public class Main {
 
                 }
 
+                // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
 
             }
         }
 
-        // 2.1. Comparaison du nom récupéré et formatté avec le nom recherché
-        // 2.2. Si nom correspond, alors on garde toutes les infos du stagiaire
-        // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
         // 3. Affichage de la liste des stagiaires qui correspondent
-
-
 
 
     }
