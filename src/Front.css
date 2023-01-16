@@ -1,0 +1,9 @@
+.root {
+    -fx-font: 20px Arial;
+    -fx-background-color: #E6E6FA;
+}
+
+.menu-bar {
+    -fx-background-color: #4682B4;
+}
+
