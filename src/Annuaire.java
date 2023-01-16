@@ -14,14 +14,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.*;
-import java.util.Random;
 import java.util.Scanner;
 
+import static javafx.application.Application.launch;
 
-public class Version1 extends Application {
-
+public class Annuaire extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Création des menus
@@ -139,7 +137,7 @@ public class Version1 extends Application {
 
 
         Scene scene = new Scene(root, 600, 600);
-        scene.getStylesheets().add("Front.css");
+        scene.getStylesheets().add(getClass().getResource("Front.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
 
