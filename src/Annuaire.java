@@ -19,13 +19,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.Scanner;
 
+import static javafx.application.Application.launch;
 
-public class Interface extends Application {
+
+public class Annuaire extends Application {
+
 
     @Override
     public void start(Stage primaryStage) {
