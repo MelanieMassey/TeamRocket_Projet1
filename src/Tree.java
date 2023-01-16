@@ -1,3 +1,6 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -167,7 +170,37 @@ public class Tree {
 
         }
 
-        }
-
     }
+
+    // Methode qui va traverser l'arbre en "preorder" et vérifier si le nom recherché existe dans l'arbre
+    public void rechercherStagiaireNom(Node node, String nom){
+
+//        System.out.println("Nom recherché = " + nom);
+//        System.out.println("Nom du noeud exploré = " + nomNode);
+//
+        ObservableList<Node> result;
+//
+        if(node != null) {
+            // Formattage sur nom du Node : suppression des espaces
+            String nomNode = node.data.get_nom().replaceAll("\\s+","");
+
+            if(nomNode.equals(nom)){
+                result = createResultList(node);
+                System.out.println("Nom du noeud ( " + nomNode + " ) = nom recherche ( " + nom + " )");
+                rechercherStagiaireNom(node.leftChild, nom);
+                rechercherStagiaireNom(node.rightChild, nom);
+            } else {
+                rechercherStagiaireNom(node.leftChild, nom);
+                rechercherStagiaireNom(node.rightChild, nom);
+            }
+        }
+    }
+
+    // Méthode qui créé une ObservableList en fonction des résultats de la recherche lancée
+    private ObservableList<Node> createResultList(Node node){
+        ObservableList<Node> list = FXCollections.observableArrayList(node);
+        return list;
+    }
+
+}
 

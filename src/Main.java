@@ -1,4 +1,5 @@
 import java.io.*;
+import java.sql.SQLOutput;
 import java.text.Normalizer;
 
 
@@ -29,19 +30,23 @@ public class Main {
             txtFileToBinFile("src/stagiaireTest.txt", raf);
 
 
-            System.out.println("\n****Ajouter de nouvelles données:");
-            appendToBinary(new Stagiaire(completer("Hernandez",NOM),
-                    completer("Céline",PRENOM),
-                    completer("59", DEPARTEMENT),
-                    completer("2022", ANNEE),
-                    completer("EQELLES",PROMO),
-                    completer("1000", ADRESSE),
-                    completer("50", LEFTCHILD),
-                    completer("600", RIGHTCHILD)), raf);
+//            System.out.println("\n****Ajouter de nouvelles données:");
+//            appendToBinary(new Stagiaire(completer("Hernandez",NOM),
+//                    completer("Céline",PRENOM),
+//                    completer("59", DEPARTEMENT),
+//                    completer("2022", ANNEE),
+//                    completer("EQELLES",PROMO),
+//                    completer("1000", ADRESSE),
+//                    completer("50", LEFTCHILD),
+//                    completer("600", RIGHTCHILD)), raf);
 
-            System.out.println("\n****Lecture du fichier binaire:");
+            //System.out.println("\n****Lecture du fichier binaire:");
 
-            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires
+//            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires
+
+//            rechercherStagiaireBin(raf, "kanaan");
+//            extractionDonneesStagiaire(raf,0);
+            rechercherStagiaireBin(raf, "fiore", NOM);
 
 
             //raf.close();
@@ -168,11 +173,19 @@ public class Main {
             }
 
 
-            System.out.println("\n****Lecture arbre binaire créé (avant écriture dans le fichier bin):");
-            arbre.traverseInOrder(arbre.root);
+            /*System.out.println("\n****Lecture arbre binaire créé (avant écriture dans le fichier bin):");
+            arbre.traverseInOrder(arbre.root);*/
+
+            // Recherche d'un nom dans l'arbre
+            //arbre.rechercherStagiaireNom(arbre.root, "kanaan");
 
             //ecriture des données dans le fichier binaire
             arbre.traverseInOrderAndWrite(arbre.root, raf);
+
+
+
+
+
 
 
 
@@ -219,7 +232,7 @@ public class Main {
         try {
             raf.seek(0);
             int compteurStagiaire = (int) raf.length()/STAGIAIRELENGTH ;
-            int taille1 = NOM + PRENOM + DEPARTEMENT+ANNEE +PROMO + ADRESSE +LEFTCHILD+ RIGHTCHILD  ;
+            int taille1 = NOM + PRENOM + DEPARTEMENT + ANNEE + PROMO + ADRESSE + LEFTCHILD+ RIGHTCHILD  ;
 
             for (int j = 0; j <= compteurStagiaire; j++) {
                 String chaine = "";
@@ -252,6 +265,134 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public static void extractionDonneesStagiaire(RandomAccessFile raf, int position) throws IOException {
+        System.out.println("Extraction données d'un stagiaire démarrée");
+
+        String nomLu = "", prenomLu = "", departementLu = "", anneeLu = "", promoLu = "", adresseLu = "", gaucheLu = "", droiteLu = "";
+        String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
+
+        // Extraction du nom
+        raf.seek(position); // Pointeur placé au début d'un stagiaire
+        for(int i=0; i<NOM; i++){
+            nomLu += raf.readChar();
+
+        }
+        nom = completer(nomLu, NOM);
+        System.out.println(nom);
+
+        // Extraction du prénom
+        raf.seek((position+NOM)*2); // Pointeur déplacé sur premier caractère du prénom
+        for(int i=0; i<PRENOM; i++){
+            prenomLu += raf.readChar();
+        }
+        prenom = completer(prenomLu, PRENOM);
+        System.out.println(prenom);
+
+        // Extraction du département
+        raf.seek((position+NOM+PRENOM)*2); // Pointeur déplacé sur département
+        for(int i=0; i<DEPARTEMENT; i++){
+            departementLu += raf.readChar();
+        }
+        departement = completer(departementLu, DEPARTEMENT);
+        System.out.println(departement);
+
+        // Extraction de l'année
+        raf.seek((position+NOM+PRENOM+DEPARTEMENT)*2); // Pointeur déplacé sur année
+        for(int i=0; i<ANNEE; i++){
+            anneeLu += raf.readChar();
+        }
+        annee = completer(anneeLu, ANNEE);
+        System.out.println(annee);
+
+        // Extraction de la promo
+        raf.seek((position+NOM+PRENOM+DEPARTEMENT+ANNEE)*2); // Pointeur déplacé sur promo
+        for(int i=0; i<PROMO; i++){
+            promoLu += raf.readChar();
+        }
+        promo = completer(promoLu, PROMO);
+        System.out.println(promo);
+
+        // Extraction de l'adresse
+        raf.seek((position+NOM+PRENOM+DEPARTEMENT+ANNEE+PROMO)*2); // Pointeur déplacé sur adresse
+        for(int i=0; i<ADRESSE; i++){
+            adresseLu += raf.readChar();
+        }
+        adresse = completer(adresseLu, PROMO);
+        System.out.println(adresse);
+
+        // Extraction de gauche
+        raf.seek((position+NOM+PRENOM+DEPARTEMENT+ANNEE+PROMO+ADRESSE)*2); // Pointeur déplacé sur gauche
+        for(int i=0; i<LEFTCHILD; i++){
+            gaucheLu += raf.readChar();
+        }
+        gauche = completer(gaucheLu, PROMO);
+        System.out.println(gauche);
+
+        // Extraction de droite
+        raf.seek((position+NOM+PRENOM+DEPARTEMENT+ANNEE+PROMO+ADRESSE+LEFTCHILD)*2); // Pointeur déplacé sur droite
+        for(int i=0; i<RIGHTCHILD; i++){
+            droiteLu += raf.readChar();
+        }
+        droite = completer(droiteLu, PROMO);
+        System.out.println(droite);
+
+    }
+
+    public static void rechercherStagiaireBin(RandomAccessFile raf, String motSearched, int dataSpace) throws IOException {
+        System.out.println("recherche stagiaire activee");
+        System.out.println("le mot recherché est : " + motSearched);
+
+        // On veut pouvoir chercher un ou des stagaires par : nom, prénom, promo, année ou département
+
+        // Recherche par nom
+        // 1. Lecture du fichier bin de nom en nom (adresse à préciser)
+
+        int position = 0;
+//        String motLu = "";
+
+        String motSearchedComplete = completer(motSearched, dataSpace);
+
+
+        while(position < raf.length()){
+            String mot = "";
+
+            System.out.println("\nposition = " + position);
+            raf.seek(position);
+            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
+
+            position += STAGIAIRELENGTH;
+            System.out.println("future position = " + position);
+
+            // Lecture du mot
+            for(int i=0 ; i< dataSpace ; i++){
+                mot += raf.readChar();
+                System.out.println("\nLe mot lu est : " + mot);
+
+                if(mot.equals(motSearchedComplete)){
+                    System.out.println("\nNom cherché =  nom stagiaire parcouru");
+                    String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
+                    extractionDonneesStagiaire(raf,position);
+                    Stagiaire newStagiaire = new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite );
+                    System.out.println(newStagiaire.toString());
+
+                }
+
+
+            }
+        }
+
+        // 2.1. Comparaison du nom récupéré et formatté avec le nom recherché
+        // 2.2. Si nom correspond, alors on garde toutes les infos du stagiaire
+        // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
+        // 3. Affichage de la liste des stagiaires qui correspondent
+
+
+
+
+    }
+
+
 
 }
 
