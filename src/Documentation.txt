@@ -1,0 +1,11 @@
+﻿Documentation à l'attention des utilisateurs
+
+- Connexion : Possibilité de connexion pour les administrateurs ou super-administrateurs.
+
+--- Connexion en tant qu'administrateur : voici les fonctionnalités.
+
+--- Connexion en tant que super-administrateur : voici les fonctionnalités.
+
+- Annuaire : Pour exporter l'annuaire en PDF. Possibilité d'exporter la sélection faite dans l'annuaire.
+
+

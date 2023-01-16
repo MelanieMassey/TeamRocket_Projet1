@@ -1,5 +1,25 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.io.*;
 import java.text.Normalizer;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Vector;
+
 
 
 public class Main {
@@ -11,7 +31,9 @@ public class Main {
     public static final int DEPARTEMENT = 5;
     public static final int ADRESSE = 10;           //position du noeud
     public static final int LEFTCHILD = 10;         //pointeur noeud enfant gauche
-    public static final int RIGHTCHILD = 10;        //pointeur noeud enfant droit
+    public static final int RIGHTCHILD = 10;
+
+           //pointeur noeud enfant droit
 
     //Allocation espace total par stagiaire (incluant informations et pointeurs)
     public static final int STAGIAIRELENGTH = (PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT
@@ -70,6 +92,7 @@ public class Main {
     // METHODES
 
     public static void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
+
 
         //Déclaration variables (et initialisation)
         String ligne = "";
@@ -254,6 +277,7 @@ public class Main {
         }
     }
 
+<<<<<<< HEAD
     public static void extractionDonneesStagiaire(RandomAccessFile raf, int position) throws IOException {
         System.out.println("Extraction données d'un stagiaire démarrée");
 
