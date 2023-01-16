@@ -48,7 +48,7 @@ public class Version1 extends Application {
             public void handle(ActionEvent event) {
                 try {
                     Stage secondstage = new Stage();
-                    InputStream inputStream = new FileInputStream("C:\\Users\\Formation\\Desktop\\Code\\Test\\src\\Bla.txt");
+                    InputStream inputStream = new FileInputStream("src\\Bla.txt");
                     Scanner sc = new Scanner(inputStream);
                     StringBuffer sb = new StringBuffer();
                     while (sc.hasNext()) {
