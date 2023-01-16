@@ -41,10 +41,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Version1 fenetre = new Version1();
-        Stage primary = new Stage();
-        fenetre.start(primary);
-
         try{
             // Création d'un fichier bin vide
             RandomAccessFile raf;

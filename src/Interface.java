@@ -37,7 +37,7 @@ public class Interface extends Application {
         // Création des MenuItems du Menu Annuaire
         MenuItem annuaire1 = new MenuItem("Exporter en PDF");
 
-        MenuItem ouvrirfichier = new MenuItem(("ouvrir annuaire"));
+        MenuItem ouvrirfichier = new MenuItem(("Ouvrir annuaire"));
 
         // Ajout des MenuItems au Menu Annuaire
         fileMenu2.getItems().addAll(ouvrirfichier, annuaire1);
@@ -98,9 +98,7 @@ public class Interface extends Application {
         HBox menubars = new HBox(leftBar, spacer, rightBar);
         menubars.getStyleClass().add("menu-bar");
 
-        // Préparation du premier stage et affichage
-        BorderPane root = new BorderPane();
-        root.setTop(menubars);
+
 
 
         TableView<Stagiaire> table = new TableView<Stagiaire>();
@@ -146,7 +144,10 @@ public class Interface extends Application {
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(promoCol, anneeCol, nomCol, prenomCol, deptCol);
 
-
+        // Préparation du premier stage et affichage
+        BorderPane root = new BorderPane();
+        root.setTop(menubars);
+        root.setCenter(table);
 
 
         Scene scene = new Scene(root, 600, 600);
@@ -162,8 +163,10 @@ public class Interface extends Application {
                 try {
                     raf = new RandomAccessFile("src/listeStagiaires.bin", "rw");
                     ObservableList<Stagiaire> data = Stagiaire.getStagiaireList(raf);
+                    System.out.println("je suis après la méthode");
                     table.setItems(data);
                 } catch (IOException e) {
+                    System.out.println("error chargement fichier bin");
                     throw new RuntimeException(e);
                 }
 

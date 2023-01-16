@@ -174,7 +174,7 @@ public class Stagiaire {
                 System.out.println(stg.toString());
                 Stagiaires.add(stg);
 
-                adresse = Long.parseLong(p_gauche);
+                adresse += 200;
                 compteur ++;
             }while(compteur<3);
 
