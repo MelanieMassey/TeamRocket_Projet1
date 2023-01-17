@@ -145,14 +145,6 @@ public class Interface extends Application {
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
 
         //CREATION DE LA ZONE EDITABLE
-        TextField promotxt = new TextField();
-        promotxt.setPromptText("Promo");
-        promotxt.setPrefWidth(100);
-
-        TextField anneetxt = new TextField();
-        anneetxt.setPromptText("Année");
-        anneetxt.setPrefWidth(100);
-
         TextField nomtxt = new TextField();
         nomtxt.setPromptText("Nom");
         nomtxt.setPrefWidth(200);
@@ -165,6 +157,14 @@ public class Interface extends Application {
         departementtxt.setPromptText("Département");
         departementtxt.setPrefWidth(100);
 
+        TextField promotxt = new TextField();
+        promotxt.setPromptText("Promo");
+        promotxt.setPrefWidth(100);
+
+        TextField anneetxt = new TextField();
+        anneetxt.setPromptText("Année");
+        anneetxt.setPrefWidth(100);
+
         Button btnAjouter = new Button("Ajouter");
         Button btnSupprimer = new Button("Supprimer");
 
@@ -172,9 +172,23 @@ public class Interface extends Application {
         btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
+                // Récupération des valeurs des champs
+                String nom = nomtxt.getText();
+                String prenom = prenomtxt.getText();
+                String departement = departementtxt.getText();
+                String promo = promotxt.getText();
+                String annee = anneetxt.getText();
 
-                prenomtxt.clear();
+                // Appel méthode addStagiaire
+                AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+
+                // Vider les champs
                 nomtxt.clear();
+                prenomtxt.clear();
+                departementtxt.clear();
+                promotxt.clear();
+                anneetxt.clear();
+
             }
         });
 
@@ -190,7 +204,7 @@ public class Interface extends Application {
 
         //Création Hbox pour la zone éditable
         HBox zoneEditable = new HBox();
-        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt, btnAjouter,btnSupprimer);
+        zoneEditable.getChildren().addAll(nomtxt, prenomtxt, departementtxt, promotxt, anneetxt, btnAjouter,btnSupprimer);
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
 

@@ -21,6 +21,7 @@ public class AnnuaireBack {
     //Allocation espace total par stagiaire (incluant informations et pointeurs)
     public static final int STAGIAIRELENGTH = (PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT
             + ADRESSE+LEFTCHILD+RIGHTCHILD) * 2 ;
+    public Tree arbre;
     private static RandomAccessFile raf;
     private static String txtFile ="";
 
@@ -46,6 +47,8 @@ public class AnnuaireBack {
     }
 
     // METHODES
+
+    // => Création de l'annuaire depuis le fichier txt
     public void creerAnnuaire() {
 
         try{
@@ -58,7 +61,7 @@ public class AnnuaireBack {
 
 
 //            extractionDonneesStagiaire(raf, 0);
-            rechercherStagiaireBin(raf, "2008", "annee");
+//            rechercherStagiaireBin(raf, "2008", "annee");
 
         }catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -69,8 +72,7 @@ public class AnnuaireBack {
         }
     }
 
-
-    public static void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
+    public void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
 
         //Déclaration variables (et initialisation)
         String ligne = "";
@@ -86,7 +88,7 @@ public class AnnuaireBack {
 
 
         // Creation d'un nouvel arbre
-        Tree arbre = new Tree();
+        arbre = new Tree();
 
         try {
             //Lecture du fichier text
@@ -153,9 +155,7 @@ public class AnnuaireBack {
 
             }
 
-
             //ecriture des données dans le fichier binaire
-
             for (int j = 0; j <= compteurStagiaires; j++) {
                 int key=STAGIAIRELENGTH * j;
                 raf.seek(key);
@@ -172,6 +172,7 @@ public class AnnuaireBack {
         }
     }
 
+    // => retirer les accents
     public static String stripAccents(String s)
     {
         s = Normalizer.normalize(s, Normalizer.Form.NFD);
@@ -179,6 +180,7 @@ public class AnnuaireBack {
         return s;
     }
 
+    // Formatter les données avant écriture dans le BIN
     public static String completer(String mot, int taille) {
 
         int nbEspace = taille - mot.length();
@@ -450,9 +452,17 @@ public class AnnuaireBack {
         return list;
     }
 
-    /*private ObservableList<Stagiaire> list(Stagiaire stagiaire){
-        ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaire);
-        return list;
-    }*/
+    public static void addStagiaire(String nom, String prenom, String departement, String promo, String année){
+
+        try {
+            String adresse = String.valueOf(raf.length());
+            System.out.println(adresse);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //arbre.addNode(stagiaire);
+    }
 
 }
