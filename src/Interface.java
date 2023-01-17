@@ -2,14 +2,12 @@ import javafx.application.Application;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -22,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Comparator;
 import java.util.Scanner;
 
 
@@ -99,13 +98,11 @@ public class Interface extends Application {
         HBox menubars = new HBox(leftBar, spacer, rightBar);
         menubars.getStyleClass().add("menu-bar");
 
-
-
-        //initialisation TableView
         TableView<Stagiaire> table = new TableView<Stagiaire>();
         table.setEditable(true);
-        Label label = new Label("Liste des stagiaires");
-        label.setFont(new Font("Arial", 20));
+        //Label tableview
+        Label labelTable = new Label("Liste des stagiaires");
+        labelTable.setFont(new Font("Montserrat", 15));
 
         //Création des cinq colonnes
         TableColumn<Stagiaire, String> promoCol = new TableColumn<Stagiaire, String>("Promo");
@@ -142,19 +139,103 @@ public class Interface extends Application {
                 new PropertyValueFactory<Stagiaire, String>("_departement"));
 
         //On ajoute les cinq colonnes à la table
-        table.getColumns().addAll(promoCol, anneeCol, nomCol, prenomCol, deptCol);
+        table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
+
+        //CREATION DE LA ZONE EDITABLE
+        TextField promotxt = new TextField();
+        promotxt.setPromptText("Promo");
+        promotxt.setPrefWidth(100);
+
+        TextField anneetxt = new TextField();
+        anneetxt.setPromptText("Année");
+        anneetxt.setPrefWidth(100);
+
+        TextField nomtxt = new TextField();
+        nomtxt.setPromptText("Nom");
+        nomtxt.setPrefWidth(200);
+
+        TextField prenomtxt = new TextField();
+        prenomtxt.setPromptText("Prénom");
+        prenomtxt.setPrefWidth(200);
+
+        TextField departementtxt = new TextField();
+        departementtxt.setPromptText("Département");
+        departementtxt.setPrefWidth(100);
+
+        Button btnAjouter = new Button("Ajouter");
+        Button btnSupprimer = new Button("Supprimer");
+
+        //ACTION: AJOUTER UN STAGIAIRE
+        btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                prenomtxt.clear();
+                nomtxt.clear();
+            }
+        });
+
+        //ACTION: SUPPRIMER UN STAGIAIRE
+        btnSupprimer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                prenomtxt.clear();
+                nomtxt.clear();
+            }
+        });
+
+        //Création Hbox pour la zone éditable
+        HBox zoneEditable = new HBox();
+        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt, btnAjouter,btnSupprimer);
+        zoneEditable.setSpacing(10);
+        zoneEditable.setSpacing(10.0);
+
+        // Création du VBox Vboxtable (tableview+label)
+        VBox vboxTable = new VBox();
+        vboxTable.setSpacing(5);
+        vboxTable.setPadding(new Insets(10, 10, 10, 10));
+        vboxTable.getChildren().addAll(labelTable, table);
+
+        /*
+        // Creation du VBox totale (zoneEditable+vboxTable)
+        VBox vboxtotale = new VBox();
+        vboxtotale.getChildren().addAll(vboxTable, zoneEditable);
+        // Set Spacing to 20 pixels
+        vboxtotale.setSpacing(20);*/
 
         // Préparation du premier stage et affichage
-        BorderPane root = new BorderPane();
-        root.setTop(menubars);
-        root.setCenter(table);
+        AnchorPane root = new AnchorPane();
+        // Ajouter le HBox et le TextArea à la VBox
+       // root.getChildren().addAll(vboxtable, vboxtotale);
+        // Set Spacing to 10 pixels
+        //root.setPadding(new Insets(10, 10, 10, 10));
 
+        //PLACEMENT
+        //Menubars
+        root.setTopAnchor(menubars,0.0);
+        root.setLeftAnchor(menubars,0.0);
+        root.setRightAnchor(menubars,0.0);
 
-        Scene scene = new Scene(root, 600, 600);
+        //vboxTable
+        root.setTopAnchor(vboxTable,50.0);
+        root.setLeftAnchor(vboxTable,100.0);
+        root.setRightAnchor(vboxTable,100.0);
+
+        //zoneEditable
+        root.setBottomAnchor(zoneEditable,40.0);
+        root.setLeftAnchor(zoneEditable,10.0);
+        root.setRightAnchor(zoneEditable,10.0);
+
+        root.getChildren().addAll(menubars, vboxTable,zoneEditable);
+
+        Scene scene = new Scene(root, 1000, 600);
         scene.getStylesheets().add("Front.css");
         primaryStage.setScene(scene);
         primaryStage.show();
 
+
+        //AFFICHER TABLEVIEW
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -172,8 +253,9 @@ public class Interface extends Application {
                     raf = newAnnuaire.getRaf();
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
 
-                    //On rempli la table avec la liste observable
+                    // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
+
                 } catch (IOException e) {
                     System.out.println("error chargement fichier bin");
                     throw new RuntimeException(e);
@@ -183,7 +265,7 @@ public class Interface extends Application {
         });
     }
 
-    public static void main(String[] args) {
+   public static void main(String[] args) {
         launch(args);
 
     }
