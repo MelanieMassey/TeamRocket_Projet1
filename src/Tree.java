@@ -1,10 +1,8 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.*;
 
 /*
 CLASSE NOEUD
@@ -171,6 +169,30 @@ public class Tree {
         }
 
     }
+
+    public void searchInTreeWriteInBin (Node node, String address,RandomAccessFile raf) {
+        if (node != null) {
+            if (node.data.get_adresse().equals(address)) {
+                try {
+                    raf.writeChars(node.data.get_nom()
+                            + node.data.get_prenom()
+                            + node.data.get_departement()
+                            + node.data.get_annee()
+                            + node.data.get_promo()
+                            + node.data.get_adresse()
+                            + node.data.get_gauche()
+                            + node.data.get_droite());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            searchInTreeWriteInBin(node.leftChild, address,raf);
+            searchInTreeWriteInBin(node.rightChild, address,raf);
+        }
+
+    }
+
 
     public void rechercherStagiaireNom(Node node, String nom){
 

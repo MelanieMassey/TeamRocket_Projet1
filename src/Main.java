@@ -42,16 +42,14 @@ public class Main {
     public static void main(String[] args) {
 
         try{
-            // Création d'un fichier bin vide
+
+
             RandomAccessFile raf;
-
             raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-
-
             txtFileToBinFile("src/stagiaireTest.txt", raf);
 
 
-            System.out.println("\n****Ajouter de nouvelles données:");
+            /*System.out.println("\n****Ajouter de nouvelles données:");
             appendToBinary(new Stagiaire(completer("Hernandez",NOM),
                     completer("Céline",PRENOM),
                     completer("59", DEPARTEMENT),
@@ -59,13 +57,14 @@ public class Main {
                     completer("EQELLES",PROMO),
                     completer("1000", ADRESSE),
                     completer("50", LEFTCHILD),
-                    completer("600", RIGHTCHILD)), raf);
+                    completer("600", RIGHTCHILD)), raf);*/
 
-            /*System.out.println("\n****Lecture du fichier binaire:");
-            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires*/
+            System.out.println("\n****Lecture du fichier binaire:");
+            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires
 
 //            extractionDonneesStagiaire(raf, 0);
-            rechercherStagiaireBin(raf, "fiore", NOM);
+            //rechercherStagiaireBin(raf, "fiore", NOM);
+
 
             //raf.close();
 //            raf.seek(0);
@@ -196,9 +195,13 @@ public class Main {
             arbre.traverseInOrder(arbre.root);
 
             //ecriture des données dans le fichier binaire
-            arbre.traverseInOrderAndWrite(arbre.root, raf);
 
-
+            for (int j = 0; j <= compteurStagiaires; j++) {
+                int key=STAGIAIRELENGTH * j;
+                raf.seek(key);
+                String keyString = completer(Integer.toString(key), ADRESSE);
+                arbre.searchInTreeWriteInBin(arbre.root, keyString,raf);
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -277,7 +280,7 @@ public class Main {
         }
     }
 
-<<<<<<< HEAD
+
     public static void extractionDonneesStagiaire(RandomAccessFile raf, int position) throws IOException {
         System.out.println("Extraction données d'un stagiaire démarrée");
 

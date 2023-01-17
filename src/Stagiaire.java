@@ -94,18 +94,6 @@ public class Stagiaire {
 
 
     // Méthodes
-    public String toString()
-    {
-        return "Nom : " + _nom +
-                "\nPrenom : " + _prenom +
-                "\nDepartement : " + _departement +
-                "\nAnnee : " + _annee +
-                "\nPromo : " + _promo +
-                "\nAdresse : " + _adresse +
-                "\nGauche : " + _gauche +
-                "\nDroite : " + _droite;
-    }
-
     /*public String toString()
     {
         return "Nom : " + _nom +
@@ -117,6 +105,11 @@ public class Stagiaire {
                 "\nGauche : " + _gauche +
                 "\nDroite : " + _droite;
     }*/
+
+    public String toString()
+    {
+        return _nom +_prenom +_departement + _annee + _promo + _adresse + _gauche + _droite;
+    }
 
     public void  afficherStagiaire() {
         System.out.println( "Nom : " + _nom +
