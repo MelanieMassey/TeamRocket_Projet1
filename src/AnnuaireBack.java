@@ -3,6 +3,7 @@ import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.text.Normalizer;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -321,6 +322,9 @@ public class AnnuaireBack {
     }
 
     public static ObservableList<Stagiaire> rechercherStagiaireBin(RandomAccessFile raf, String motSearched, String nomDonnee) throws IOException {
+        // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
+        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
+
         System.out.println("*** Début recherche ***");
         System.out.println("\n--- le mot recherché est : " + motSearched + " ---");
 
@@ -414,12 +418,16 @@ public class AnnuaireBack {
         System.out.println("*** Fin recherche ***");
         // 3. Affichage de la liste des stagiaires qui correspondent via une ObservableList "list"
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
+        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
 
 
     }
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
+        // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
+        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
+
 //        System.out.println("getStagiairesList démarrée");
 
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
@@ -438,6 +446,7 @@ public class AnnuaireBack {
         }
 
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
+        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
     }
 

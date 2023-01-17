@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Comparator;
 import java.util.Scanner;
 
 
@@ -141,7 +142,7 @@ public class Interface extends Application {
                 new PropertyValueFactory<Stagiaire, String>("_departement"));
 
         //On ajoute les cinq colonnes à la table
-        table.getColumns().addAll(promoCol, anneeCol, nomCol, prenomCol, deptCol);
+        table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
 
         //CREATION DE LA ZONE EDITABLE
         TextField promotxt = new TextField();
@@ -254,11 +255,11 @@ public class Interface extends Application {
                     raf = newAnnuaire.getRaf();
 
                     // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
-
-
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
+
                 } catch (IOException e) {
                     System.out.println("error chargement fichier bin");
                     throw new RuntimeException(e);
