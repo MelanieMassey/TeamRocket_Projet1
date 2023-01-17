@@ -36,3 +36,10 @@
     -fx-text-fill: white;
 }
 
+.labelTable .label{
+    -fx-font-size: 15px;
+    -fx-font-family: "Montserrat";
+    -fx-text-fill: white;
+    -fx-font-weight: bold ;
+    -fx-padding: 10.0px;
+}
