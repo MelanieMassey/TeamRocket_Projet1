@@ -101,7 +101,7 @@ public class Interface extends Application {
 
 
 
-
+        //initialisation TableView
         TableView<Stagiaire> table = new TableView<Stagiaire>();
         table.setEditable(true);
         Label label = new Label("Liste des stagiaires");
@@ -158,25 +158,21 @@ public class Interface extends Application {
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //On rempli la table avec la liste observable
+
 
                 RandomAccessFile raf;
                 String txtFile = "src/stagiaireTest.txt";
 
+                //initialisation du raf
                 AnnuaireBack newAnnuaire = new AnnuaireBack(txtFile);
                 newAnnuaire.creerAnnuaire();
 
-
-
-
-
                 try {
+                    //on créé le fichier binaire à partir du fichier txt
                     raf = newAnnuaire.getRaf();
-
-
-
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
-                    System.out.println("je suis après la méthode");
+
+                    //On rempli la table avec la liste observable
                     table.setItems(data);
                 } catch (IOException e) {
                     System.out.println("error chargement fichier bin");
