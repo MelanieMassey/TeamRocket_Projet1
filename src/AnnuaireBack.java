@@ -57,7 +57,7 @@ public class AnnuaireBack {
 
 
 //            extractionDonneesStagiaire(raf, 0);
-//            rechercherStagiaireBin(raf, "fiore", NOM);
+            rechercherStagiaireBin(raf, "2008", "annee");
 
         }catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -320,78 +320,115 @@ public class AnnuaireBack {
         return new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite);
     }
 
-    public static void rechercherStagiaireBin(RandomAccessFile raf, String motSearched, int dataSpace) throws IOException {
-        System.out.println("recherche stagiaire activee");
-        System.out.println("le mot recherché est : " + motSearched);
+    public static void rechercherStagiaireBin(RandomAccessFile raf, String motSearched, String nomDonnee) throws IOException {
+        System.out.println("*** Début recherche ***");
+        System.out.println("\n--- le mot recherché est : " + motSearched + " ---");
 
-        // On veut pouvoir chercher un ou des stagaires par : nom, prénom, promo, année ou département
-
-        // Recherche par nom
-        // 1. Lecture du fichier bin de nom en nom (adresse à préciser)
-
+        int dataSpace = 0;
         int position = 0;
+        int positionExtraction = 0;
+
+        // Détermine la valeur de dataSPace en fonction du type de donnée recherchée (nom, prénom...)
+        switch (nomDonnee){
+            case "nom":
+                dataSpace = NOM;
+                position = 0;
+                positionExtraction = 0;
+                break;
+            case "prenom":
+                dataSpace = PRENOM;
+                position = NOM*2;
+                positionExtraction = NOM*2;
+                break;
+            case "departement":
+                dataSpace = DEPARTEMENT;
+                position = (NOM+PRENOM)*2;
+                positionExtraction = (NOM+PRENOM)*2;
+                break;
+            case "annee":
+                dataSpace = ANNEE;
+                position = (NOM+PRENOM+DEPARTEMENT)*2;
+                positionExtraction = (NOM+PRENOM+DEPARTEMENT)*2;
+                break;
+            case "promo":
+                dataSpace = PROMO;
+                position = (NOM+PRENOM+DEPARTEMENT+ANNEE)*2;
+                positionExtraction = (NOM+PRENOM+DEPARTEMENT+ANNEE)*2;
+                break;
+        }
+
+        System.out.println("=> dataSpace = " + nomDonnee + " = " + dataSpace);
+        System.out.println("=> position = " + position);
+
+        // 1. Lecture du fichier bin de donnée en même type de donnée (adresse à préciser)
+
 //        String motLu = "";
 
+        // On ajoute les espaces au "mot recherché" pour le formatté comme les mots qui seront lus
         String motSearchedComplete = completer(motSearched, dataSpace);
 
-
+        // Recherche dans le fichier .BIN
         while(position < raf.length()){
+            System.out.println("\n--- Début boucle ---");
+
             String mot = "";
 
-            System.out.println("\nposition = " + position);
+            System.out.println("position = " + position);
             raf.seek(position);
-            System.out.println("\nLe pointeur est à l'endroit " + raf.getFilePointer());
-
-            position += STAGIAIRELENGTH;
-            System.out.println("future position = " + position);
+            System.out.println("Le pointeur est à l'endroit " + raf.getFilePointer());
 
             // Lecture du mot
             for(int i=0 ; i< dataSpace ; i++){
                 mot += raf.readChar();
-                System.out.println("\nLe mot lu est : " + mot);
 
-
-                // 2.1. Comparaison du nom récupéré avec le nom recherché formaté
-                if(mot.equals(motSearchedComplete)){
-                    // 2.2. Si nom correspond, alors on garde toutes les infos du stagiaire
-
-                    System.out.println("\nNom cherché =  nom stagiaire parcouru");
-                    String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
-                    extractionDonneesStagiaire(raf,position);
-                    Stagiaire newStagiaire = new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite );
-                    System.out.println(newStagiaire.toString());
-
-                }
-
-
-                // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
 
 
             }
+            System.out.println("Le mot lu est : " + mot);
+
+            // 2.1. Comparaison du mot récupéré avec le mot recherché formatté
+            if(mot.equals(motSearchedComplete)){
+                // 2.2. Si mot correspond, alors on garde toutes les infos du stagiaire
+                System.out.println("=> Mot cherché =  mot parcouru");
+                System.out.println("=> Position pour extraction = " + (position-positionExtraction));
+
+                Stagiaire newStagiaire = extractionDonneesStagiaire(raf, position-positionExtraction);
+
+                System.out.println("~ Données stagiaire extrait ~");
+                System.out.println(newStagiaire.toString());
+
+            } else {
+                System.out.println("=> Mot cherché !=  mot parcouru");
+            }
+
+            // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
+            position += STAGIAIRELENGTH;
+            System.out.println("future position = " + position);
+            System.out.println("--- Fin boucle ---");
         }
 
 
         // 3. Affichage de la liste des stagiaires qui correspondent
 
-
+        System.out.println("*** Fin recherche ***");
     }
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
-        System.out.println("getStagiairesList démarrée");
+//        System.out.println("getStagiairesList démarrée");
 
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
 
         int position = 0;
 
         while(position < raf.length()){
-            System.out.println("***Nouveau tour***");
-            System.out.println("position = " + position);
+//            System.out.println("***Nouveau tour***");
+//            System.out.println("position = " + position);
             raf.seek(position);
             Stagiaire stagiaire = extractionDonneesStagiaire(raf, position);
-            System.out.println(stagiaire.toString());
+//            System.out.println(stagiaire.toString());
             stagiaires.add(stagiaire);
             position += STAGIAIRELENGTH;
-            System.out.println(" future position = " + position);
+//            System.out.println(" future position = " + position);
         }
 
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);

@@ -166,17 +166,12 @@ public class Interface extends Application {
                 AnnuaireBack newAnnuaire = new AnnuaireBack(txtFile);
                 newAnnuaire.creerAnnuaire();
 
-
-
-
-
                 try {
+                    // On récupère le fichier .bin écrit en instanciant newAnnuaire
                     raf = newAnnuaire.getRaf();
-
-
-
+                    // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
-                    System.out.println("je suis après la méthode");
+                    // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
                 } catch (IOException e) {
                     System.out.println("error chargement fichier bin");
