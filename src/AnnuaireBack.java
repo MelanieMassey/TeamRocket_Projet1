@@ -320,13 +320,14 @@ public class AnnuaireBack {
         return new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite);
     }
 
-    public static void rechercherStagiaireBin(RandomAccessFile raf, String motSearched, String nomDonnee) throws IOException {
+    public static ObservableList<Stagiaire> rechercherStagiaireBin(RandomAccessFile raf, String motSearched, String nomDonnee) throws IOException {
         System.out.println("*** Début recherche ***");
         System.out.println("\n--- le mot recherché est : " + motSearched + " ---");
 
         int dataSpace = 0;
         int position = 0;
         int positionExtraction = 0;
+        List<Stagiaire> stagiaires = new Vector<Stagiaire>(); // pour stocker les stagiaires correspondants à la recherche
 
         // Détermine la valeur de dataSPace en fonction du type de donnée recherchée (nom, prénom...)
         switch (nomDonnee){
@@ -388,14 +389,17 @@ public class AnnuaireBack {
 
             // 2.1. Comparaison du mot récupéré avec le mot recherché formatté
             if(mot.equals(motSearchedComplete)){
-                // 2.2. Si mot correspond, alors on garde toutes les infos du stagiaire
+                // 2.2. Si mot correspond, alors on instancie un Stagiaire
                 System.out.println("=> Mot cherché =  mot parcouru");
                 System.out.println("=> Position pour extraction = " + (position-positionExtraction));
 
-                Stagiaire newStagiaire = extractionDonneesStagiaire(raf, position-positionExtraction);
+                Stagiaire stagiaire = extractionDonneesStagiaire(raf, position-positionExtraction);
+
+                // 2.3. Et on le stock dans le liste "stagiaires"
+                stagiaires.add(stagiaire);
 
                 System.out.println("~ Données stagiaire extrait ~");
-                System.out.println(newStagiaire.toString());
+                System.out.println(stagiaire.toString());
 
             } else {
                 System.out.println("=> Mot cherché !=  mot parcouru");
@@ -407,10 +411,12 @@ public class AnnuaireBack {
             System.out.println("--- Fin boucle ---");
         }
 
-
-        // 3. Affichage de la liste des stagiaires qui correspondent
-
         System.out.println("*** Fin recherche ***");
+        // 3. Affichage de la liste des stagiaires qui correspondent via une ObservableList "list"
+        ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
+        return list;
+
+
     }
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
