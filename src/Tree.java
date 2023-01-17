@@ -1,10 +1,6 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-<<<<<<< HEAD
-import java.io.EOFException;
-=======
->>>>>>> master
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -171,12 +167,6 @@ public class Tree {
             }
 
         }
-
-<<<<<<< HEAD
-    }
-
-    // Methode qui va traverser l'arbre en "preorder" et vérifier si le nom recherché existe dans l'arbre
-=======
     }
 
     public void searchInTreeWriteInBin (Node node, String address,RandomAccessFile raf) {
@@ -203,7 +193,7 @@ public class Tree {
     }
 
 
->>>>>>> master
+
     public void rechercherStagiaireNom(Node node, String nom){
 
 //        System.out.println("Nom recherché = " + nom);

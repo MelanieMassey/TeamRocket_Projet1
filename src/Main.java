@@ -291,10 +291,7 @@ public class Main {
         }
     }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> master
     public static void extractionDonneesStagiaire(RandomAccessFile raf, int position) throws IOException {
         System.out.println("Extraction données d'un stagiaire démarrée");
 
