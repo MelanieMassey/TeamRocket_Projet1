@@ -1,6 +1,26 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 import java.io.*;
 import java.sql.SQLOutput;
 import java.text.Normalizer;
+import java.util.List;
+import java.util.Scanner;
+import java.util.Vector;
+
 
 
 public class Main {
@@ -12,7 +32,9 @@ public class Main {
     public static final int DEPARTEMENT = 5;
     public static final int ADRESSE = 10;           //position du noeud
     public static final int LEFTCHILD = 10;         //pointeur noeud enfant gauche
-    public static final int RIGHTCHILD = 10;        //pointeur noeud enfant droit
+    public static final int RIGHTCHILD = 10;
+
+           //pointeur noeud enfant droit
 
     //Allocation espace total par stagiaire (incluant informations et pointeurs)
     public static final int STAGIAIRELENGTH = (PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT
@@ -21,32 +43,30 @@ public class Main {
     public static void main(String[] args) {
 
         try{
-            // Création d'un fichier bin vide
+
+
             RandomAccessFile raf;
-
             raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-
-
             txtFileToBinFile("src/stagiaireTest.txt", raf);
 
 
-//            System.out.println("\n****Ajouter de nouvelles données:");
-//            appendToBinary(new Stagiaire(completer("Hernandez",NOM),
-//                    completer("Céline",PRENOM),
-//                    completer("59", DEPARTEMENT),
-//                    completer("2022", ANNEE),
-//                    completer("EQELLES",PROMO),
-//                    completer("1000", ADRESSE),
-//                    completer("50", LEFTCHILD),
-//                    completer("600", RIGHTCHILD)), raf);
 
-            //System.out.println("\n****Lecture du fichier binaire:");
+            /*System.out.println("\n****Ajouter de nouvelles données:");
+            appendToBinary(new Stagiaire(completer("Hernandez",NOM),
+                    completer("Céline",PRENOM),
+                    completer("59", DEPARTEMENT),
+                    completer("2022", ANNEE),
+                    completer("EQELLES",PROMO),
+                    completer("1000", ADRESSE),
+                    completer("50", LEFTCHILD),
+                    completer("600", RIGHTCHILD)), raf);*/
 
-//            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires
+            System.out.println("\n****Lecture du fichier binaire:");
+            listeStagiaires(raf); //lecture du fichier bin et affichage de la liste de stagiaires
 
-//            rechercherStagiaireBin(raf, "kanaan");
-//            extractionDonneesStagiaire(raf,0);
-            rechercherStagiaireBin(raf, "fiore", NOM);
+
+//            extractionDonneesStagiaire(raf, 0);
+            //rechercherStagiaireBin(raf, "fiore", NOM);
 
 
             //raf.close();
@@ -74,6 +94,7 @@ public class Main {
     // METHODES
 
     public static void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
+
 
         //Déclaration variables (et initialisation)
         String ligne = "";
@@ -180,9 +201,13 @@ public class Main {
             //arbre.rechercherStagiaireNom(arbre.root, "kanaan");
 
             //ecriture des données dans le fichier binaire
-            arbre.traverseInOrderAndWrite(arbre.root, raf);
 
-
+            for (int j = 0; j <= compteurStagiaires; j++) {
+                int key=STAGIAIRELENGTH * j;
+                raf.seek(key);
+                String keyString = completer(Integer.toString(key), ADRESSE);
+                arbre.searchInTreeWriteInBin(arbre.root, keyString,raf);
+            }
 
 
 
@@ -266,6 +291,10 @@ public class Main {
         }
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
     public static void extractionDonneesStagiaire(RandomAccessFile raf, int position) throws IOException {
         System.out.println("Extraction données d'un stagiaire démarrée");
 
@@ -369,7 +398,11 @@ public class Main {
                 mot += raf.readChar();
                 System.out.println("\nLe mot lu est : " + mot);
 
+
+                // 2.1. Comparaison du nom récupéré avec le nom recherché formaté
                 if(mot.equals(motSearchedComplete)){
+                    // 2.2. Si nom correspond, alors on garde toutes les infos du stagiaire
+
                     System.out.println("\nNom cherché =  nom stagiaire parcouru");
                     String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
                     extractionDonneesStagiaire(raf,position);
@@ -379,19 +412,17 @@ public class Main {
                 }
 
 
+                // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
+
+
             }
         }
 
-        // 2.1. Comparaison du nom récupéré et formatté avec le nom recherché
-        // 2.2. Si nom correspond, alors on garde toutes les infos du stagiaire
-        // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
+
         // 3. Affichage de la liste des stagiaires qui correspondent
 
 
-
-
     }
-
 
 
 }
