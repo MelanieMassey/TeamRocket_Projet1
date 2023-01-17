@@ -25,6 +25,7 @@ import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 
+
 public class Interface extends Application {
 
     @Override
@@ -107,39 +108,38 @@ public class Interface extends Application {
         label.setFont(new Font("Arial", 20));
 
         //Création des cinq colonnes
-        TableColumn<Stagiaire, Integer> promoCol =
-                new TableColumn<Stagiaire, Integer>("Promo");
+        TableColumn<Stagiaire, String> promoCol = new TableColumn<Stagiaire, String>("Promo");
         promoCol.setMinWidth(100);
         //specifier un "cell factory" pour cette colonne.
         promoCol.setCellValueFactory(
-                new PropertyValueFactory<Stagiaire, Integer>("promo"));
+                new PropertyValueFactory<Stagiaire, String>("_promo"));
 
         TableColumn<Stagiaire, String> anneeCol =
                 new TableColumn<Stagiaire, String>("Année");
         anneeCol.setMinWidth(100);
         //specifier un "cell factory" pour cette colonne.
         anneeCol.setCellValueFactory(
-                new PropertyValueFactory<Stagiaire, String>("annee"));
+                new PropertyValueFactory<Stagiaire, String>("_annee"));
 
         TableColumn<Stagiaire, String> nomCol =
                 new TableColumn<Stagiaire, String>("Nom");
         nomCol.setMinWidth(100);
         //specifier un "cell factory" pour cette colonne.
         nomCol.setCellValueFactory(
-                new PropertyValueFactory<Stagiaire, String>("nom"));
+                new PropertyValueFactory<Stagiaire, String>("_nom"));
 
         TableColumn<Stagiaire, String> prenomCol =
                 new TableColumn<Stagiaire, String>("Prénom");
         prenomCol.setMinWidth(100);
         //specifier un "cell factory" pour cette colonne.
         prenomCol.setCellValueFactory(
-                new PropertyValueFactory<Stagiaire, String>("prenom"));
+                new PropertyValueFactory<Stagiaire, String>("_prenom"));
 
         TableColumn<Stagiaire, String> deptCol = new TableColumn<Stagiaire, String>("Département");
         nomCol.setMinWidth(100);
         //specifier un "cell factory" pour cette colonne.
         deptCol.setCellValueFactory(
-                new PropertyValueFactory<Stagiaire, String>("dept"));
+                new PropertyValueFactory<Stagiaire, String>("_departement"));
 
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(promoCol, anneeCol, nomCol, prenomCol, deptCol);
@@ -159,10 +159,23 @@ public class Interface extends Application {
             @Override
             public void handle(ActionEvent event) {
                 //On rempli la table avec la liste observable
-                RandomAccessFile raf = null;
+
+                RandomAccessFile raf;
+                String txtFile = "src/stagiaireTest.txt";
+
+                AnnuaireBack newAnnuaire = new AnnuaireBack(txtFile);
+                newAnnuaire.creerAnnuaire();
+
+
+
+
+
                 try {
-                    raf = new RandomAccessFile("src/listeStagiaires.bin", "rw");
-                    ObservableList<Stagiaire> data = Stagiaire.getStagiaireList(raf);
+                    raf = newAnnuaire.getRaf();
+
+
+
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
                     System.out.println("je suis après la méthode");
                     table.setItems(data);
                 } catch (IOException e) {
@@ -176,5 +189,6 @@ public class Interface extends Application {
 
     public static void main(String[] args) {
         launch(args);
+
     }
 }
