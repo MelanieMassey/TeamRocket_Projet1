@@ -1,8 +1,10 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,6 +12,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Arc;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -17,12 +21,15 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.security.auth.callback.Callback;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.Scanner;
 
+import static javafx.scene.paint.Color.*;
 
 
 public class Interface extends Application {
@@ -33,6 +40,11 @@ public class Interface extends Application {
         Menu fileMenu1 = new Menu("Connexion");
         Menu fileMenu2 = new Menu("Annuaire");
         Menu fileMenu3 = new Menu("Aide");
+
+        // Création du menuItem pour la connexion
+        MenuItem connexion = new MenuItem("S'identifier");
+        // Ajout des MenuItems au Menu Connexion
+        fileMenu1.getItems().add(connexion);
 
         // Création des MenuItems du Menu Annuaire
         MenuItem annuaire1 = new MenuItem("Exporter en PDF");
@@ -49,6 +61,17 @@ public class Interface extends Application {
         // Ajout des MenuItems au Menu Aide
         fileMenu3.getItems().add(aide1);
         fileMenu3.getItems().add(aide2);
+
+        // Préparation de la barre Menu pour affichage
+        MenuBar leftBar = new MenuBar();
+        leftBar.getMenus().addAll(fileMenu1, fileMenu2);
+        MenuBar rightBar = new MenuBar();
+        rightBar.getMenus().addAll(fileMenu3);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.SOMETIMES);
+        HBox menubars = new HBox(leftBar, spacer, rightBar);
+        menubars.getStyleClass().add("menu-bar");
+
 
         // Création de l'event aide1
         aide1.setOnAction(new EventHandler<ActionEvent>() {
@@ -77,7 +100,7 @@ public class Interface extends Application {
                     Scene scene = new Scene(grille, 595, 300);
                     grille.getStyleClass().add("grille");
                     scene.getStylesheets().add(getClass().getResource("SecondStage.css").toExternalForm());
-                    scene.setFill(Color.MINTCREAM);
+                    scene.setFill(MINTCREAM);
                     secondstage.setTitle("Aide");
                     secondstage.setScene(scene);
                     secondstage.show();
@@ -88,16 +111,49 @@ public class Interface extends Application {
             }
         });
 
-        // Préparation de la barre Menu pour affichage
-        MenuBar leftBar = new MenuBar();
-        leftBar.getMenus().addAll(fileMenu1, fileMenu2);
-        MenuBar rightBar = new MenuBar();
-        rightBar.getMenus().addAll(fileMenu3);
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.SOMETIMES);
-        HBox menubars = new HBox(leftBar, spacer, rightBar);
-        menubars.getStyleClass().add("menu-bar");
+        // ACTION CONNEXION
+        connexion.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
 
+                //Création d'une boîte de dialogue pour la connexion Administrateur
+                Dialog<String> dialog = new Dialog<>();
+                dialog.setTitle("Connexion");
+                dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
+                        LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
+                dialog.getDialogPane().setMinSize(400.0,300.0);
+                dialog.setHeaderText("Veuillez vous identifier");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                //Création des champs de saisie
+                TextField identifiant = new TextField();
+                identifiant.setPromptText("Identifiant");
+                Label idLabel=new Label("Identifiant:");
+
+                Label pswLabel =new Label("Mot de passe:");
+                PasswordField password = new PasswordField();
+                password.setPromptText("Mot de passe");
+
+                //création VBox
+                VBox contenu = new VBox();
+                contenu.setAlignment(Pos.CENTER_LEFT);
+                contenu.setSpacing(20);
+                contenu.getChildren().addAll(idLabel, identifiant,pswLabel, password);
+                dialog.getDialogPane().setContent(contenu);
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+                        return password.getText() + identifiant.getText();
+                        //ajouter comparaison classes Admin/super-Admin
+                    }
+                    return null;
+                });
+
+                Optional<String> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    System.out.println(result.get());
+                }
+            }
+        });
 
 
         //CREATION TABLEVIEW
@@ -165,32 +221,29 @@ public class Interface extends Application {
         departementtxt.setPromptText("Département");
         departementtxt.setPrefWidth(100);
 
-        Button btnAjouter = new Button("Ajouter");
-        Button btnSupprimer = new Button("Supprimer");
+        //Ajout choicebox pour la recherche
+        Label rechercheLabel= new Label("Rechercher par filtre:");
+        ChoiceBox filtreRecherche= new ChoiceBox();
+        filtreRecherche.getItems().addAll("Aucun filtre","Promotion","Année","Nom","Prénom", "Département");
 
-        //ACTION: AJOUTER UN STAGIAIRE
-        btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
+        Label modifierLabel= new Label("Mettre à jour:");
+        ChoiceBox updateChoiceBox= new ChoiceBox();
+        updateChoiceBox.getItems().addAll("","Modifier","Ajouter","Supprimer");
+
+
+        //ACTION: MISE A JOUR UN STAGIAIRE
+        updateChoiceBox.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
 
-                prenomtxt.clear();
-                nomtxt.clear();
             }
         });
 
-        //ACTION: SUPPRIMER UN STAGIAIRE
-        btnSupprimer.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-
-                prenomtxt.clear();
-                nomtxt.clear();
-            }
-        });
-
-        //Création Hbox pour la zone éditable
+        /*
+        CONTENEURS
+        Création Hbox pour la zone éditable */
         HBox zoneEditable = new HBox();
-        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt, btnAjouter,btnSupprimer);
+        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt);
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
 
@@ -200,21 +253,17 @@ public class Interface extends Application {
         vboxTable.setPadding(new Insets(10, 10, 10, 10));
         vboxTable.getChildren().addAll(labelTable, table);
 
-        /*
-        // Creation du VBox totale (zoneEditable+vboxTable)
-        VBox vboxtotale = new VBox();
-        vboxtotale.getChildren().addAll(vboxTable, zoneEditable);
-        // Set Spacing to 20 pixels
-        vboxtotale.setSpacing(20);*/
+
+        // Creation HBox filtre+update
+        HBox hBoxChoice = new HBox();
+        hBoxChoice.getChildren().addAll(rechercheLabel, filtreRecherche,modifierLabel, updateChoiceBox);
+        hBoxChoice.setSpacing(20.0);
 
         // Préparation du premier stage et affichage
         AnchorPane root = new AnchorPane();
-        // Ajouter le HBox et le TextArea à la VBox
-       // root.getChildren().addAll(vboxtable, vboxtotale);
-        // Set Spacing to 10 pixels
-        //root.setPadding(new Insets(10, 10, 10, 10));
 
-        //PLACEMENT
+
+        //ANCRAGE CONTENEURS
         //Menubars
         root.setTopAnchor(menubars,0.0);
         root.setLeftAnchor(menubars,0.0);
@@ -222,22 +271,27 @@ public class Interface extends Application {
 
         //vboxTable
         root.setTopAnchor(vboxTable,50.0);
+        root.setBottomAnchor(vboxTable,80.0);
         root.setLeftAnchor(vboxTable,100.0);
         root.setRightAnchor(vboxTable,100.0);
 
         //zoneEditable
-        root.setBottomAnchor(zoneEditable,40.0);
-        root.setLeftAnchor(zoneEditable,10.0);
-        root.setRightAnchor(zoneEditable,10.0);
+        root.setBottomAnchor(zoneEditable,100.0);
+        root.setLeftAnchor(zoneEditable,150.0);
+        //root.setRightAnchor(zoneEditable,50.0);
 
-        root.getChildren().addAll(menubars, vboxTable,zoneEditable);
+        //hBoxChoice
+        root.setBottomAnchor(hBoxChoice,40.0);
+        root.setRightAnchor(hBoxChoice,100.0);
 
-        Scene scene = new Scene(root, 1000, 600);
+        root.getChildren().addAll(menubars, vboxTable,zoneEditable, hBoxChoice);
+
+        Scene scene = new Scene(root, 1000,700);
         scene.getStylesheets().add("Front.css");
         primaryStage.setScene(scene);
         primaryStage.show();
 
-
+        //CREER L'ANNUAIRE
         //AFFICHER TABLEVIEW
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -261,12 +315,76 @@ public class Interface extends Application {
                     table.setItems(data);
 
                 } catch (IOException e) {
-                    System.out.println("error chargement fichier bin");
+                    System.out.println("erreur de chargement du fichier bin");
                     throw new RuntimeException(e);
                 }
 
             }
         });
+
+        //ACTION: RECHERCHER
+        filtreRecherche.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                String motSearched;
+                ObservableList<Stagiaire> result = FXCollections.observableArrayList();
+
+
+                String selection= filtreRecherche.getValue().toString();
+
+                try {
+
+                    RandomAccessFile raf= new RandomAccessFile("listeStagiaires.bin", "rw");
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
+                    switch (selection) {
+                        case "Promotion":
+                            motSearched = promotxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "promotion");
+                            break;
+                        case "Année":
+                            motSearched = anneetxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "annee");
+                            break;
+                        case "Nom":
+                            motSearched = nomtxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "nom");
+                            table.setItems(result);
+                            break;
+                        case "Prénom":
+                            motSearched = prenomtxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "prenom");
+                            table.setItems(result);
+                            break;
+                        case "Département":
+                            motSearched = departementtxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "departement");
+                            table.setItems(result);
+                            break;
+                        case "Aucun filtre":
+                            table.setItems(data);
+                            break;
+                        default:
+                            break;
+                    }
+                    //table.setItems(result);
+                } catch(IOException e){
+                        System.out.println("erreur de chargement du fichier bin");
+                        throw new RuntimeException(e);
+                    }
+
+                promotxt.clear();
+                prenomtxt.clear();
+                nomtxt.clear();
+                anneetxt.clear();
+                departementtxt.clear();
+
+                }
+
+
+        });
+
     }
 
    public static void main(String[] args) {

@@ -154,7 +154,7 @@ public class AnnuaireBack {
             }
 
 
-            //ecriture des données dans le fichier binaire
+            //Ecriture des données dans le fichier binaire
 
             for (int j = 0; j <= compteurStagiaires; j++) {
                 int key=STAGIAIRELENGTH * j;
@@ -369,7 +369,7 @@ public class AnnuaireBack {
 
 //        String motLu = "";
 
-        // On ajoute les espaces au "mot recherché" pour le formatté comme les mots qui seront lus
+        // On ajoute les espaces au "mot recherché" pour le formater comme les mots qui seront lus
         String motSearchedComplete = completer(motSearched, dataSpace);
 
         // Recherche dans le fichier .BIN
@@ -385,9 +385,6 @@ public class AnnuaireBack {
             // Lecture du mot
             for(int i=0 ; i< dataSpace ; i++){
                 mot += raf.readChar();
-
-
-
             }
             System.out.println("Le mot lu est : " + mot);
 
@@ -420,7 +417,6 @@ public class AnnuaireBack {
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
         list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
-
 
     }
 
