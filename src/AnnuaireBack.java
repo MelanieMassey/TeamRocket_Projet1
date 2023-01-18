@@ -23,6 +23,7 @@ public class AnnuaireBack {
             + ADRESSE+LEFTCHILD+RIGHTCHILD) * 2 ;
     private static RandomAccessFile raf;
     private static String txtFile ="";
+    public static Tree arbre; // Déclaration ici pour utilisation dans plusieurs méthodes
 
     public AnnuaireBack(String path){
         this.txtFile = path;
@@ -86,7 +87,7 @@ public class AnnuaireBack {
 
 
         // Creation d'un nouvel arbre
-        Tree arbre = new Tree();
+        arbre = new Tree();
 
         try {
             //Lecture du fichier text
@@ -468,6 +469,27 @@ public class AnnuaireBack {
         return list;
     }
 
+
+    public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee){
+
+        try {
+            String adresse = String.valueOf(raf.length());
+            //System.out.println(adresse);
+            String gauche = "";
+            String droite = "";
+            Stagiaire stagiaire = new Stagiaire(nom, prenom, departement, promo, annee, adresse, gauche, droite);
+            Node noeud = new Node(stagiaire);
+            arbre.addNode(stagiaire);
+            arbre.searchInTreeWriteInBin(noeud, adresse, raf);
+            return stagiaire;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //arbre.addNode(stagiaire);
+    }
 
     /*private ObservableList<Stagiaire> list(Stagiaire stagiaire){
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaire);
