@@ -485,28 +485,30 @@ public class AnnuaireBack {
         int pointeur = parseInt(adresse);
         String nomLu = "";
         // On place le pointeur à l'adresse du stagiaire dans le .bin
-        System.out.println("=> le pointeur est à " + pointeur);
+        System.out.println("=> le pointeur est à " + raf.getFilePointer());
 
         raf.seek(pointeur);
         for(int i=0; i<NOM; i++){
             nomLu += raf.readChar();
-            System.out.println(nomLu);
         }
-        System.out.println("=> Vérification nom à l'adresse " + adresse + " => " + nomLu);
+        System.out.println("=> Vérification nom à l'adresse " + raf.getFilePointer() + " => " + nomLu);
 
-        System.out.println("=> Suppression du nom");
+        raf.seek(pointeur);
+        System.out.println("=> Réécriture ");
         for(int i = 0 ; i < NOM ; i++){
-            raf.writeChars(" ");
+            raf.writeChars("*");
         }
 
         raf.seek(pointeur);
-        System.out.println("=> le pointeur est à " + pointeur);
+        System.out.println("=> le pointeur est à " + raf.getFilePointer());
         nomLu = "";
         for(int i=0; i<NOM; i++){
             nomLu += raf.readChar();
-            System.out.println(nomLu);
         }
-        System.out.println("Vérification de ce qui est écrit maintenant à l'adresse " + adresse + " => " + nomLu);
+        System.out.println("Vérification de ce qui est écrit maintenant à l'adresse " + raf.getFilePointer() + " => " + nomLu);
+
+        //
+
 
         System.out.println("*** fin de la méthode ***");
 
