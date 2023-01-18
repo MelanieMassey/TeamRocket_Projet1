@@ -150,7 +150,6 @@ public class Stagiaire {
                     nom += raf.readChar();
                 }
                 for (int i = 0; i < 20; i++) {
-
                     prenom += raf.readChar();
                 }
                 for (int i = 0; i < 5; i++) {

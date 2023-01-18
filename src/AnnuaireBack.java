@@ -156,6 +156,7 @@ public class AnnuaireBack {
             }
 
             //ecriture des données dans le fichier binaire
+
             for (int j = 0; j <= compteurStagiaires; j++) {
                 int key=STAGIAIRELENGTH * j;
                 raf.seek(key);
@@ -236,6 +237,32 @@ public class AnnuaireBack {
             raf.seek(0);
             //raf.close();
             System.out.println("Données sauvegardées");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'écriture des données");
+            e.printStackTrace();
+        }
+    }
+
+    public static void updateInBinary(Stagiaire stagiaire) throws IOException{
+
+        String adresse = stagiaire.get_adresse().replaceAll("\\s+", "");
+        System.out.println(adresse);
+        int position = Integer.valueOf(adresse);
+        System.out.println(position);
+        try  {
+            RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+            raf.seek(position);
+            raf.writeChars(stagiaire.get_nom());           //write UTF ???
+            raf.writeChars(stagiaire.get_prenom());
+            raf.writeChars(stagiaire.get_departement());
+            raf.writeChars(stagiaire.get_annee());
+            raf.writeChars(stagiaire.get_promo());
+            raf.writeChars(stagiaire.get_adresse());
+            raf.writeChars(stagiaire.get_gauche());
+            raf.writeChars(stagiaire.get_gauche());
+            raf.seek(0);
+            //raf.close();
+            System.out.println("Données modifiées");
         } catch (IOException e) {
             System.out.println("Erreur lors de l'écriture des données");
             e.printStackTrace();
@@ -371,7 +398,7 @@ public class AnnuaireBack {
 
 //        String motLu = "";
 
-        // On ajoute les espaces au "mot recherché" pour le formatté comme les mots qui seront lus
+        // On ajoute les espaces au "mot recherché" pour le formater comme les mots qui seront lus
         String motSearchedComplete = completer(motSearched, dataSpace);
 
         // Recherche dans le fichier .BIN
@@ -387,9 +414,6 @@ public class AnnuaireBack {
             // Lecture du mot
             for(int i=0 ; i< dataSpace ; i++){
                 mot += raf.readChar();
-
-
-
             }
             System.out.println("Le mot lu est : " + mot);
 
@@ -423,34 +447,34 @@ public class AnnuaireBack {
         list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
 
-
     }
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
-        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
+//        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
 
-//        System.out.println("getStagiairesList démarrée");
-
+      System.out.println("getStagiairesList démarrée");
+        System.out.println(raf.length());
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
 
         int position = 0;
 
         while(position < raf.length()){
-//            System.out.println("***Nouveau tour***");
-//            System.out.println("position = " + position);
+            System.out.println("***Nouveau tour***");
+            System.out.println("position = " + position);
             raf.seek(position);
             Stagiaire stagiaire = extractionDonneesStagiaire(raf, position);
-//            System.out.println(stagiaire.toString());
+            System.out.println(stagiaire.toString());
             stagiaires.add(stagiaire);
             position += STAGIAIRELENGTH;
 //            System.out.println(" future position = " + position);
         }
 
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
-        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
+//        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
     }
+
 
     public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee){
 
@@ -473,6 +497,7 @@ public class AnnuaireBack {
         //arbre.addNode(stagiaire);
     }
 
+
     public static Stagiaire removeStagiaire(String nom, String prenom, String departement, String promo, String annee){
 
         try {
@@ -493,5 +518,6 @@ public class AnnuaireBack {
 
         //arbre.addNode(stagiaire);
     }
+
 
 }

@@ -43,3 +43,28 @@
     -fx-font-weight: bold ;
     -fx-padding: 10.0px;
 }
+
+.menu-update .label {
+    -fx-font-size: 15px;
+    -fx-font-family: "Arial";
+    -fx-text-fill: white;
+
+    -fx-padding: 2.0px;
+
+}
+
+
+
+.item-ajouter .label {
+      -fx-text-fill: black;
+      -fx-font-family: "Arial";
+}
+
+.item-supprimer .label {
+      -fx-text-fill: black;
+      -fx-font-family: "Arial";
+}
+.item-modifier .label {
+      -fx-text-fill: black;
+      -fx-font-family: "Arial";
+}
