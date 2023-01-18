@@ -163,6 +163,7 @@ public class Interface extends Application {
             @Override
             public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
                 Stagiaire stg = event.getRowValue();
+
                 stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
             }
         });
@@ -170,9 +171,19 @@ public class Interface extends Application {
         prenomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                System.out.println(event.getRowValue().toString());
                 Stagiaire stg = event.getRowValue();
+
                 stg.set_prenom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PRENOM));
-                AnnuaireBack.updateInBinary(stg, AnnuaireBack.getRaf());
+                System.out.println("c'est le stagiaire que je modifie");
+                System.out.println(stg.toString());
+                try {
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+                    AnnuaireBack.updateInBinary(stg, raf);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
 
