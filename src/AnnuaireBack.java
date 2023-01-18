@@ -2,10 +2,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
+
+import static java.lang.Integer.parseInt;
 
 public class AnnuaireBack {
 
@@ -479,9 +483,15 @@ public class AnnuaireBack {
         try {
             String adresse = String.valueOf(raf.length());
             //System.out.println(adresse);
+            String nomFormatted = completer(nom, NOM);
+            String prenomFormatted = completer(prenom, PRENOM);
+            String departementFormatted = completer(departement, DEPARTEMENT);
+            String promoFormatted = completer(promo, PROMO);
+            String anneeFormatted = completer(annee, ANNEE);
             String gauche = "";
             String droite = "";
-            Stagiaire stagiaire = new Stagiaire(nom, prenom, departement, promo, annee, adresse, gauche, droite);
+
+            Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, promoFormatted, anneeFormatted, adresse, gauche, droite);
             Node noeud = new Node(stagiaire);
             arbre.addNode(stagiaire);
             arbre.searchInTreeWriteInBin(noeud, adresse, raf);
@@ -491,13 +501,75 @@ public class AnnuaireBack {
             throw new RuntimeException(e);
         }
 
-
+        //RETIRER DANS L'ARBRE SI NECESSAIRE
         //arbre.addNode(stagiaire);
     }
 
-    /*private ObservableList<Stagiaire> list(Stagiaire stagiaire){
-        ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaire);
-        return list;
-    }*/
+    public static void removeStagiaireBin(Stagiaire stagiaire) throws IOException {
+
+
+        System.out.println("*** removeStagiaireBin commencee ***");
+        String adresse = stagiaire.get_adresse().replaceAll("\\s+", ""); // supprime les espaces sinon NumberFormatException
+        int pointeur = parseInt(adresse);
+        String nomLu = "";
+
+        // On place le pointeur à l'adresse du stagiaire dans le .bin et on remplace ses données par des *
+        System.out.println("=> le pointeur est à " + raf.getFilePointer());
+
+        raf.seek(pointeur);
+        for(int i=0; i<NOM; i++){
+            nomLu += raf.readChar();
+        }
+        System.out.println("=> Vérification nom à l'adresse " + raf.getFilePointer() + " => " + nomLu);
+
+        raf.seek(pointeur);
+        System.out.println("=> Réécriture ");
+        for(int i = 0 ; i < NOM ; i++){
+            raf.writeChars("*");
+        }
+
+        raf.seek(pointeur);
+        System.out.println("=> le pointeur est à " + raf.getFilePointer());
+        nomLu = "";
+        for(int i=0; i<NOM; i++){
+            nomLu += raf.readChar();
+        }
+        System.out.println("Vérification de ce qui est écrit maintenant à l'adresse " + raf.getFilePointer() + " => " + nomLu);
+
+        // On créé un raf temporaire pour y réécrire le fichier bin sans les "*"
+        RandomAccessFile rafTmp = new RandomAccessFile("listeStagiaires.bin.tmp", "rw");
+        System.out.println("Création de rafTmp" + rafTmp);
+
+        raf.seek(0);
+        for(int i=0 ; i < raf.length() ; i++){
+            char charValue = raf.readChar();
+            System.out.println("char charValue = " + charValue);
+            String charVal = String.valueOf(charValue);
+            System.out.println("String charVal = " + charVal);
+            if(charVal.compareTo("*") == 0){
+                System.out.println("ON N'ECRIT PAS");
+            } else {
+                rafTmp.writeChars(charVal);
+                System.out.println("Ecriture du char dans le fichier Tmp");
+            }
+        }
+        System.out.println("Début suppression et renommage");
+
+
+
+
+        // Suppression du fichier .bin
+        File rafFile = new File("listeStagiaires.bin");
+        rafFile.delete();
+        System.out.println("raf initial supprimé");
+
+        // Renommage du fichier .bin.tmp
+        File rafFileTmp = new File("listeStagiaires.bin.tmp");
+        rafFileTmp.renameTo(rafFile);
+        System.out.println("raf tmp renommé");
+
+        System.out.println("*** fin de la méthode ***");
+
+    }
 
 }
