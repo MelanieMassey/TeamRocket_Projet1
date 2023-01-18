@@ -208,7 +208,7 @@ public class Interface extends Application {
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
-
+        
         /*
         CONTENEURS
         Création Hbox pour la zone éditable */
