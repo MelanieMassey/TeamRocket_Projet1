@@ -34,6 +34,9 @@ import static javafx.scene.paint.Color.*;
 
 public class Interface extends Application {
 
+    // Déclaration variables
+    ObservableList<Stagiaire> data; // utilisée pour créer et afficher formulaire et mise à jour de la liste
+
     @Override
     public void start(Stage primaryStage) {
         // Création des menus
@@ -213,7 +216,7 @@ public class Interface extends Application {
         CONTENEURS
         Création Hbox pour la zone éditable */
         HBox zoneEditable = new HBox();
-        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt,rechercheLabel, filtreRecherche);
+        zoneEditable.getChildren().addAll(nomtxt,prenomtxt, departementtxt, promotxt, anneetxt, rechercheLabel, filtreRecherche);
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
 
@@ -279,7 +282,7 @@ public class Interface extends Application {
                     raf = newAnnuaire.getRaf();
 
                     // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
-                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    data = AnnuaireBack.getStagiairesList(raf); // data déclaré ligne 38 pour pouvoir être utilisé dans plusieurs méthodes
 
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
@@ -355,6 +358,31 @@ public class Interface extends Application {
 
         });
 
+        //Action: ajouter un stagiaire
+        ajouter.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                // Récupération des valeurs des champs
+                String nom = nomtxt.getText();
+                String prenom = prenomtxt.getText();
+                String departement = departementtxt.getText();
+                String promo = promotxt.getText();
+                String annee = anneetxt.getText();
+
+                // Appel méthode addStagiaire
+                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+                data.add(stagiaire); // data déclaré ligne 38 pour pouvoir être utilisé dans plusieurs méthodes
+                table.setItems(data);
+
+                // Vider les champs
+                nomtxt.clear();
+                prenomtxt.clear();
+                departementtxt.clear();
+                promotxt.clear();
+                anneetxt.clear();
+
+            }
+        });
 
         //Action : mise à jour stagiaire
         updateMenu.setOnAction(new EventHandler<ActionEvent>() {
@@ -363,6 +391,8 @@ public class Interface extends Application {
 
             }
         });
+
+
 
         // Action connexion Admin+ Super-admin
         connexion.setOnAction(new EventHandler<ActionEvent>() {
