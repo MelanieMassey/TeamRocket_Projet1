@@ -152,7 +152,7 @@ public class Main {
                         mot_prenom=mot;
                         mot_prenom = completer(mot_prenom, PRENOM);
 
-                        reak;
+                        break;
                     case 4:
                         mot_departement=mot;
                         mot_departement = completer(mot_departement, DEPARTEMENT);
@@ -313,7 +313,7 @@ public class Main {
 
                     System.out.println("\nNom cherché =  nom stagiaire parcouru");
                     String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
-                    extractionDonneesStagiaire(raf,position);
+                    AnnuaireBack.extractionDonneesStagiaire(raf,position);
                     Stagiaire newStagiaire = new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite );
                     System.out.println(newStagiaire.toString());
 

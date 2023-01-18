@@ -9,6 +9,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.*;
 
 import javafx.scene.paint.Color;
@@ -150,6 +151,30 @@ public class Interface extends Application {
         //specifier un "cell factory" pour cette colonne.
         deptCol.setCellValueFactory(
                 new PropertyValueFactory<Stagiaire, String>("_departement"));
+
+
+        //modif tableview
+        table.setEditable(true);
+        nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+                Stagiaire stg = event.getRowValue();
+                stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
+            }
+        });
+        prenomCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        prenomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+                Stagiaire stg = event.getRowValue();
+                stg.set_prenom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PRENOM));
+                AnnuaireBack.updateInBinary(stg, AnnuaireBack.getRaf());
+            }
+        });
+
+
+
 
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
@@ -299,7 +324,7 @@ public class Interface extends Application {
 //                    System.out.println(is);
 //                    System.out.println(is.readChar());
 //                    is.close();
-                    RandomAccessFile raf = new RandomAccessFile("/src/listeStagiaires.bin", "rw");
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
 //
                     System.out.println(raf.length());
                     System.out.println("je suis dans le try et je viens de créér le raf");
