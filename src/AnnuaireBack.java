@@ -21,7 +21,7 @@ public class AnnuaireBack {
     //Allocation espace total par stagiaire (incluant informations et pointeurs)
     public static final int STAGIAIRELENGTH = (PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT
             + ADRESSE+LEFTCHILD+RIGHTCHILD) * 2 ;
-    public Tree arbre;
+    public static Tree arbre;
     private static RandomAccessFile raf;
     private static String txtFile ="";
 
@@ -452,11 +452,19 @@ public class AnnuaireBack {
         return list;
     }
 
-    public static void addStagiaire(String nom, String prenom, String departement, String promo, String année){
+    public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee){
 
         try {
             String adresse = String.valueOf(raf.length());
-            System.out.println(adresse);
+            //System.out.println(adresse);
+            String gauche = "";
+            String droite = "";
+            Stagiaire stagiaire = new Stagiaire(nom, prenom, departement, promo, annee, adresse, gauche, droite);
+            Node noeud = new Node(stagiaire);
+            arbre.addNode(stagiaire);
+            arbre.searchInTreeWriteInBin(noeud, adresse, raf);
+            return stagiaire;
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

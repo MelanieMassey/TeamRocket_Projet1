@@ -27,8 +27,14 @@ import java.util.Scanner;
 
 public class Interface extends Application {
 
+    // Déclaration variables
+    ObservableList<Stagiaire> data; // utilisée pour créer et afficher formulaire et mise à jour de la liste
+
     @Override
     public void start(Stage primaryStage) {
+
+
+
         // Création des menus
         Menu fileMenu1 = new Menu("Connexion");
         Menu fileMenu2 = new Menu("Annuaire");
@@ -180,7 +186,10 @@ public class Interface extends Application {
                 String annee = anneetxt.getText();
 
                 // Appel méthode addStagiaire
-                AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+                data.add(stagiaire);
+                table.setItems(data);
+
 
                 // Vider les champs
                 nomtxt.clear();
@@ -269,7 +278,7 @@ public class Interface extends Application {
                     raf = newAnnuaire.getRaf();
 
                     // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
-                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    data = AnnuaireBack.getStagiairesList(raf);
 
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
