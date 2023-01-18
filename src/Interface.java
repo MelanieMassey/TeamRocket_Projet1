@@ -111,9 +111,6 @@ public class Interface extends Application {
         });
 
 
-
-
-        //CREATION TABLEVIEW
         TableView<Stagiaire> table = new TableView<Stagiaire>();
         table.setEditable(true);
         //Label tableview
@@ -264,19 +261,18 @@ public class Interface extends Application {
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //On rempli la table avec la liste observable
+
 
                 RandomAccessFile raf;
                 String txtFile = "src/stagiaires.txt";
 
+                //initialisation du raf
                 AnnuaireBack newAnnuaire = new AnnuaireBack(txtFile);
                 newAnnuaire.creerAnnuaire();
 
                 try {
-                    // On récupère le fichier .bin écrit en instanciant newAnnuaire
+                    //on créé le fichier binaire à partir du fichier txt
                     raf = newAnnuaire.getRaf();
-
-                    // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
 
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
