@@ -162,9 +162,19 @@ public class Interface extends Application {
         nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
             @Override
             public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                System.out.println(event.getRowValue().toString());
                 Stagiaire stg = event.getRowValue();
 
                 stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
+                System.out.println("c'est le stagiaire que je modifie");
+                System.out.println(stg.toString());
+                try {
+                    AnnuaireBack.updateInBinary(stg);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         });
         prenomCol.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -179,11 +189,30 @@ public class Interface extends Application {
                 System.out.println("c'est le stagiaire que je modifie");
                 System.out.println(stg.toString());
                 try {
-                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-                    AnnuaireBack.updateInBinary(stg, raf);
+                    AnnuaireBack.updateInBinary(stg);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
+            }
+        });
+        deptCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        deptCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
+            @Override
+            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                System.out.println(event.getRowValue().toString());
+                Stagiaire stg = event.getRowValue();
+
+                stg.set_departement(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.DEPARTEMENT));
+                System.out.println("c'est le stagiaire que je modifie");
+                System.out.println(stg.toString());
+                try {
+                    AnnuaireBack.updateInBinary(stg);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
             }
         });
 

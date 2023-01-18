@@ -241,13 +241,14 @@ public class AnnuaireBack {
         }
     }
 
-    public static void updateInBinary(Stagiaire stagiaire, RandomAccessFile raf) throws IOException{
+    public static void updateInBinary(Stagiaire stagiaire) throws IOException{
 
         String adresse = stagiaire.get_adresse().replaceAll("\\s+", "");
         System.out.println(adresse);
         int position = Integer.valueOf(adresse);
         System.out.println(position);
         try  {
+            RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             raf.seek(position);
             raf.writeChars(stagiaire.get_nom());           //write UTF ???
             raf.writeChars(stagiaire.get_prenom());
