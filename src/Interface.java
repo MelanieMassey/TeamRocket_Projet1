@@ -55,8 +55,9 @@ public class Interface extends Application {
         fileMenu2.getItems().addAll(ouvrirfichier, annuaire1);
 
         // Création des MenuItems du Menu Aide
-        MenuItem aide1 = new MenuItem("Document");
+        MenuItem aide1 = new CheckMenuItem("Document");
         MenuItem aide2 = new MenuItem("Montrer les icônes");
+
 
         // Ajout des MenuItems au Menu Aide
         fileMenu3.getItems().add(aide1);
@@ -111,49 +112,7 @@ public class Interface extends Application {
             }
         });
 
-        // ACTION CONNEXION
-        connexion.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
 
-                //Création d'une boîte de dialogue pour la connexion Administrateur
-                Dialog<String> dialog = new Dialog<>();
-                dialog.setTitle("Connexion");
-                dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
-                        LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
-                dialog.getDialogPane().setMinSize(400.0,300.0);
-                dialog.setHeaderText("Veuillez vous identifier");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-                //Création des champs de saisie
-                TextField identifiant = new TextField();
-                identifiant.setPromptText("Identifiant");
-                Label idLabel=new Label("Identifiant:");
-
-                Label pswLabel =new Label("Mot de passe:");
-                PasswordField password = new PasswordField();
-                password.setPromptText("Mot de passe");
-
-                //création VBox
-                VBox contenu = new VBox();
-                contenu.setAlignment(Pos.CENTER_LEFT);
-                contenu.setSpacing(20);
-                contenu.getChildren().addAll(idLabel, identifiant,pswLabel, password);
-                dialog.getDialogPane().setContent(contenu);
-                dialog.setResultConverter(dialogButton -> {
-                    if (dialogButton == ButtonType.OK) {
-                        return password.getText() + identifiant.getText();
-                        //ajouter comparaison classes Admin/super-Admin
-                    }
-                    return null;
-                });
-
-                Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()) {
-                    System.out.println(result.get());
-                }
-            }
-        });
 
 
         //CREATION TABLEVIEW
@@ -222,28 +181,39 @@ public class Interface extends Application {
         departementtxt.setPrefWidth(100);
 
         //Ajout choicebox pour la recherche
-        Label rechercheLabel= new Label("Rechercher par filtre:");
-        ChoiceBox filtreRecherche= new ChoiceBox();
+       Label rechercheLabel= new Label("Rechercher par:");
+        ComboBox filtreRecherche= new ComboBox();
         filtreRecherche.getItems().addAll("Aucun filtre","Promotion","Année","Nom","Prénom", "Département");
 
-        Label modifierLabel= new Label("Mettre à jour:");
+
+        //Menu pour les mises à jour
+
+      /*  Label modifierLabel= new Label("Mettre à jour:");
         ChoiceBox updateChoiceBox= new ChoiceBox();
-        updateChoiceBox.getItems().addAll("","Modifier","Ajouter","Supprimer");
+        updateChoiceBox.getItems().addAll("","Modifier","Ajouter","Supprimer");*/
 
+        Menu updateMenu = new Menu("Mise à jour");
+        // Création du menuItem pour le menu update
+        MenuItem modifier = new MenuItem("Modifier");
+        MenuItem ajouter = new MenuItem("Ajouter");
+        MenuItem supprimer = new MenuItem("Supprimer");
+        ajouter.getStyleClass().add("item-ajouter");
+        modifier.getStyleClass().add("item-modifier");
+        supprimer.getStyleClass().add("item-supprimer");
 
-        //ACTION: MISE A JOUR UN STAGIAIRE
-        updateChoiceBox.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-
-            }
-        });
+        // Ajout des MenuItems au Menu Connexion
+        updateMenu.getItems().addAll(ajouter,supprimer,modifier);
+        modifier.setDisable(true);
+        supprimer.setDisable(true);
+        MenuBar updateBar = new MenuBar();
+        updateBar.getMenus().add(updateMenu);
+        updateBar.getStyleClass().add("menu-update");
 
         /*
         CONTENEURS
         Création Hbox pour la zone éditable */
         HBox zoneEditable = new HBox();
-        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt);
+        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt,rechercheLabel, filtreRecherche);
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
 
@@ -256,7 +226,7 @@ public class Interface extends Application {
 
         // Creation HBox filtre+update
         HBox hBoxChoice = new HBox();
-        hBoxChoice.getChildren().addAll(rechercheLabel, filtreRecherche,modifierLabel, updateChoiceBox);
+        hBoxChoice.getChildren().addAll(rechercheLabel, filtreRecherche,updateBar);
         hBoxChoice.setSpacing(20.0);
 
         // Préparation du premier stage et affichage
@@ -277,10 +247,10 @@ public class Interface extends Application {
 
         //zoneEditable
         root.setBottomAnchor(zoneEditable,100.0);
-        root.setLeftAnchor(zoneEditable,150.0);
-        //root.setRightAnchor(zoneEditable,50.0);
+        root.setLeftAnchor(zoneEditable,200.0);
+        root.setRightAnchor(zoneEditable,200.0);
 
-        //hBoxChoice
+        //updateBar
         root.setBottomAnchor(hBoxChoice,40.0);
         root.setRightAnchor(hBoxChoice,100.0);
 
@@ -291,8 +261,8 @@ public class Interface extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        //CREER L'ANNUAIRE
-        //AFFICHER TABLEVIEW
+        //GESTION EVENEMENTS
+        //Action: ouvrir Fichier. Créer er afficher tableview
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -322,7 +292,7 @@ public class Interface extends Application {
             }
         });
 
-        //ACTION: RECHERCHER
+        //Action rechercher par filtre
         filtreRecherche.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -384,6 +354,61 @@ public class Interface extends Application {
 
 
         });
+
+
+        //Action : mise à jour stagiaire
+        updateMenu.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+            }
+        });
+
+        // Action connexion Admin+ Super-admin
+        connexion.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                //Création d'une boîte de dialogue pour la connexion Administrateur
+                Dialog<String> dialog = new Dialog<>();
+                dialog.setTitle("Connexion");
+                dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
+                        LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
+                dialog.getDialogPane().setMinSize(400.0,300.0);
+                dialog.setHeaderText("Veuillez vous identifier");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+                //Création des champs de saisie
+                TextField identifiant = new TextField();
+                identifiant.setPromptText("Identifiant");
+                Label idLabel=new Label("Identifiant:");
+
+                Label pswLabel =new Label("Mot de passe:");
+                PasswordField password = new PasswordField();
+                password.setPromptText("Mot de passe");
+
+                //création VBox
+                VBox contenu = new VBox();
+                contenu.setAlignment(Pos.CENTER_LEFT);
+                contenu.setSpacing(20);
+                contenu.getChildren().addAll(idLabel, identifiant,pswLabel, password);
+                dialog.getDialogPane().setContent(contenu);
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+                        return password.getText() + identifiant.getText();
+                        //ajouter comparaison classes Admin/super-Admin
+                    }
+                    return null;
+                });
+
+                Optional<String> result = dialog.showAndWait();
+                if (result.isPresent()) {
+                    System.out.println(result.get());
+                }
+            }
+        });
+
+
 
     }
 
