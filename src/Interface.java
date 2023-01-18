@@ -22,12 +22,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.security.auth.callback.Callback;
+import javax.swing.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
 
 import static javafx.scene.paint.Color.*;
 
@@ -43,8 +42,16 @@ public class Interface extends Application {
 
         // Création du menuItem pour la connexion
         MenuItem connexion = new MenuItem("S'identifier");
+       // MenuItem modifId = new MenuItem("Modifier ses identifiants");
+        Menu menuModifId = new Menu("Modifier ses paramètres de connnexion");
+        menuModifId.setDisable(true);
+        MenuItem changeId = new MenuItem("Identifiant");
+        MenuItem changePswd = new MenuItem("Mot de passe");
+
+
         // Ajout des MenuItems au Menu Connexion
-        fileMenu1.getItems().add(connexion);
+        fileMenu1.getItems().addAll(connexion, menuModifId);
+        menuModifId.getItems().addAll(changeId,changePswd);
 
         // Création des MenuItems du Menu Annuaire
         MenuItem annuaire1 = new MenuItem("Exporter en PDF");
@@ -105,14 +112,11 @@ public class Interface extends Application {
                     secondstage.setTitle("Aide");
                     secondstage.setScene(scene);
                     secondstage.show();
-                }
-                catch (IOException ex){
+                } catch (IOException ex) {
                     System.out.println("Erreur à l'affichage du texte");
                 }
             }
         });
-
-
 
 
         //CREATION TABLEVIEW
@@ -177,13 +181,13 @@ public class Interface extends Application {
         prenomtxt.setPrefWidth(200);
 
         TextField departementtxt = new TextField();
-        departementtxt.setPromptText("Département");
+        departementtxt.setPromptText("Dépt");
         departementtxt.setPrefWidth(100);
 
         //Ajout choicebox pour la recherche
-       Label rechercheLabel= new Label("Rechercher par:");
-        ComboBox filtreRecherche= new ComboBox();
-        filtreRecherche.getItems().addAll("Aucun filtre","Promotion","Année","Nom","Prénom", "Département");
+        Label rechercheLabel = new Label("Rechercher par:");
+        ComboBox filtreRecherche = new ComboBox();
+        filtreRecherche.getItems().addAll("Aucun filtre", "Promotion", "Année", "Nom", "Prénom", "Département");
 
 
         //Menu pour les mises à jour
@@ -201,8 +205,8 @@ public class Interface extends Application {
         modifier.getStyleClass().add("item-modifier");
         supprimer.getStyleClass().add("item-supprimer");
 
-        // Ajout des MenuItems au Menu Connexion
-        updateMenu.getItems().addAll(ajouter,supprimer,modifier);
+        // Ajout des MenuItems au menuUpdate
+        updateMenu.getItems().addAll(ajouter, supprimer, modifier);
         modifier.setDisable(true);
         supprimer.setDisable(true);
         MenuBar updateBar = new MenuBar();
@@ -213,7 +217,7 @@ public class Interface extends Application {
         CONTENEURS
         Création Hbox pour la zone éditable */
         HBox zoneEditable = new HBox();
-        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt,prenomtxt, departementtxt,rechercheLabel, filtreRecherche);
+        zoneEditable.getChildren().addAll(promotxt, anneetxt, nomtxt, prenomtxt, departementtxt, rechercheLabel, filtreRecherche);
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
 
@@ -226,7 +230,7 @@ public class Interface extends Application {
 
         // Creation HBox filtre+update
         HBox hBoxChoice = new HBox();
-        hBoxChoice.getChildren().addAll(rechercheLabel, filtreRecherche,updateBar);
+        hBoxChoice.getChildren().addAll(rechercheLabel, filtreRecherche, updateBar);
         hBoxChoice.setSpacing(20.0);
 
         // Préparation du premier stage et affichage
@@ -235,28 +239,28 @@ public class Interface extends Application {
 
         //ANCRAGE CONTENEURS
         //Menubars
-        root.setTopAnchor(menubars,0.0);
-        root.setLeftAnchor(menubars,0.0);
-        root.setRightAnchor(menubars,0.0);
+        root.setTopAnchor(menubars, 0.0);
+        root.setLeftAnchor(menubars, 0.0);
+        root.setRightAnchor(menubars, 0.0);
 
         //vboxTable
-        root.setTopAnchor(vboxTable,50.0);
-        root.setBottomAnchor(vboxTable,80.0);
-        root.setLeftAnchor(vboxTable,100.0);
-        root.setRightAnchor(vboxTable,100.0);
+        root.setTopAnchor(vboxTable, 50.0);
+        root.setBottomAnchor(vboxTable, 80.0);
+        root.setLeftAnchor(vboxTable, 100.0);
+        root.setRightAnchor(vboxTable, 100.0);
 
         //zoneEditable
-        root.setBottomAnchor(zoneEditable,100.0);
-        root.setLeftAnchor(zoneEditable,200.0);
-        root.setRightAnchor(zoneEditable,200.0);
+        root.setBottomAnchor(zoneEditable, 100.0);
+        root.setLeftAnchor(zoneEditable, 200.0);
+        root.setRightAnchor(zoneEditable, 200.0);
 
         //updateBar
-        root.setBottomAnchor(hBoxChoice,40.0);
-        root.setRightAnchor(hBoxChoice,100.0);
+        root.setBottomAnchor(hBoxChoice, 40.0);
+        root.setRightAnchor(hBoxChoice, 100.0);
 
-        root.getChildren().addAll(menubars, vboxTable,zoneEditable, hBoxChoice);
+        root.getChildren().addAll(menubars, vboxTable, zoneEditable, hBoxChoice);
 
-        Scene scene = new Scene(root, 1000,700);
+        Scene scene = new Scene(root, 1000, 700);
         scene.getStylesheets().add("Front.css");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -299,13 +303,10 @@ public class Interface extends Application {
 
                 String motSearched;
                 ObservableList<Stagiaire> result = FXCollections.observableArrayList();
-
-
-                String selection= filtreRecherche.getValue().toString();
+                String selection = filtreRecherche.getValue().toString();
 
                 try {
-
-                    RandomAccessFile raf= new RandomAccessFile("listeStagiaires.bin", "rw");
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
 
                     switch (selection) {
@@ -338,23 +339,21 @@ public class Interface extends Application {
                         default:
                             break;
                     }
+                   /* Comparator<Student> fullNameComparator
+                            =  Comparator.comparing(Student::geFirsttName)
+                            .thenComparing(Student::geLastName);*/
                     //table.setItems(result);
-                } catch(IOException e){
-                        System.out.println("erreur de chargement du fichier bin");
-                        throw new RuntimeException(e);
-                    }
-
+                } catch (IOException e) {
+                    System.out.println("erreur de chargement du fichier bin");
+                    throw new RuntimeException(e);
+                }
                 promotxt.clear();
                 prenomtxt.clear();
                 nomtxt.clear();
                 anneetxt.clear();
                 departementtxt.clear();
-
-                }
-
-
+            }
         });
-
 
         //Action : mise à jour stagiaire
         updateMenu.setOnAction(new EventHandler<ActionEvent>() {
@@ -374,16 +373,16 @@ public class Interface extends Application {
                 dialog.setTitle("Connexion");
                 dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
                         LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
-                dialog.getDialogPane().setMinSize(400.0,300.0);
+                dialog.getDialogPane().setMinSize(200.0, 200.0);
                 dialog.setHeaderText("Veuillez vous identifier");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
 
                 //Création des champs de saisie
                 TextField identifiant = new TextField();
                 identifiant.setPromptText("Identifiant");
-                Label idLabel=new Label("Identifiant:");
-
-                Label pswLabel =new Label("Mot de passe:");
+                Label idLabel = new Label("Identifiant:");
+                Label pswLabel = new Label("Mot de passe:");
                 PasswordField password = new PasswordField();
                 password.setPromptText("Mot de passe");
 
@@ -391,29 +390,138 @@ public class Interface extends Application {
                 VBox contenu = new VBox();
                 contenu.setAlignment(Pos.CENTER_LEFT);
                 contenu.setSpacing(20);
-                contenu.getChildren().addAll(idLabel, identifiant,pswLabel, password);
+                contenu.getChildren().addAll(idLabel, identifiant, pswLabel, password);
                 dialog.getDialogPane().setContent(contenu);
+               // final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                //btOk.addEventFilter(ActionEvent.ACTION, event -> {
                 dialog.setResultConverter(dialogButton -> {
                     if (dialogButton == ButtonType.OK) {
-                        return password.getText() + identifiant.getText();
-                        //ajouter comparaison classes Admin/super-Admin
+                        ObservableList<Administrateur> listeAdmin = FXCollections.observableArrayList();
+
+                        //création liste identifiants pour la comparaison
+                        listeAdmin = getAdminList();
+                        System.out.println(listeAdmin);
+
+                        //Création d'un objet avec password et identifiant
+                        String pswd = password.getText();
+                        String id = identifiant.getText();
+
+                        Administrateur checkAdmin = new Administrateur(id,pswd,null,null);
+                        System.out.println(checkAdmin);
+                       // boolean check=listeAdminId.contains(checkAdmin);
+                        boolean check=Administrateur.checkList(checkAdmin,listeAdmin );
+                        System.out.println(check);
+
+                        //vérification des champs
+                        if (id.isEmpty() || pswd.isEmpty()) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Merci de renseigner les deux champs");
+                            alert.showAndWait();
+                        } else if (check==false) {
+                            System.out.println("not in the list");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Identifiants incorrects");
+                            alert.showAndWait();
+
+                            //} else if (listeAdminId.contains(checkAdmin)==true) {
+                        } else if (check==true) {
+                            System.out.println("in the list");
+                            modifier.setDisable(false);
+                            supprimer.setDisable(false);
+                            menuModifId.setDisable(false);
+                            JOptionPane.showMessageDialog(null,"Connexion réussie");
+                           // dialog.close();
+                        }
                     }
                     return null;
                 });
-
                 Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()) {
-                    System.out.println(result.get());
-                }
+               /* if (result.isPresent()) {
+                   System.out.println(result.get());
+               }*/
             }
         });
 
+        /*modifId.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                //Création d'une boîte de dialogue pour la connexion Administrateur
+                Dialog<String> dialog = new Dialog<>();
+                //dialog.setTitle("Modification Identifiants");
+                dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
+                        LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
+                dialog.getDialogPane().setMinSize(300.0, 300.0);
+                dialog.setHeaderText("Modification de vos identifiants de connexion");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
+                //Création des champs de saisie
+                TextField identifiant = new TextField();
+                identifiant.setPromptText("Identifiant");
+                Label idLabel = new Label("Identifiant:");
+                Label pswLabel = new Label("Mot de passe:");
+                PasswordField password = new PasswordField();
+                password.setPromptText("Mot de passe");
+
+                //création VBox
+                VBox contenu = new VBox();
+                contenu.setAlignment(Pos.CENTER_LEFT);
+                contenu.setSpacing(20);
+                contenu.getChildren().addAll(idLabel, identifiant, pswLabel, password);
+                dialog.getDialogPane().setContent(contenu);
+                // final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                //btOk.addEventFilter(ActionEvent.ACTION, event -> {
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+
+                        if (id.isEmpty() || pswd.isEmpty()) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Merci de renseigner les deux champs");
+                            alert.showAndWait();
+                        } else if (check==false) {
+                            System.out.println("not in the list");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Identifiants incorrects");
+                            alert.showAndWait();
+
+                            //} else if (listeAdminId.contains(checkAdmin)==true) {
+                        } else if (check==true) {
+                            System.out.println("in the list");
+                            modifier.setDisable(false);
+                            supprimer.setDisable(false);
+                            JOptionPane.showMessageDialog(null,"Connexion réussie");
+                            // dialog.close();
+                        }
+                    }
+                    return null;
+                });
+                Optional<String> result = dialog.showAndWait();
+
+            }
+        });
+
+         */
 
 
     }
 
-   public static void main(String[] args) {
+    //Methodes
+
+    private ObservableList<Administrateur> getAdminList() {
+        Administrateur admin1 = new Administrateur("MaJe", "password1","Machin", "Jean");
+        Administrateur admin2 = new Administrateur("DuPa","password2","Dupond", "Paul");
+        Administrateur admin3 = new Administrateur("DuMa","password3","Durand", "Martine");
+        ObservableList<Administrateur> list = FXCollections.observableArrayList(admin1,admin2,admin3);
+        return list;
+    }
+    public static void main(String[] args) {
         launch(args);
 
     }
+
+
 }
