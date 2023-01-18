@@ -240,6 +240,28 @@ public class AnnuaireBack {
         }
     }
 
+    public static void updateInBinary(Stagiaire stagiaire, RandomAccessFile raf){
+
+        long position = Long.valueOf(stagiaire.get_adresse());
+        try  {
+            raf.seek(position);
+            raf.writeChars(stagiaire.get_nom());           //write UTF ???
+            raf.writeChars(stagiaire.get_prenom());
+            raf.writeChars(stagiaire.get_departement());
+            raf.writeChars(stagiaire.get_annee());
+            raf.writeChars(stagiaire.get_promo());
+            raf.writeChars(stagiaire.get_adresse());
+            raf.writeChars(stagiaire.get_gauche());
+            raf.writeChars(stagiaire.get_gauche());
+            raf.seek(0);
+            //raf.close();
+            System.out.println("Données modifiées");
+        } catch (IOException e) {
+            System.out.println("Erreur lors de l'écriture des données");
+            e.printStackTrace();
+        }
+    }
+
 
     public static Stagiaire extractionDonneesStagiaire(RandomAccessFile raf, int position) {
         System.out.println("Extraction données d'un stagiaire démarrée");
@@ -422,29 +444,30 @@ public class AnnuaireBack {
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
-        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
+//        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
 
-//        System.out.println("getStagiairesList démarrée");
-
+      System.out.println("getStagiairesList démarrée");
+        System.out.println(raf.length());
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
 
         int position = 0;
 
         while(position < raf.length()){
-//            System.out.println("***Nouveau tour***");
-//            System.out.println("position = " + position);
+            System.out.println("***Nouveau tour***");
+            System.out.println("position = " + position);
             raf.seek(position);
             Stagiaire stagiaire = extractionDonneesStagiaire(raf, position);
-//            System.out.println(stagiaire.toString());
+            System.out.println(stagiaire.toString());
             stagiaires.add(stagiaire);
             position += STAGIAIRELENGTH;
 //            System.out.println(" future position = " + position);
         }
 
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
-        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
+//        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
     }
+
 
     /*private ObservableList<Stagiaire> list(Stagiaire stagiaire){
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaire);

@@ -37,11 +37,11 @@ public class Annuaire extends Application {
 
         // Création des MenuItems du Menu Annuaire
         MenuItem annuaire1 = new MenuItem("Exporter en PDF");
-
-        MenuItem ouvrirfichier = new MenuItem(("ouvrir annuaire"));
+        MenuItem ouvrirAnnuaire = new MenuItem(("Ouvrir l'annuaire"));
+        MenuItem ouvrirfichier = new MenuItem(("Importer un annuaire"));
 
         // Ajout des MenuItems au Menu Annuaire
-        fileMenu2.getItems().addAll(ouvrirfichier, annuaire1);
+        fileMenu2.getItems().addAll(ouvrirAnnuaire, ouvrirfichier, annuaire1);
 
         // Création des MenuItems du Menu Aide
         MenuItem aide1 = new MenuItem("Document");
@@ -156,6 +156,22 @@ public class Annuaire extends Application {
         primaryStage.show();
 
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                //On rempli la table avec la liste observable
+                RandomAccessFile raf = null;
+                try {
+                    raf = new RandomAccessFile("src/listeStagiaires.bin", "rw");
+                    ObservableList<Stagiaire> data = Stagiaire.getStagiaireList(raf);
+                    table.setItems(data);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+        ouvrirAnnuaire.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 //On rempli la table avec la liste observable

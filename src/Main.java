@@ -268,7 +268,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void appendToBinary(Stagiaire stagiaire, RandomAccessFile raf){

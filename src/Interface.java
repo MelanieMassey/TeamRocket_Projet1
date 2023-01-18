@@ -22,9 +22,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.security.auth.callback.Callback;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.Scanner;
@@ -48,11 +46,11 @@ public class Interface extends Application {
 
         // Création des MenuItems du Menu Annuaire
         MenuItem annuaire1 = new MenuItem("Exporter en PDF");
-
-        MenuItem ouvrirfichier = new MenuItem(("Ouvrir annuaire"));
+        MenuItem ouvrirAnnuaire = new MenuItem(("Ouvrir l'annuaire"));
+        MenuItem ouvrirfichier = new MenuItem(("Importer un annuaire"));
 
         // Ajout des MenuItems au Menu Annuaire
-        fileMenu2.getItems().addAll(ouvrirfichier, annuaire1);
+        fileMenu2.getItems().addAll(ouvrirAnnuaire, ouvrirfichier, annuaire1);
 
         // Création des MenuItems du Menu Aide
         MenuItem aide1 = new CheckMenuItem("Document");
@@ -269,7 +267,7 @@ public class Interface extends Application {
                 //On rempli la table avec la liste observable
 
                 RandomAccessFile raf;
-                String txtFile = "src/stagiaireTest.txt";
+                String txtFile = "src/stagiaires.txt";
 
                 AnnuaireBack newAnnuaire = new AnnuaireBack(txtFile);
                 newAnnuaire.creerAnnuaire();
@@ -283,9 +281,42 @@ public class Interface extends Application {
 
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
+                    raf.close();
 
                 } catch (IOException e) {
                     System.out.println("erreur de chargement du fichier bin");
+                    throw new RuntimeException(e);
+                }
+
+            }
+        });
+
+        ouvrirAnnuaire.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                try {
+
+//                    String filename = "listeStagiaires.bin";
+//                    FileInputStream fileIs = new FileInputStream(filename);
+//                    ObjectInputStream is = new ObjectInputStream(fileIs);
+//                    System.out.println(is);
+//                    System.out.println(is.readChar());
+//                    is.close();
+                    RandomAccessFile raf = new RandomAccessFile("/src/listeStagiaires.bin", "rw");
+//
+                    System.out.println(raf.length());
+                    System.out.println("je suis dans le try et je viens de créér le raf");
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
+                    //On rempli la table avec la liste observable
+                    table.setItems(data);
+                    raf.close();
+                } catch (FileNotFoundException e) {
+                    System.out.println("je trouve pas le fichier");
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+                    System.out.println("je suis dans l'io");
                     throw new RuntimeException(e);
                 }
 
