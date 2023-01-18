@@ -3,6 +3,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.Normalizer;
 import java.util.Comparator;
 import java.util.List;
@@ -484,7 +486,8 @@ public class AnnuaireBack {
         String adresse = stagiaire.get_adresse().replaceAll("\\s+", ""); // supprime les espaces sinon NumberFormatException
         int pointeur = parseInt(adresse);
         String nomLu = "";
-        // On place le pointeur à l'adresse du stagiaire dans le .bin
+
+        // On place le pointeur à l'adresse du stagiaire dans le .bin et on remplace ses données par des *
         System.out.println("=> le pointeur est à " + raf.getFilePointer());
 
         raf.seek(pointeur);
@@ -507,8 +510,38 @@ public class AnnuaireBack {
         }
         System.out.println("Vérification de ce qui est écrit maintenant à l'adresse " + raf.getFilePointer() + " => " + nomLu);
 
-        //
+        // On créé un raf temporaire pour y réécrire le fichier bin sans les "*"
+        RandomAccessFile rafTmp = new RandomAccessFile("listeStagiaires.bin.tmp", "rw");
+        System.out.println("Création de rafTmp" + rafTmp);
 
+        raf.seek(0);
+        for(int i=0 ; i < raf.length() ; i++){
+            char charValue = raf.readChar();
+            System.out.println("char charValue = " + charValue);
+            String charVal = String.valueOf(charValue);
+            System.out.println("String charVal = " + charVal);
+            if(charVal.compareTo("*") == 0){
+                System.out.println("ON N'ECRIT PAS");
+            } else {
+                rafTmp.writeChars(charVal);
+                System.out.println("Ecriture du char dans le fichier Tmp");
+            }
+        }
+        System.out.println("Début suppression et renommage");
+
+
+
+
+        // Suppression du fichier .bin
+        File rafFile = new File("listeStagiaires.bin");
+//        rafFile.delete();
+        Files.deleteIfExists(Paths.get("C:\\Users\\Formation\\Projets\\TeamRocket_Projet1\\listeStagiaires.bin"));
+        System.out.println("raf initial supprimé");
+
+        // Renommage du fichier .bin.tmp
+        File rafFileTmp = new File("listeStagiaires.bin.tmp");
+        rafFileTmp.renameTo(rafFile);
+        System.out.println("raf tmp renommé");
 
         System.out.println("*** fin de la méthode ***");
 

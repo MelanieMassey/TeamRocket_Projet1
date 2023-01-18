@@ -161,6 +161,8 @@ public class Interface extends Application {
         deptCol.setCellValueFactory(
                 new PropertyValueFactory<Stagiaire, String>("_departement"));
 
+
+
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
 
