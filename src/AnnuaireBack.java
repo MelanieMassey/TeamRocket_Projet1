@@ -448,7 +448,6 @@ public class AnnuaireBack {
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
         list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
-
     }
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
