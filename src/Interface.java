@@ -1,4 +1,6 @@
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -174,6 +176,23 @@ public class Interface extends Application {
         Button btnAjouter = new Button("Ajouter");
         Button btnSupprimer = new Button("Supprimer");
 
+        // ACTION: sélectionner un stagiaire dans le tableau
+        table.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Stagiaire>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Stagiaire> observable, Stagiaire oldValue, Stagiaire newValue) {
+                        Stagiaire oldStagiaire = oldValue == null ? null : oldValue;
+                        Stagiaire newStagiaire = newValue == null ? null : newValue;
+                        System.out.println(newStagiaire.get_nom());
+                        nomtxt.setText(newStagiaire.get_nom());
+                        prenomtxt.setText(newStagiaire.get_prenom());
+                        departementtxt.setText(newStagiaire.get_departement());
+                        promotxt.setText(newStagiaire.get_promo());
+                        anneetxt.setText((newStagiaire.get_annee()));
+                    }
+                }
+        );
+
         //ACTION: AJOUTER UN STAGIAIRE
         btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -205,9 +224,24 @@ public class Interface extends Application {
         btnSupprimer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
+                // Récupération des valeurs des champs
+                String nom = nomtxt.getText();
+                String prenom = prenomtxt.getText();
+                String departement = departementtxt.getText();
+                String promo = promotxt.getText();
+                String annee = anneetxt.getText();
 
-                prenomtxt.clear();
+                // Appel méthode addStagiaire
+                //Stagiaire stagiaire = AnnuaireBack.removeStagiaire(nom, prenom, departement, promo, annee);
+                //data.remove(stagiaire);
+                //table.setItems(data);
+
+                // Vider les champs
                 nomtxt.clear();
+                prenomtxt.clear();
+                departementtxt.clear();
+                promotxt.clear();
+                anneetxt.clear();
             }
         });
 

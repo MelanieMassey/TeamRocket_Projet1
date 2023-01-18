@@ -473,4 +473,25 @@ public class AnnuaireBack {
         //arbre.addNode(stagiaire);
     }
 
+    public static Stagiaire removeStagiaire(String nom, String prenom, String departement, String promo, String annee){
+
+        try {
+            String adresse = String.valueOf(raf.length());
+            //System.out.println(adresse);
+            String gauche = "";
+            String droite = "";
+            Stagiaire stagiaire = new Stagiaire(nom, prenom, departement, promo, annee, adresse, gauche, droite);
+            Node noeud = new Node(stagiaire);
+            arbre.addNode(stagiaire);
+            arbre.searchInTreeWriteInBin(noeud, adresse, raf);
+            return stagiaire;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //arbre.addNode(stagiaire);
+    }
+
 }
