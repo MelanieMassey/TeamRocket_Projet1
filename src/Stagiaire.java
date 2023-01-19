@@ -94,7 +94,7 @@ public class Stagiaire {
 
 
     // Méthodes
-    public String toString()
+   /* public String toString()
     {
         return "Nom : " + _nom +
                 "\nPrenom : " + _prenom +
@@ -104,8 +104,11 @@ public class Stagiaire {
                 "\nAdresse : " + _adresse +
                 "\nGauche : " + _gauche +
                 "\nDroite : " + _droite;
+    }*/
+    @Override public String toString()
+    {
+        return _nom + _prenom +_departement +_annee +_promo +_adresse +_gauche + _droite;
     }
-
     //public String toString()
     /*{
         return _nom +_prenom +_departement + _annee + _promo + _adresse + _gauche + _droite;

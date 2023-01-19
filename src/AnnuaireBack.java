@@ -5,10 +5,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
@@ -569,6 +566,7 @@ public class AnnuaireBack {
         System.out.println("*** fin de la méthode ***");
 
     }
+
 
 
 }

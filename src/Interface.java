@@ -281,6 +281,8 @@ public class Interface extends Application {
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
+
+        Button searchButton= new Button ("Search");
         
         /*
         CONTENEURS
@@ -327,7 +329,7 @@ public class Interface extends Application {
         root.setBottomAnchor(hBoxChoice,40.0);
         root.setRightAnchor(hBoxChoice,100.0);
 
-        root.getChildren().addAll(menubars, vboxTable,zoneEditable, hBoxChoice);
+        root.getChildren().addAll(menubars, vboxTable,zoneEditable, hBoxChoice, searchButton);
 
         Scene scene = new Scene(root, 1000,700);
         scene.getStylesheets().add("Front.css");
@@ -453,53 +455,6 @@ public class Interface extends Application {
                 anneetxt.clear();
                 departementtxt.clear();
 
-               /* if (selection == "Prénom") {
-                    try {
-                        RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-                       // ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
-                        ObservableList<Stagiaire> listResult = FXCollections.observableArrayList();
-
-                        String promoSearched = promotxt.getText();
-                        String anneeSearched = anneetxt.getText();
-                        String nomSearched = nomtxt.getText();
-                        String prenomSearched = prenomtxt.getText();
-                        String dptSearched = departementtxt.getText();
-
-
-                        if (promoSearched!=null){
-                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, promoSearched, "promo");
-                        }
-                        if (anneeSearched!=null){
-                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, anneeSearched, "annee");
-                        }
-                        if (nomSearched!=null){
-                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, nomSearched, "nom");
-                        }
-                        if (prenomSearched!=null){
-                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, prenomSearched, "prenom");
-                        }
-                        if (dptSearched!=null){
-                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, dptSearched, "departement");
-
-                        table.setItems(listResult);
-
-                            //table.setItems(result);
-                        } catch(IOException e){
-                            System.out.println("erreur de chargement du fichier bin");
-                            throw new RuntimeException(e);
-                        }
-
-                        promotxt.clear();
-                        prenomtxt.clear();
-                        nomtxt.clear();
-                        anneetxt.clear();
-                        departementtxt.clear();
-
-                    }*/
-
-
-
-
 
                 }
 
@@ -529,6 +484,287 @@ public class Interface extends Application {
                 anneetxt.clear();
 
             }
+        });
+
+        //Action rechercher par filtre
+        searchButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                String motSearched;
+              //  ObservableList<Stagiaire> result = FXCollections.observableArrayList();
+               // String selection = filtreRecherche.getValue().toString();
+
+               /* List<String> critereSelection = new Vector<String>();
+                List<String> critere = new Vector<String>();
+                critere.add("Promotion"); critere.add("Année"); critere.add("Nom");
+                critere.add("Prénom"); critere.add("Prénom");
+                for (int i=0; i<critere.size();i++) {
+                    if (critere.get(i) != null) {
+                        critereSelection.add(critere.get(i));
+                    }
+                }*/
+
+                try {
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    ObservableList<Stagiaire> listResult = FXCollections.observableArrayList();
+                    ObservableList<Stagiaire> toRemove = FXCollections.observableArrayList();
+                    listResult=data;
+                    Collection <Stagiaire> result= new ArrayList <Stagiaire>(data) ;
+
+
+                    String promoSearched = promotxt.getText();
+                    String anneeSearched = anneetxt.getText();
+                    String nomSearched = nomtxt.getText();
+                    String prenomSearched = prenomtxt.getText();
+                    String dptSearched = departementtxt.getText();
+/*
+                    for (Stagiaire s : data) {
+                        if ((!promoSearched.isEmpty()) || ((s.get_promo().equals(promoSearched)))) {
+                            toRemove.add(s);
+                        }
+
+                        if ((anneeSearched.isEmpty())|| (s.get_annee().equals(anneeSearched))) {
+                            toRemove.add(s);
+                        }
+                        if ((!nomSearched.isEmpty()) || (s.get_nom().equals(nomSearched))) {
+                            toRemove.add(s);
+                        }
+                        if ((!prenomSearched.isEmpty()) || (s.get_prenom().equals(prenomSearched))) {
+                            toRemove.add(s);
+                        }
+                        if ((!dptSearched.isEmpty()) || (s.get_departement().equals(dptSearched))) {
+                            toRemove.add(s);
+                        }
+                    }
+                    */
+                   /* for (Stagiaire s : data) {
+                        if ((!promoSearched.isEmpty()) || ((!s.get_promo().equals(promoSearched)))) {
+                            toRemove.add(s);
+                        }
+
+                        if ((anneeSearched.isEmpty())|| (!s.get_annee().equals(anneeSearched))) {
+                            toRemove.add(s);
+                        }
+                        if ((!nomSearched.isEmpty()) || (!s.get_nom().equals(nomSearched))) {
+                            toRemove.add(s);
+                        }
+                        if ((!prenomSearched.isEmpty()) || (!s.get_prenom().equals(prenomSearched))) {
+                            toRemove.add(s);
+                        }
+                        if ((!dptSearched.isEmpty()) || (!s.get_departement().equals(dptSearched))) {
+                            toRemove.add(s);
+                        }
+                    }*/
+/*
+                    for (Stagiaire s : data) {
+                        if ((!promoSearched.isEmpty()) || (!(s.get_promo().equals(promoSearched)))) {
+                            toRemove.add(s);
+                        }
+
+                        if ((!anneeSearched.isEmpty())|| (!(s.get_annee().equals(anneeSearched)))) {
+                            toRemove.add(s);
+                        }
+                        if ((!nomSearched.isEmpty()) || (!(s.get_nom().equals(nomSearched)))) {
+                            toRemove.add(s);
+                        }
+                        if ((!prenomSearched.isEmpty()) || (!(s.get_prenom().equals(prenomSearched)))) {
+                            toRemove.add(s);
+                        }
+                        if ((!dptSearched.isEmpty()) || (!(s.get_departement().equals(dptSearched)))) {
+                            toRemove.add(s);
+                        }
+                    }
+*/
+
+/*
+                     for (Iterator <Stagiaire> it=data.iterator(); it.hasNext();) {
+                           Stagiaire s = it.next();
+                           // iterator= (Iterator<Stagiaire>) iterator.next();
+
+                           if (!promoSearched.isEmpty() || !(s.get_promo().equals(promoSearched))) {
+                               it.remove();
+                           }
+
+                           if (!nomSearched.isEmpty() || !(s.get_nom().equals(nomSearched))) {
+                               it.remove();
+                           }
+
+                           if (!prenomSearched.isEmpty() || !(s.get_prenom().equals(prenomSearched))) {
+                               it.remove();
+
+                           }
+
+                           if (!dptSearched.isEmpty()  || !(s.get_departement().equals(dptSearched))) {
+                               it.remove();
+                           }
+
+                         if (!anneeSearched.isEmpty()  || !(s.get_annee().equals(anneeSearched))) {
+                             it.remove();
+                         }
+                       }
+        */
+
+                     Iterator <Stagiaire> it=data.iterator();
+                     while (it.hasNext()) {
+                        Stagiaire s = it.next();
+                        // iterator= (Iterator<Stagiaire>) iterator.next();
+
+                        if (!promoSearched.isEmpty() || !(s.get_promo().equals(promoSearched))) {
+                            it.remove();
+                        }
+
+                        if (!nomSearched.isEmpty() || !(s.get_nom().equals(nomSearched))) {
+                            it.remove();
+                        }
+
+                        if (!prenomSearched.isEmpty() || !(s.get_prenom().equals(prenomSearched))) {
+                            it.remove();
+
+                        }
+
+                        if (!dptSearched.isEmpty()  || !(s.get_departement().equals(dptSearched))) {
+                            it.remove();
+                        }
+
+                        if (!anneeSearched.isEmpty()  || !(s.get_annee().equals(anneeSearched))) {
+                            it.remove();
+                        }
+                    }
+                /*    for (Iterator <Stagiaire> it=data.iterator(); it.hasNext();){
+                        Stagiaire s= it.next();
+                        // iterator= (Iterator<Stagiaire>) iterator.next();
+
+                        if (s.get_promo()!=promoSearched) {
+                            it.remove();
+                        }
+
+                        if (!(s.get_promo().equals(promoSearched))) {
+                            it.remove();
+                        }
+
+                        if (!(s.get_promo().equals(promoSearched))) {
+                            it.remove();
+
+                        }
+
+                        if (!(s.get_promo().equals(promoSearched))) {
+                            it.remove();
+                        }
+                  */
+
+
+/*
+
+                           else if (!anneeSearched.isEmpty() || !(s.get_annee().equals(anneeSearched))) {
+                                it.remove();
+                                 }
+
+                            else if (!nomSearched.isEmpty() || !(s.get_nom().equals(nomSearched))) {
+                                it.remove();}
+
+                            else if (!prenomSearched.isEmpty() || !(s.get_prenom().equals(prenomSearched))) {
+                                it.remove();}
+
+                            else if (!dptSearched.isEmpty() || !(s.get_departement().equals(dptSearched))) {
+                                    it.remove();
+
+                                }
+
+                            }
+                            */
+
+
+                   /* for (Stagiaire s : listResult) {
+                        if ((!promoSearched.isEmpty())|| (!(s.get_promo().equals(promoSearched)))) {
+                            listResult.remove(s);
+                        }
+
+                        if ((anneeSearched.isEmpty())|| !(s.get_annee().equals(anneeSearched))) {
+                            listResult.remove(s);
+                        }
+                        if ((!nomSearched.isEmpty()) || !(s.get_nom().equals(nomSearched))) {
+                            listResult.remove(s);
+                        }
+                        if ((!prenomSearched.isEmpty()) || !(s.get_prenom().equals(prenomSearched))) {
+                            listResult.remove(s);
+                        }
+                        if ((!dptSearched.isEmpty()) || !(s.get_departement().equals(dptSearched))) {
+                            listResult.remove(s);
+                        }
+                    }
+
+                        */
+                   // listResult.removeAll(toRemove);
+
+                    table.setItems(data);
+                    System.out.println(data);
+
+                } catch (FileNotFoundException e) {
+                    System.out.println("File not found");
+                    throw new RuntimeException(e);
+                } catch (IOException e) {
+
+                    throw new RuntimeException(e);
+                }
+
+                promotxt.clear();
+                prenomtxt.clear();
+                nomtxt.clear();
+                anneetxt.clear();
+                departementtxt.clear();
+
+            }
+
+
+               /* try {
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
+                    switch (selection) {
+                        case "Promotion":
+                            motSearched = promotxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "promotion");
+                            break;
+                        case "Année":
+                            motSearched = anneetxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "annee");
+                            break;
+                        case "Nom":
+                            motSearched = nomtxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "nom");
+                            table.setItems(result);
+                            break;
+                        case "Prénom":
+                            motSearched = prenomtxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "prenom");
+                            table.setItems(result);
+                            break;
+                        case "Département":
+                            motSearched = departementtxt.getText();
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "departement");
+                            table.setItems(result);
+                            break;
+                        case "Aucun filtre":
+                            table.setItems(data);
+                            break;
+                        default:
+                            break;
+                    }
+                    //table.setItems(result);
+                } catch (IOException e) {
+                    System.out.println("erreur de chargement du fichier bin");
+                    throw new RuntimeException(e);
+                }
+                promotxt.clear();
+                prenomtxt.clear();
+                nomtxt.clear();
+                anneetxt.clear();
+                departementtxt.clear();
+                */
+
+
         });
 
         // ACTION: sélectionner un stagiaire dans le tableau
