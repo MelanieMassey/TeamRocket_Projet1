@@ -348,7 +348,7 @@ public class Interface extends Application {
         // Ajout des MenuItems au Menu Connexion
         updateMenu.getItems().addAll(ajouter,supprimer,modifier);
         modifier.setDisable(true);
-        supprimer.setDisable(false);
+        supprimer.setDisable(true);
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
@@ -456,6 +456,7 @@ public class Interface extends Application {
                     System.out.println(raf.length());
                     System.out.println("je suis dans le try et je viens de créér le raf");
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
 
                     //On rempli la table avec la liste observable
                     table.setItems(data);
@@ -610,7 +611,6 @@ public class Interface extends Application {
                      public void changed(ObservableValue<? extends Stagiaire> observable, Stagiaire oldValue, Stagiaire newValue) {
                          Stagiaire oldStagiaire = oldValue == null ? null : oldValue;
                          Stagiaire newStagiaire = newValue == null ? null : newValue;
-                         System.out.println(newStagiaire.get_nom());
                          nomtxt.setText(newStagiaire.get_nom());
                          prenomtxt.setText(newStagiaire.get_prenom());
                          departementtxt.setText(newStagiaire.get_departement());
@@ -624,16 +624,11 @@ public class Interface extends Application {
         supprimer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
 
                 Stagiaire stagiaire = table.getSelectionModel().getSelectedItem();
-                data.remove(stagiaire);
-                table.setItems(data);
+                System.out.println("Le stagiaire séléectionné est : " + stagiaire);
+                /*data.remove(stagiaire);
+                table.setItems(data);*/
 
                 // Suppression  du stagiaire dans le bin
                 try {

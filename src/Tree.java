@@ -134,9 +134,9 @@ public class Tree {
     }*/
 
     // Récupération du noeud de l'arbre
- /*   public Node getRoot(){
+    public Node getRoot(){
         return root;
-    }*/
+    }
 
     // Lecture de l'arbre par ordre alphabétique
     public void traverseInOrder(Node node) {
