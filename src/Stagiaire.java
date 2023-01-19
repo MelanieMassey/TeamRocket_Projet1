@@ -18,6 +18,17 @@ public class Stagiaire {
     private String _gauche;
     private String _droite;
 
+    public Stagiaire(){
+        this._nom = "";
+        this._prenom = "";
+        this._departement = "";
+        this._annee = "";
+        this._promo = "";
+        this._adresse = "";
+        this._gauche = "";
+        this._droite = "";
+    }
+
     // Constructeur
     public Stagiaire( String nom, String prenom, String departement, String annee, String promo,  String adresse, String gauche, String droite) {
         this._nom = nom;
