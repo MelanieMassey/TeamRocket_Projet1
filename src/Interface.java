@@ -174,9 +174,11 @@ public class Interface extends Application {
             public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
 
                 Stagiaire stg = event.getRowValue();
+                //on remplace le nom changé dans le stagiaire
                 stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
+
                 try {
-                    AnnuaireBack.updateInBinary(stg);
+                    AnnuaireBack.updateBinary(table.getItems());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

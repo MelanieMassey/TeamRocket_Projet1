@@ -5,10 +5,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.Normalizer;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 import static java.lang.Integer.parseInt;
 
@@ -241,14 +238,40 @@ public class AnnuaireBack {
         }
     }
 
+    public static void updateBinary(ObservableList<Stagiaire> list) throws IOException {
+        Tree arbre = new Tree();
+        System.out.println(list.getClass());
+        //création de l'arbre à partir de la liste de stagiaires
+        for(Stagiaire stg : list){
+            arbre.addNode(stg);
+        }
+
+
+        //réécriture de l'arbre sur le binaire
+        RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+
+        for (int j = 0; j <= list.size(); j++) {
+            int key = STAGIAIRELENGTH * j;
+            raf.seek(key);
+            String keyString = completer(Integer.toString(key), ADRESSE);
+            arbre.searchInTreeWriteInBin(arbre.root, keyString, raf);
+        }
+
+    }
 
     public static void updateInBinary(Stagiaire stagiaire) throws IOException {
 
         String adresse = stagiaire.get_adresse().replaceAll("\\s+", "");
+
+        //on récupère le stagiaire
+        //on récupère le binaire
+
+
         int position = Integer.valueOf(adresse);
         try  {
 
             RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+
             raf.seek(position);
             raf.writeChars(stagiaire.get_nom());           //write UTF ???
             raf.writeChars(stagiaire.get_prenom());
@@ -350,9 +373,6 @@ public class AnnuaireBack {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
         Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
 
-        System.out.println("*** Début recherche ***");
-        System.out.println("\n--- le mot recherché est : " + motSearched + " ---");
-
         int dataSpace = 0;
         int position = 0;
         int positionExtraction = 0;
@@ -387,9 +407,6 @@ public class AnnuaireBack {
                 break;
         }
 
-        System.out.println("=> dataSpace = " + nomDonnee + " = " + dataSpace);
-        System.out.println("=> position = " + position);
-
         // 1. Lecture du fichier bin de donnée en même type de donnée (adresse à préciser)
 
 //        String motLu = "";
@@ -399,13 +416,11 @@ public class AnnuaireBack {
 
         // Recherche dans le fichier .BIN
         while (position < raf.length()) {
-            System.out.println("\n--- Début boucle ---");
 
             String mot = "";
 
-            System.out.println("position = " + position);
             raf.seek(position);
-            System.out.println("Le pointeur est à l'endroit " + raf.getFilePointer());
+
 
             // Lecture du mot
             for (int i = 0; i < dataSpace; i++) {
