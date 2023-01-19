@@ -1,5 +1,6 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -25,7 +26,7 @@ public class AnnuaireBack {
             + ADRESSE + LEFTCHILD + RIGHTCHILD) * 2;
     private static RandomAccessFile raf;
     private static String txtFile = "";
-    public static Tree arbre; // Déclaration ici pour utilisation dans plusieurs méthodes
+    public static Tree arbre = new Tree(); // Déclaration ici pour utilisation dans plusieurs méthodes
 
     public AnnuaireBack(String path) {
         this.txtFile = path;
@@ -51,6 +52,8 @@ public class AnnuaireBack {
     }
 
     // METHODES
+
+    // => Création de l'annuaire depuis le fichier txt
     public void creerAnnuaire() {
 
         try {
@@ -63,7 +66,7 @@ public class AnnuaireBack {
 
 
 //            extractionDonneesStagiaire(raf, 0);
-            rechercherStagiaireBin(raf, "2008", "annee");
+//            rechercherStagiaireBin(raf, "2008", "annee");
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -74,8 +77,7 @@ public class AnnuaireBack {
         }
     }
 
-
-    public static void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
+    public void txtFileToBinFile(String PathTxtFile, RandomAccessFile raf) {
 
         //Déclaration variables (et initialisation)
         String ligne = "";
@@ -88,8 +90,9 @@ public class AnnuaireBack {
         int linenumber = 0;
         int compteurStagiaires = 0;
 
-        // Creation d'un nouvel arbre
+
         arbre = new Tree();
+
         try {
             //Lecture du fichier text
             FileReader fichierOriginal = new FileReader(PathTxtFile);
@@ -154,7 +157,9 @@ public class AnnuaireBack {
             }
 
 
-            //Ecriture des données dans le fichier binaire
+            //ecriture des données dans le fichier binaire
+
+
             for (int j = 0; j <= compteurStagiaires; j++) {
                 int key = STAGIAIRELENGTH * j;
                 raf.seek(key);
@@ -171,12 +176,15 @@ public class AnnuaireBack {
         }
     }
 
-    public static String stripAccents(String s) {
+    // => retirer les accents
+    public static String stripAccents(String s)
+    {
         s = Normalizer.normalize(s, Normalizer.Form.NFD);
         s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return s;
     }
 
+    // Formatter les données avant écriture dans le BIN
     public static String completer(String mot, int taille) {
 
         int nbEspace = taille - mot.length();
@@ -292,6 +300,7 @@ public class AnnuaireBack {
 
     public static Stagiaire extractionDonneesStagiaire(RandomAccessFile raf, int position) {
 
+
         String nomLu = "", prenomLu = "", departementLu = "", anneeLu = "", promoLu = "", adresseLu = "", gaucheLu = "", droiteLu = "";
         String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
 
@@ -369,9 +378,30 @@ public class AnnuaireBack {
         return new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite);
     }
 
+    public static Tree createTreeFromBin(RandomAccessFile raf){
+        Tree arbre = new Tree();
+        int position = 0;
+
+
+
+        try{
+            while(position < raf.length()){
+                Stagiaire stagiaire = extractionDonneesStagiaire(raf, position);
+                arbre.addNode(stagiaire);
+                position += STAGIAIRELENGTH;
+            }
+        } catch(Exception e){
+            System.out.println("Exception createTreeFromBin()");
+        }
+
+        return arbre;
+
+    }
+
     public static ObservableList<Stagiaire> rechercherStagiaireBin(RandomAccessFile raf, String motSearched, String nomDonnee) throws IOException {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
         Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
+
 
         int dataSpace = 0;
         int position = 0;
@@ -407,6 +437,7 @@ public class AnnuaireBack {
                 break;
         }
 
+
         // 1. Lecture du fichier bin de donnée en même type de donnée (adresse à préciser)
 
 //        String motLu = "";
@@ -417,41 +448,43 @@ public class AnnuaireBack {
         // Recherche dans le fichier .BIN
         while (position < raf.length()) {
 
+
             String mot = "";
 
             raf.seek(position);
+
 
 
             // Lecture du mot
             for (int i = 0; i < dataSpace; i++) {
                 mot += raf.readChar();
             }
-            System.out.println("Le mot lu est : " + mot);
+//            System.out.println("Le mot lu est : " + mot);
 
             // 2.1. Comparaison du mot récupéré avec le mot recherché formatté
             if (mot.equals(motSearchedComplete)) {
                 // 2.2. Si mot correspond, alors on instancie un Stagiaire
-                System.out.println("=> Mot cherché =  mot parcouru");
-                System.out.println("=> Position pour extraction = " + (position - positionExtraction));
+//                System.out.println("=> Mot cherché =  mot parcouru");
+//                System.out.println("=> Position pour extraction = " + (position - positionExtraction));
 
                 Stagiaire stagiaire = extractionDonneesStagiaire(raf, position - positionExtraction);
 
                 // 2.3. Et on le stock dans le liste "stagiaires"
                 stagiaires.add(stagiaire);
 
-                System.out.println(stagiaire.toString());
+
 
             } else {
-                System.out.println("=> Mot cherché !=  mot parcouru");
+//                System.out.println("=> Mot cherché !=  mot parcouru");
             }
 
             // 2.3. Si nom correspond pas, alors on passe au stagiaire suivant
             position += STAGIAIRELENGTH;
-            System.out.println("future position = " + position);
-            System.out.println("--- Fin boucle ---");
+//            System.out.println("future position = " + position);
+//            System.out.println("--- Fin boucle ---");
         }
 
-        System.out.println("*** Fin recherche ***");
+//        System.out.println("*** Fin recherche ***");
         // 3. Affichage de la liste des stagiaires qui correspondent via une ObservableList "list"
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
         list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
@@ -462,15 +495,19 @@ public class AnnuaireBack {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
         Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
 
+
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
 
         int position = 0; //on commence à lire le fichier au début.
 
 
-        //à chaque tour on lit les données d'un stagiaire, on créé un objet stagiaire et on ajoute le stagiaire à  notre liste observable
-        while(position < raf.length()){
+        while (position < raf.length()) {
+//            System.out.println("***Nouveau tour***");
+//            System.out.println("position = " + position);
             raf.seek(position);
             Stagiaire stagiaire = extractionDonneesStagiaire(raf, position);
+//            System.out.println(stagiaire.toString());
+
             stagiaires.add(stagiaire);
             position += STAGIAIRELENGTH;
         }
@@ -482,30 +519,37 @@ public class AnnuaireBack {
 
     public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee) {
 
+
+        String nomFormatted = completer(nom, NOM);
+        String prenomFormatted = completer(prenom, PRENOM);
+        String departementFormatted = completer(departement, DEPARTEMENT);
+        String promoFormatted = completer(promo, PROMO);
+        String anneeFormatted = completer(annee, ANNEE);
+        String gauche = "";
+        String droite = "";
+
+
+
+        Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, promoFormatted, anneeFormatted, "", gauche, droite);
+
         try {
             RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+            Tree arbre = createTreeFromBin(raf);
             String adresse = String.valueOf(raf.length());
+            stagiaire.set_adresse(adresse);
             //System.out.println(adresse);
-            String nomFormatted = completer(nom, NOM);
-            String prenomFormatted = completer(prenom, PRENOM);
-            String departementFormatted = completer(departement, DEPARTEMENT);
-            String promoFormatted = completer(promo, PROMO);
-            String anneeFormatted = completer(annee, ANNEE);
-            String gauche = "";
-            String droite = "";
 
-            Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, promoFormatted, anneeFormatted, adresse, gauche, droite);
+
             Node noeud = new Node(stagiaire);
             arbre.addNode(stagiaire);
             arbre.searchInTreeWriteInBin(noeud, adresse, raf);
-            return stagiaire;
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("IOException addStagiaire()");
         }
 
-        //RETIRER DANS L'ARBRE SI NECESSAIRE
-        //arbre.addNode(stagiaire);
+        return stagiaire;
+
     }
 
     public static Stagiaire ajoutStagiaire(Stagiaire stg){
@@ -535,6 +579,8 @@ public class AnnuaireBack {
 
     public static void removeStagiaireBin(Stagiaire stagiaire) throws IOException {
 
+        RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+        Tree arbre = createTreeFromBin(raf);
 
         System.out.println("*** removeStagiaireBin commencee ***");
         String adresse = stagiaire.get_adresse().replaceAll("\\s+", ""); // supprime les espaces sinon NumberFormatException
@@ -542,9 +588,10 @@ public class AnnuaireBack {
         String nomLu = "";
 
         // On place le pointeur à l'adresse du stagiaire dans le .bin et on remplace ses données par des *
-        System.out.println("=> le pointeur est à " + raf.getFilePointer());
+
 
         raf.seek(pointeur);
+        System.out.println("=> le pointeur est à " + raf.getFilePointer());
         for (int i = 0; i < NOM; i++) {
             nomLu += raf.readChar();
         }
@@ -552,7 +599,7 @@ public class AnnuaireBack {
 
         raf.seek(pointeur);
         System.out.println("=> Réécriture ");
-        for (int i = 0; i < NOM; i++) {
+        for(int i = 0 ; i < NOM ; i++){
             raf.writeChars("*");
         }
 
@@ -574,7 +621,7 @@ public class AnnuaireBack {
             System.out.println("char charValue = " + charValue);
             String charVal = String.valueOf(charValue);
             System.out.println("String charVal = " + charVal);
-            if (charVal.compareTo("*") == 0) {
+            if(charVal.compareTo("*") == 0){
                 System.out.println("ON N'ECRIT PAS");
             } else {
                 rafTmp.writeChars(charVal);
@@ -583,20 +630,30 @@ public class AnnuaireBack {
         }
         System.out.println("Début suppression et renommage");
 
-
         // Suppression du fichier .bin
         File rafFile = new File("listeStagiaires.bin");
-        rafFile.delete();
-        System.out.println("raf initial supprimé");
+        if(rafFile.delete()){
+            System.out.println("Fichier supprimé");
+        } else {
+            System.out.println("La suppression n'a pas abouti");
+        }
 
         // Renommage du fichier .bin.tmp
         File rafFileTmp = new File("listeStagiaires.bin.tmp");
+        if(rafFileTmp.exists()){
+            System.out.println("Le fichier existe déjà");
+            boolean success = rafFileTmp.renameTo(rafFile);
+            if(!success){
+                System.out.println("Le fichier n'a pas été renommé correctement");
+            }
+        }
+
+
         rafFileTmp.renameTo(rafFile);
         System.out.println("raf tmp renommé");
 
         System.out.println("*** fin de la méthode ***");
 
+
     }
-
-
 }

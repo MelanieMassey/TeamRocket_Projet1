@@ -40,6 +40,9 @@ public class Interface extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+
+
         // Création des menus
         Menu fileMenu1 = new Menu("Connexion");
         Menu fileMenu2 = new Menu("Annuaire");
@@ -167,6 +170,7 @@ public class Interface extends Application {
 
 
         ///////MODIFICATION DES STAGIAIRES DANS LA TABLEVIEW
+
         table.setEditable(true);
         nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
         nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne NOM
@@ -246,21 +250,10 @@ public class Interface extends Application {
             }
         });
 
-
-
-
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
 
         //CREATION DE LA ZONE EDITABLE
-        TextField promotxt = new TextField();
-        promotxt.setPromptText("Promo");
-        promotxt.setPrefWidth(100);
-
-        TextField anneetxt = new TextField();
-        anneetxt.setPromptText("Année");
-        anneetxt.setPrefWidth(100);
-
         TextField nomtxt = new TextField();
         nomtxt.setPromptText("Nom");
         nomtxt.setPrefWidth(200);
@@ -273,8 +266,88 @@ public class Interface extends Application {
         departementtxt.setPromptText("Dépt");
         departementtxt.setPrefWidth(100);
 
+        TextField promotxt = new TextField();
+        promotxt.setPromptText("Promo");
+        promotxt.setPrefWidth(100);
+
+        TextField anneetxt = new TextField();
+        anneetxt.setPromptText("Année");
+        anneetxt.setPrefWidth(100);
+
+        Button btnAjouter = new Button("Ajouter");
+        Button btnSupprimer = new Button("Supprimer");
+
+        // ACTION: sélectionner un stagiaire dans le tableau
+        table.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Stagiaire>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Stagiaire> observable, Stagiaire oldValue, Stagiaire newValue) {
+                        Stagiaire oldStagiaire = oldValue == null ? null : oldValue;
+                        Stagiaire newStagiaire = newValue == null ? null : newValue;
+                        System.out.println(newStagiaire.get_nom());
+                        nomtxt.setText(newStagiaire.get_nom());
+                        prenomtxt.setText(newStagiaire.get_prenom());
+                        departementtxt.setText(newStagiaire.get_departement());
+                        promotxt.setText(newStagiaire.get_promo());
+                        anneetxt.setText((newStagiaire.get_annee()));
+                    }
+                }
+        );
+
+        //ACTION: AJOUTER UN STAGIAIRE
+        btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                // Récupération des valeurs des champs
+                String nom = nomtxt.getText();
+                String prenom = prenomtxt.getText();
+                String departement = departementtxt.getText();
+                String promo = promotxt.getText();
+                String annee = anneetxt.getText();
+
+                // Appel méthode addStagiaire
+                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+                data.add(stagiaire);
+                table.setItems(data);
+
+
+                // Vider les champs
+                nomtxt.clear();
+                prenomtxt.clear();
+                departementtxt.clear();
+                promotxt.clear();
+                anneetxt.clear();
+
+            }
+        });
+
+        //ACTION: SUPPRIMER UN STAGIAIRE
+        btnSupprimer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                // Récupération des valeurs des champs
+                String nom = nomtxt.getText();
+                String prenom = prenomtxt.getText();
+                String departement = departementtxt.getText();
+                String promo = promotxt.getText();
+                String annee = anneetxt.getText();
+
+                // Appel méthode addStagiaire
+                //Stagiaire stagiaire = AnnuaireBack.removeStagiaire(nom, prenom, departement, promo, annee);
+                //data.remove(stagiaire);
+                //table.setItems(data);
+
+                // Vider les champs
+                nomtxt.clear();
+                prenomtxt.clear();
+                departementtxt.clear();
+                promotxt.clear();
+                anneetxt.clear();
+            }
+        });
+
         //Ajout choicebox pour la recherche
-       Label rechercheLabel= new Label("Rechercher par:");
+        Label rechercheLabel= new Label("Rechercher par:");
         ComboBox filtreRecherche= new ComboBox();
         filtreRecherche.getItems().addAll("Aucun filtre","Promotion","Année","Nom","Prénom", "Département");
 
@@ -306,6 +379,7 @@ public class Interface extends Application {
         CONTENEURS
         Création Hbox pour la zone éditable */
         HBox zoneEditable = new HBox();
+
         zoneEditable.getChildren().addAll(nomtxt,prenomtxt, departementtxt, promotxt, anneetxt, rechercheLabel, filtreRecherche);
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
@@ -373,7 +447,7 @@ public class Interface extends Application {
                     raf = newAnnuaire.getRaf();
 
                     // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
-                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    data = AnnuaireBack.getStagiairesList(raf);
 
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
@@ -395,6 +469,7 @@ public class Interface extends Application {
                     RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
 
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
 
                     //On rempli la table avec la liste observable
                     table.setItems(data);
@@ -542,37 +617,33 @@ public class Interface extends Application {
             }
         });
 
-//        // ACTION: sélectionner un stagiaire dans le tableau
-//        table.getSelectionModel().selectedItemProperty().addListener(
-//                new ChangeListener<Stagiaire>() {
-//                     @Override
-//                     public void changed(ObservableValue<? extends Stagiaire> observable, Stagiaire oldValue, Stagiaire newValue) {
-//                         Stagiaire oldStagiaire = oldValue == null ? null : oldValue;
-//                         Stagiaire newStagiaire = newValue == null ? null : newValue;
-//                         System.out.println(newStagiaire.get_nom());
-//                         nomtxt.setText(newStagiaire.get_nom());
-//                         prenomtxt.setText(newStagiaire.get_prenom());
-//                         departementtxt.setText(newStagiaire.get_departement());
-//                         promotxt.setText(newStagiaire.get_promo());
-//                         anneetxt.setText((newStagiaire.get_annee()));
-//                     }
-//                 }
-//        );
+
+        // ACTION: sélectionner un stagiaire dans le tableau
+        table.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Stagiaire>() {
+                     @Override
+                     public void changed(ObservableValue<? extends Stagiaire> observable, Stagiaire oldValue, Stagiaire newValue) {
+                         Stagiaire oldStagiaire = oldValue == null ? null : oldValue;
+                         Stagiaire newStagiaire = newValue == null ? null : newValue;
+                         nomtxt.setText(newStagiaire.get_nom());
+                         prenomtxt.setText(newStagiaire.get_prenom());
+                         departementtxt.setText(newStagiaire.get_departement());
+                         promotxt.setText(newStagiaire.get_promo());
+                         anneetxt.setText((newStagiaire.get_annee()));
+                     }
+                 }
+        );
+
 
         //ACTION: SUPPRIMER UN STAGIAIRE
         supprimer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
 
                 Stagiaire stagiaire = table.getSelectionModel().getSelectedItem();
-                data.remove(stagiaire);
-                table.setItems(data);
+                System.out.println("Le stagiaire séléectionné est : " + stagiaire);
+                /*data.remove(stagiaire);
+                table.setItems(data);*/
 
                 // Suppression  du stagiaire dans le bin
                 try {
