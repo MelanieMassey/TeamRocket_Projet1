@@ -5,6 +5,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
@@ -24,12 +25,12 @@ public class AnnuaireBack {
 
     //Allocation espace total par stagiaire (incluant informations et pointeurs)
     public static final int STAGIAIRELENGTH = (PROMO + ANNEE + PRENOM + NOM + DEPARTEMENT
-            + ADRESSE+LEFTCHILD+RIGHTCHILD) * 2 ;
+            + ADRESSE + LEFTCHILD + RIGHTCHILD) * 2;
     private static RandomAccessFile raf;
-    private static String txtFile ="";
+    private static String txtFile = "";
     public static Tree arbre; // Déclaration ici pour utilisation dans plusieurs méthodes
 
-    public AnnuaireBack(String path){
+    public AnnuaireBack(String path) {
         this.txtFile = path;
         this.raf = null;
     }
@@ -38,6 +39,7 @@ public class AnnuaireBack {
     public static RandomAccessFile getRaf() {
         return raf;
     }
+
     public static void setRaf(RandomAccessFile raf) {
         AnnuaireBack.raf = raf;
     }
@@ -45,6 +47,7 @@ public class AnnuaireBack {
     public static String getTxtFile() {
         return txtFile;
     }
+
     public static void setTxtFile(String txtFile) {
         AnnuaireBack.txtFile = txtFile;
 
@@ -53,7 +56,7 @@ public class AnnuaireBack {
     // METHODES
     public void creerAnnuaire() {
 
-        try{
+        try {
 
             this.raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             txtFileToBinFile(this.txtFile, this.raf);
@@ -65,7 +68,7 @@ public class AnnuaireBack {
 //            extractionDonneesStagiaire(raf, 0);
             rechercherStagiaireBin(raf, "2008", "annee");
 
-        }catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -80,7 +83,7 @@ public class AnnuaireBack {
         //Déclaration variables (et initialisation)
         String ligne = "";
         String mot;
-        String mot_promo="", mot_prenom="", mot_departement="", mot_nom="", mot_annee="", mot_adresse="";
+        String mot_promo = "", mot_prenom = "", mot_departement = "", mot_nom = "", mot_annee = "", mot_adresse = "";
         int adresse = 0;
         String gauche = "", droite = "";
 
@@ -106,26 +109,26 @@ public class AnnuaireBack {
                 switch (linenumber) {
                     case 0:
                         mot_promo = mot;
-                        mot_promo= completer(mot_promo, PROMO);
+                        mot_promo = completer(mot_promo, PROMO);
 
                         break;
                     case 1:
-                        mot_annee =mot;
+                        mot_annee = mot;
                         mot_annee = completer(mot_annee, ANNEE);
 
                         break;
                     case 2:
-                        mot_nom=mot;
+                        mot_nom = mot;
                         mot_nom = completer(mot_nom, NOM);
 
                         break;
                     case 3:
-                        mot_prenom=mot;
+                        mot_prenom = mot;
                         mot_prenom = completer(mot_prenom, PRENOM);
 
                         break;
                     case 4:
-                        mot_departement=mot;
+                        mot_departement = mot;
                         mot_departement = completer(mot_departement, DEPARTEMENT);
 
                         break;
@@ -133,12 +136,12 @@ public class AnnuaireBack {
 
                         // System.out.println("Adresse in = " + adresse);
                         String adresseToString = Integer.toString(adresse);
-                        mot_adresse =  completer(adresseToString, ADRESSE);
-                        gauche=completer(gauche, LEFTCHILD);
-                        droite=completer(droite, RIGHTCHILD);
+                        mot_adresse = completer(adresseToString, ADRESSE);
+                        gauche = completer(gauche, LEFTCHILD);
+                        droite = completer(droite, RIGHTCHILD);
 
                         //Creation d'un objet stagiaire
-                        Stagiaire stagiaire= new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, mot_adresse, gauche, droite);
+                        Stagiaire stagiaire = new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, mot_adresse, gauche, droite);
                         //Ajout de l'objet dans l'arbre
                         arbre.addNode(stagiaire);
 
@@ -162,10 +165,10 @@ public class AnnuaireBack {
             //Ecriture des données dans le fichier binaire
 
             for (int j = 0; j <= compteurStagiaires; j++) {
-                int key=STAGIAIRELENGTH * j;
+                int key = STAGIAIRELENGTH * j;
                 raf.seek(key);
                 String keyString = completer(Integer.toString(key), ADRESSE);
-                arbre.searchInTreeWriteInBin(arbre.root, keyString,raf);
+                arbre.searchInTreeWriteInBin(arbre.root, keyString, raf);
             }
 
         } catch (FileNotFoundException e) {
@@ -177,8 +180,7 @@ public class AnnuaireBack {
         }
     }
 
-    public static String stripAccents(String s)
-    {
+    public static String stripAccents(String s) {
         s = Normalizer.normalize(s, Normalizer.Form.NFD);
         s = s.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
         return s;
@@ -210,8 +212,8 @@ public class AnnuaireBack {
 
         try {
             raf.seek(0);
-            int compteurStagiaire = (int) raf.length()/STAGIAIRELENGTH ;
-            int taille1 = NOM + PRENOM + DEPARTEMENT + ANNEE + PROMO + ADRESSE + LEFTCHILD+ RIGHTCHILD  ;
+            int compteurStagiaire = (int) raf.length() / STAGIAIRELENGTH;
+            int taille1 = NOM + PRENOM + DEPARTEMENT + ANNEE + PROMO + ADRESSE + LEFTCHILD + RIGHTCHILD;
 
             for (int j = 0; j <= compteurStagiaire; j++) {
                 String chaine = "";
@@ -225,8 +227,8 @@ public class AnnuaireBack {
 
     }
 
-    public static void appendToBinary(Stagiaire stagiaire, RandomAccessFile raf){
-        try  {
+    public static void appendToBinary(Stagiaire stagiaire, RandomAccessFile raf) {
+        try {
             raf.seek(raf.length());
             raf.writeChars(stagiaire.get_nom());           //write UTF ???
             raf.writeChars(stagiaire.get_prenom());
@@ -245,13 +247,13 @@ public class AnnuaireBack {
         }
     }
 
-    public static void updateInBinary(Stagiaire stagiaire) throws IOException{
+    public static void updateInBinary(Stagiaire stagiaire) throws IOException {
 
         String adresse = stagiaire.get_adresse().replaceAll("\\s+", "");
         System.out.println(adresse);
         int position = Integer.valueOf(adresse);
         System.out.println(position);
-        try  {
+        try {
             RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             raf.seek(position);
             raf.writeChars(stagiaire.get_nom());           //write UTF ???
@@ -283,70 +285,69 @@ public class AnnuaireBack {
         try {
             // Extraction du nom
             raf.seek(pointeur); // Pointeur placé au début d'un stagiaire
-            for(int i=0; i<NOM; i++){
+            for (int i = 0; i < NOM; i++) {
                 nomLu += raf.readChar();
             }
             nom = completer(nomLu, NOM);
-            pointeur += NOM*2;
+            pointeur += NOM * 2;
 
             // Extraction du prénom
             raf.seek(pointeur); // Pointeur déplacé sur premier caractère du prénom
-            for(int i=0; i<PRENOM; i++){
+            for (int i = 0; i < PRENOM; i++) {
                 prenomLu += raf.readChar();
             }
             prenom = completer(prenomLu, PRENOM);
-            pointeur += PRENOM*2;
+            pointeur += PRENOM * 2;
 
             // Extraction du département
             raf.seek(pointeur); // Pointeur déplacé sur département
-            for(int i=0; i<DEPARTEMENT; i++){
+            for (int i = 0; i < DEPARTEMENT; i++) {
                 departementLu += raf.readChar();
             }
             departement = completer(departementLu, DEPARTEMENT);
-            pointeur += DEPARTEMENT*2;
+            pointeur += DEPARTEMENT * 2;
 
             // Extraction de l'année
             raf.seek(pointeur); // Pointeur déplacé sur année
-            for(int i=0; i<ANNEE; i++){
+            for (int i = 0; i < ANNEE; i++) {
                 anneeLu += raf.readChar();
             }
             annee = completer(anneeLu, ANNEE);
-            pointeur += ANNEE*2;
+            pointeur += ANNEE * 2;
 
             // Extraction de la promo
             raf.seek(pointeur); // Pointeur déplacé sur promo
-            for(int i=0; i<PROMO; i++){
+            for (int i = 0; i < PROMO; i++) {
                 promoLu += raf.readChar();
             }
             promo = completer(promoLu, PROMO);
-            pointeur += PROMO*2;
+            pointeur += PROMO * 2;
 
             // Extraction de l'adresse
             raf.seek(pointeur); // Pointeur déplacé sur adresse
-            for(int i=0; i<ADRESSE; i++){
+            for (int i = 0; i < ADRESSE; i++) {
                 adresseLu += raf.readChar();
             }
-            adresse = completer(adresseLu, PROMO);
-            pointeur += ADRESSE*2;
+            adresse = completer(adresseLu, ADRESSE);
+            pointeur += ADRESSE * 2;
 
             // Extraction de gauche
             raf.seek(pointeur); // Pointeur déplacé sur gauche
-            for(int i=0; i<LEFTCHILD; i++){
+            for (int i = 0; i < LEFTCHILD; i++) {
                 gaucheLu += raf.readChar();
             }
-            gauche = completer(gaucheLu, PROMO);
-            pointeur += LEFTCHILD*2;
+            gauche = completer(gaucheLu, LEFTCHILD);
+            pointeur += LEFTCHILD * 2;
 
             // Extraction de droite
             raf.seek(pointeur); // Pointeur déplacé sur droite
-            for(int i=0; i<RIGHTCHILD; i++){
+            for (int i = 0; i < RIGHTCHILD; i++) {
                 droiteLu += raf.readChar();
             }
-            droite = completer(droiteLu, PROMO);
+            droite = completer(droiteLu, RIGHTCHILD);
 
 
-
-        } catch (Exception e){
+        } catch (Exception e) {
             System.out.println("IOFEXCEPTION");
         }
         return new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite);
@@ -365,7 +366,7 @@ public class AnnuaireBack {
         List<Stagiaire> stagiaires = new Vector<Stagiaire>(); // pour stocker les stagiaires correspondants à la recherche
 
         // Détermine la valeur de dataSPace en fonction du type de donnée recherchée (nom, prénom...)
-        switch (nomDonnee){
+        switch (nomDonnee) {
             case "nom":
                 dataSpace = NOM;
                 position = 0;
@@ -373,23 +374,23 @@ public class AnnuaireBack {
                 break;
             case "prenom":
                 dataSpace = PRENOM;
-                position = NOM*2;
-                positionExtraction = NOM*2;
+                position = NOM * 2;
+                positionExtraction = NOM * 2;
                 break;
             case "departement":
                 dataSpace = DEPARTEMENT;
-                position = (NOM+PRENOM)*2;
-                positionExtraction = (NOM+PRENOM)*2;
+                position = (NOM + PRENOM) * 2;
+                positionExtraction = (NOM + PRENOM) * 2;
                 break;
             case "annee":
                 dataSpace = ANNEE;
-                position = (NOM+PRENOM+DEPARTEMENT)*2;
-                positionExtraction = (NOM+PRENOM+DEPARTEMENT)*2;
+                position = (NOM + PRENOM + DEPARTEMENT) * 2;
+                positionExtraction = (NOM + PRENOM + DEPARTEMENT) * 2;
                 break;
             case "promo":
                 dataSpace = PROMO;
-                position = (NOM+PRENOM+DEPARTEMENT+ANNEE)*2;
-                positionExtraction = (NOM+PRENOM+DEPARTEMENT+ANNEE)*2;
+                position = (NOM + PRENOM + DEPARTEMENT + ANNEE) * 2;
+                positionExtraction = (NOM + PRENOM + DEPARTEMENT + ANNEE) * 2;
                 break;
         }
 
@@ -404,7 +405,7 @@ public class AnnuaireBack {
         String motSearchedComplete = completer(motSearched, dataSpace);
 
         // Recherche dans le fichier .BIN
-        while(position < raf.length()){
+        while (position < raf.length()) {
             System.out.println("\n--- Début boucle ---");
 
             String mot = "";
@@ -414,18 +415,18 @@ public class AnnuaireBack {
             System.out.println("Le pointeur est à l'endroit " + raf.getFilePointer());
 
             // Lecture du mot
-            for(int i=0 ; i< dataSpace ; i++){
+            for (int i = 0; i < dataSpace; i++) {
                 mot += raf.readChar();
             }
             System.out.println("Le mot lu est : " + mot);
 
             // 2.1. Comparaison du mot récupéré avec le mot recherché formatté
-            if(mot.equals(motSearchedComplete)){
+            if (mot.equals(motSearchedComplete)) {
                 // 2.2. Si mot correspond, alors on instancie un Stagiaire
                 System.out.println("=> Mot cherché =  mot parcouru");
-                System.out.println("=> Position pour extraction = " + (position-positionExtraction));
+                System.out.println("=> Position pour extraction = " + (position - positionExtraction));
 
-                Stagiaire stagiaire = extractionDonneesStagiaire(raf, position-positionExtraction);
+                Stagiaire stagiaire = extractionDonneesStagiaire(raf, position - positionExtraction);
 
                 // 2.3. Et on le stock dans le liste "stagiaires"
                 stagiaires.add(stagiaire);
@@ -454,13 +455,13 @@ public class AnnuaireBack {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
 //        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
 
-      System.out.println("getStagiairesList démarrée");
+        System.out.println("getStagiairesList démarrée");
         System.out.println(raf.length());
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
 
         int position = 0;
 
-        while(position < raf.length()){
+        while (position < raf.length()) {
             System.out.println("***Nouveau tour***");
             System.out.println("position = " + position);
             raf.seek(position);
@@ -477,7 +478,7 @@ public class AnnuaireBack {
     }
 
 
-    public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee){
+    public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee) {
 
         try {
             String adresse = String.valueOf(raf.length());
@@ -516,21 +517,21 @@ public class AnnuaireBack {
         System.out.println("=> le pointeur est à " + raf.getFilePointer());
 
         raf.seek(pointeur);
-        for(int i=0; i<NOM; i++){
+        for (int i = 0; i < NOM; i++) {
             nomLu += raf.readChar();
         }
         System.out.println("=> Vérification nom à l'adresse " + raf.getFilePointer() + " => " + nomLu);
 
         raf.seek(pointeur);
         System.out.println("=> Réécriture ");
-        for(int i = 0 ; i < NOM ; i++){
+        for (int i = 0; i < NOM; i++) {
             raf.writeChars("*");
         }
 
         raf.seek(pointeur);
         System.out.println("=> le pointeur est à " + raf.getFilePointer());
         nomLu = "";
-        for(int i=0; i<NOM; i++){
+        for (int i = 0; i < NOM; i++) {
             nomLu += raf.readChar();
         }
         System.out.println("Vérification de ce qui est écrit maintenant à l'adresse " + raf.getFilePointer() + " => " + nomLu);
@@ -540,12 +541,12 @@ public class AnnuaireBack {
         System.out.println("Création de rafTmp" + rafTmp);
 
         raf.seek(0);
-        for(int i=0 ; i < raf.length() ; i++){
+        for (int i = 0; i < raf.length(); i++) {
             char charValue = raf.readChar();
             System.out.println("char charValue = " + charValue);
             String charVal = String.valueOf(charValue);
             System.out.println("String charVal = " + charVal);
-            if(charVal.compareTo("*") == 0){
+            if (charVal.compareTo("*") == 0) {
                 System.out.println("ON N'ECRIT PAS");
             } else {
                 rafTmp.writeChars(charVal);
@@ -553,8 +554,6 @@ public class AnnuaireBack {
             }
         }
         System.out.println("Début suppression et renommage");
-
-
 
 
         // Suppression du fichier .bin
@@ -570,5 +569,6 @@ public class AnnuaireBack {
         System.out.println("*** fin de la méthode ***");
 
     }
+
 
 }

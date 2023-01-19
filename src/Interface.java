@@ -25,10 +25,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javax.security.auth.callback.Callback;
+import javax.swing.*;
 import java.io.*;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.Scanner;
+import java.lang.reflect.Array;
+import java.util.*;
 
 import static javafx.scene.paint.Color.*;
 
@@ -47,8 +47,16 @@ public class Interface extends Application {
 
         // Création du menuItem pour la connexion
         MenuItem connexion = new MenuItem("S'identifier");
+       // MenuItem modifId = new MenuItem("Modifier ses identifiants");
+        Menu menuModifId = new Menu("Modifier ses paramètres de connnexion");
+        menuModifId.setDisable(true);
+        MenuItem changeId = new MenuItem("Identifiant");
+        MenuItem changePswd = new MenuItem("Mot de passe");
+
+
         // Ajout des MenuItems au Menu Connexion
-        fileMenu1.getItems().add(connexion);
+        fileMenu1.getItems().addAll(connexion, menuModifId);
+        menuModifId.getItems().addAll(changeId,changePswd);
 
         // Création des MenuItems du Menu Annuaire
         MenuItem annuaire1 = new MenuItem("Exporter en PDF");
@@ -242,7 +250,7 @@ public class Interface extends Application {
         prenomtxt.setPrefWidth(200);
 
         TextField departementtxt = new TextField();
-        departementtxt.setPromptText("Département");
+        departementtxt.setPromptText("Dépt");
         departementtxt.setPrefWidth(100);
 
         //Ajout choicebox pour la recherche
@@ -269,7 +277,7 @@ public class Interface extends Application {
         // Ajout des MenuItems au Menu Connexion
         updateMenu.getItems().addAll(ajouter,supprimer,modifier);
         modifier.setDisable(true);
-        supprimer.setDisable(false);
+        supprimer.setDisable(true);
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
@@ -331,7 +339,7 @@ public class Interface extends Application {
         ouvrirfichier.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
+                //On rempli la table avec la liste observable
 
                 RandomAccessFile raf;
                 String txtFile = "src/stagiaires.txt";
@@ -343,7 +351,10 @@ public class Interface extends Application {
                 try {
                     //on créé le fichier binaire à partir du fichier txt
                     raf = newAnnuaire.getRaf();
+
+                    // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
                     raf.close();
@@ -392,22 +403,19 @@ public class Interface extends Application {
         filtreRecherche.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                String motSearched;
                 ObservableList<Stagiaire> result = FXCollections.observableArrayList();
-
-
-                String selection= filtreRecherche.getValue().toString();
+                String motSearched;
+                String selection = filtreRecherche.getValue().toString();
+                System.out.println(selection);
 
                 try {
-
-                    RandomAccessFile raf= new RandomAccessFile("listeStagiaires.bin", "rw");
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
 
                     switch (selection) {
                         case "Promotion":
                             motSearched = promotxt.getText();
-                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "promotion");
+                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "promo");
                             break;
                         case "Année":
                             motSearched = anneetxt.getText();
@@ -435,21 +443,67 @@ public class Interface extends Application {
                             break;
                     }
                     //table.setItems(result);
-                } catch(IOException e){
-                        System.out.println("erreur de chargement du fichier bin");
-                        throw new RuntimeException(e);
-                    }
-
+                } catch (IOException e) {
+                    System.out.println("erreur de chargement du fichier bin");
+                    throw new RuntimeException(e);
+                }
                 promotxt.clear();
                 prenomtxt.clear();
                 nomtxt.clear();
                 anneetxt.clear();
                 departementtxt.clear();
 
+               /* if (selection == "Prénom") {
+                    try {
+                        RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+                       // ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                        ObservableList<Stagiaire> listResult = FXCollections.observableArrayList();
+
+                        String promoSearched = promotxt.getText();
+                        String anneeSearched = anneetxt.getText();
+                        String nomSearched = nomtxt.getText();
+                        String prenomSearched = prenomtxt.getText();
+                        String dptSearched = departementtxt.getText();
+
+
+                        if (promoSearched!=null){
+                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, promoSearched, "promo");
+                        }
+                        if (anneeSearched!=null){
+                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, anneeSearched, "annee");
+                        }
+                        if (nomSearched!=null){
+                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, nomSearched, "nom");
+                        }
+                        if (prenomSearched!=null){
+                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, prenomSearched, "prenom");
+                        }
+                        if (dptSearched!=null){
+                            listResult = AnnuaireBack.rechercherStagiaireBin(raf, dptSearched, "departement");
+
+                        table.setItems(listResult);
+
+                            //table.setItems(result);
+                        } catch(IOException e){
+                            System.out.println("erreur de chargement du fichier bin");
+                            throw new RuntimeException(e);
+                        }
+
+                        promotxt.clear();
+                        prenomtxt.clear();
+                        nomtxt.clear();
+                        anneetxt.clear();
+                        departementtxt.clear();
+
+                    }*/
+
+
+
+
+
                 }
 
-
-        });
+            });
 
         //Action: ajouter un stagiaire
         ajouter.setOnAction(new EventHandler<ActionEvent>() {
@@ -546,16 +600,16 @@ public class Interface extends Application {
                 dialog.setTitle("Connexion");
                 dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
                         LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
-                dialog.getDialogPane().setMinSize(400.0,300.0);
-                dialog.setHeaderText("Veuillez vous identifier");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+                dialog.getDialogPane().setMinSize(200.0, 200.0);
+                dialog.setHeaderText("Veuillez saisir vos identifiants");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
 
                 //Création des champs de saisie
                 TextField identifiant = new TextField();
                 identifiant.setPromptText("Identifiant");
-                Label idLabel=new Label("Identifiant:");
-
-                Label pswLabel =new Label("Mot de passe:");
+                Label idLabel = new Label("Identifiant:");
+                Label pswLabel = new Label("Mot de passe:");
                 PasswordField password = new PasswordField();
                 password.setPromptText("Mot de passe");
 
@@ -567,25 +621,133 @@ public class Interface extends Application {
                 dialog.getDialogPane().setContent(contenu);
                 dialog.setResultConverter(dialogButton -> {
                     if (dialogButton == ButtonType.OK) {
-                        return password.getText() + identifiant.getText();
-                        //ajouter comparaison classes Admin/super-Admin
+                        ObservableList<Administrateur> listeAdmin = FXCollections.observableArrayList();
+
+                        //création liste identifiants pour la comparaison
+                        listeAdmin = getAdminList();
+                        System.out.println(listeAdmin);
+
+                        //Création d'un objet avec password et identifiant
+                        String pswd = password.getText();
+                        String id = identifiant.getText();
+
+                        Administrateur checkAdmin = new Administrateur(id,pswd,null,null);
+                        System.out.println(checkAdmin);
+                       // boolean check=listeAdminId.contains(checkAdmin);
+                        boolean check=Administrateur.checkList(checkAdmin,listeAdmin );
+                        System.out.println(check);
+
+                        //vérification des champs
+                        if (id.isEmpty() || pswd.isEmpty()) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Merci de renseigner les deux champs");
+                            alert.showAndWait();
+                        } else if (check==false) {
+                            System.out.println("not in the list");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Identifiants incorrects");
+                            alert.showAndWait();
+
+                            //} else if (listeAdminId.contains(checkAdmin)==true) {
+                        } else if (check==true) {
+                            System.out.println("in the list");
+                            modifier.setDisable(false);
+                            supprimer.setDisable(false);
+                            menuModifId.setDisable(false);
+                            JOptionPane.showMessageDialog(null,"Connexion réussie");
+                           // dialog.close();
+                        }
                     }
                     return null;
                 });
 
                 Optional<String> result = dialog.showAndWait();
-                if (result.isPresent()) {
-                    System.out.println(result.get());
-                }
+               /* if (result.isPresent()) {
+                   System.out.println(result.get());
+               }*/
             }
         });
 
+        /*modifId.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+
+                //Création d'une boîte de dialogue pour la connexion Administrateur
+                Dialog<String> dialog = new Dialog<>();
+                //dialog.setTitle("Modification Identifiants");
+                dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
+                        LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
+                dialog.getDialogPane().setMinSize(300.0, 300.0);
+                dialog.setHeaderText("Modification de vos identifiants de connexion");
+                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+
+                //Création des champs de saisie
+                TextField identifiant = new TextField();
+                identifiant.setPromptText("Identifiant");
+                Label idLabel = new Label("Identifiant:");
+                Label pswLabel = new Label("Mot de passe:");
+                PasswordField password = new PasswordField();
+                password.setPromptText("Mot de passe");
+
+                //création VBox
+                VBox contenu = new VBox();
+                contenu.setAlignment(Pos.CENTER_LEFT);
+                contenu.setSpacing(20);
+                contenu.getChildren().addAll(idLabel, identifiant, pswLabel, password);
+                dialog.getDialogPane().setContent(contenu);
+                // final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+                //btOk.addEventFilter(ActionEvent.ACTION, event -> {
+                dialog.setResultConverter(dialogButton -> {
+                    if (dialogButton == ButtonType.OK) {
+
+                        if (id.isEmpty() || pswd.isEmpty()) {
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Merci de renseigner les deux champs");
+                            alert.showAndWait();
+                        } else if (check==false) {
+                            System.out.println("not in the list");
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setHeaderText(null);
+                            alert.setContentText("Identifiants incorrects");
+                            alert.showAndWait();
+
+                            //} else if (listeAdminId.contains(checkAdmin)==true) {
+                        } else if (check==true) {
+                            System.out.println("in the list");
+                            modifier.setDisable(false);
+                            supprimer.setDisable(false);
+                            JOptionPane.showMessageDialog(null,"Connexion réussie");
+                            // dialog.close();
+                        }
+                    }
+                    return null;
+                });
+                Optional<String> result = dialog.showAndWait();
+
+            }
+        });
+
+         */
 
 
     }
 
-   public static void main(String[] args) {
+    //Methodes
+
+    private ObservableList<Administrateur> getAdminList() {
+        Administrateur admin1 = new Administrateur("MaJe", "password1","Machin", "Jean");
+        Administrateur admin2 = new Administrateur("DuPa","password2","Dupond", "Paul");
+        Administrateur admin3 = new Administrateur("DuMa","password3","Durand", "Martine");
+        ObservableList<Administrateur> list = FXCollections.observableArrayList(admin1,admin2,admin3);
+        return list;
+    }
+    public static void main(String[] args) {
         launch(args);
 
     }
+
+
 }
