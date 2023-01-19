@@ -530,12 +530,12 @@ public class AnnuaireBack {
 
 
 
-        Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, promoFormatted, anneeFormatted, "", gauche, droite);
+        Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, anneeFormatted, promoFormatted, "", gauche, droite);
 
         try {
             RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             Tree arbre = createTreeFromBin(raf);
-            String adresse = String.valueOf(raf.length());
+            String adresse = completer(String.valueOf(raf.length()), ANNEE);
             stagiaire.set_adresse(adresse);
             //System.out.println(adresse);
 
