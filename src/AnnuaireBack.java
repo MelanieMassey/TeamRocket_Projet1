@@ -580,6 +580,8 @@ public class AnnuaireBack {
     public static void removeStagiaireBin(Stagiaire stagiaire) throws IOException {
 
         RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+        File rafFile = new File("listeStagiaires.bin");
+
         Tree arbre = createTreeFromBin(raf);
 
         System.out.println("*** removeStagiaireBin commencee ***");
@@ -627,30 +629,31 @@ public class AnnuaireBack {
                 rafTmp.writeChars(charVal);
                 System.out.println("Ecriture du char dans le fichier Tmp");
             }
+
         }
         System.out.println("Début suppression et renommage");
 
         // Suppression du fichier .bin
-        File rafFile = new File("listeStagiaires.bin");
-        if(rafFile.delete()){
+
+        /*if(rafFile.delete()){
             System.out.println("Fichier supprimé");
         } else {
             System.out.println("La suppression n'a pas abouti");
-        }
+        }*/
 
         // Renommage du fichier .bin.tmp
-        File rafFileTmp = new File("listeStagiaires.bin.tmp");
+        /*File rafFileTmp = new File("listeStagiaires.bin.tmp");
         if(rafFileTmp.exists()){
             System.out.println("Le fichier existe déjà");
             boolean success = rafFileTmp.renameTo(rafFile);
             if(!success){
                 System.out.println("Le fichier n'a pas été renommé correctement");
             }
-        }
+        }*/
 
 
-        rafFileTmp.renameTo(rafFile);
-        System.out.println("raf tmp renommé");
+        /*rafFileTmp.renameTo(rafFile);
+        System.out.println("raf tmp renommé");*/
 
         System.out.println("*** fin de la méthode ***");
 

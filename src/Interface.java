@@ -171,84 +171,7 @@ public class Interface extends Application {
 
         ///////MODIFICATION DES STAGIAIRES DANS LA TABLEVIEW
 
-        table.setEditable(true);
-        nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne NOM
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
 
-                Stagiaire stg = event.getRowValue();
-                //on remplace le nom changé dans le stagiaire
-                stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
-
-                try {
-                    AnnuaireBack.updateBinary(table.getItems());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
-        prenomCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        prenomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne PRENOM
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
-
-                Stagiaire stg = event.getRowValue();
-                stg.set_prenom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PRENOM));
-
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        deptCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        deptCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne DEPARTEMENT
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
-
-                Stagiaire stg = event.getRowValue();
-                stg.set_departement(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.DEPARTEMENT));
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
-        promoCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        promoCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne PROMO
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
-
-                Stagiaire stg = event.getRowValue();
-                stg.set_promo(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PROMO));
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
-        anneeCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        anneeCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne ANNEE
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
-
-                Stagiaire stg = event.getRowValue();
-                stg.set_annee(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.ANNEE));
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
 
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
@@ -370,7 +293,7 @@ public class Interface extends Application {
         // Ajout des MenuItems au Menu Connexion
         updateMenu.getItems().addAll(ajouter,supprimer,modifier);
         modifier.setDisable(true);
-        supprimer.setDisable(true);
+        supprimer.setDisable(false);
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
@@ -740,6 +663,86 @@ public class Interface extends Application {
                             menuModifId.setDisable(false);
                             JOptionPane.showMessageDialog(null,"Connexion réussie");
                            // dialog.close();
+
+                            //MODIF DU TABLEAU ACTIVEE
+                            table.setEditable(true);
+                            nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne NOM
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    //on remplace le nom changé dans le stagiaire
+                                    stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
+
+                                    try {
+                                        AnnuaireBack.updateBinary(table.getItems());
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
+                            prenomCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            prenomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne PRENOM
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_prenom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PRENOM));
+
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
+                            deptCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            deptCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne DEPARTEMENT
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_departement(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.DEPARTEMENT));
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
+                            promoCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            promoCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne PROMO
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_promo(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PROMO));
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
+                            anneeCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            anneeCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne ANNEE
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_annee(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.ANNEE));
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
                         }
                     }
                     return null;
