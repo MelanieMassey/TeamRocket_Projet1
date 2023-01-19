@@ -1,3 +1,5 @@
+import java.lang.reflect.Array;
+
 public class test {
 
     public static void main(String[] args) {
@@ -14,6 +16,12 @@ public class test {
         System.out.println(token.equals(token2));
         //int compare= token2.compareTo(token);
        // System.out.println(compare);
+        String[][] myArray = new String[4][];
+
+
+
+
+
 
 
 
