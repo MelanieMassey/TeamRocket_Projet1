@@ -87,15 +87,12 @@ public class AnnuaireBack {
         int adresse = 0;
         String gauche = "", droite = "";
 
-
         //Initialisation des compteurs pour les lignes du fichier et pour les stagiaires
         int linenumber = 0;
         int compteurStagiaires = 0;
 
-
         // Creation d'un nouvel arbre
         arbre = new Tree();
-
         try {
             //Lecture du fichier text
             FileReader fichierOriginal = new FileReader(PathTxtFile);
@@ -144,7 +141,6 @@ public class AnnuaireBack {
                         Stagiaire stagiaire = new Stagiaire(mot_nom, mot_prenom, mot_departement, mot_annee, mot_promo, mot_adresse, gauche, droite);
                         //Ajout de l'objet dans l'arbre
                         arbre.addNode(stagiaire);
-
                         //Incrémentation du compteur stagiaire
                         compteurStagiaires += 1;
                         //Réinitialisation du compteur de ligne
@@ -158,12 +154,10 @@ public class AnnuaireBack {
                 }
                 // Incrémentation du compteur de lignes
                 linenumber += 1;
-
             }
 
 
             //Ecriture des données dans le fichier binaire
-
             for (int j = 0; j <= compteurStagiaires; j++) {
                 int key = STAGIAIRELENGTH * j;
                 raf.seek(key);
@@ -247,13 +241,13 @@ public class AnnuaireBack {
         }
     }
 
+
     public static void updateInBinary(Stagiaire stagiaire) throws IOException {
 
         String adresse = stagiaire.get_adresse().replaceAll("\\s+", "");
-        System.out.println(adresse);
         int position = Integer.valueOf(adresse);
-        System.out.println(position);
-        try {
+        try  {
+
             RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             raf.seek(position);
             raf.writeChars(stagiaire.get_nom());           //write UTF ???
@@ -266,7 +260,6 @@ public class AnnuaireBack {
             raf.writeChars(stagiaire.get_gauche());
             raf.seek(0);
             //raf.close();
-            System.out.println("Données modifiées");
         } catch (IOException e) {
             System.out.println("Erreur lors de l'écriture des données");
             e.printStackTrace();
@@ -275,7 +268,6 @@ public class AnnuaireBack {
 
 
     public static Stagiaire extractionDonneesStagiaire(RandomAccessFile raf, int position) {
-        System.out.println("Extraction données d'un stagiaire démarrée");
 
         String nomLu = "", prenomLu = "", departementLu = "", anneeLu = "", promoLu = "", adresseLu = "", gaucheLu = "", droiteLu = "";
         String nom = "", prenom = "", departement = "", annee = "", promo = "", adresse = "", gauche = "", droite = "";
@@ -310,6 +302,7 @@ public class AnnuaireBack {
             // Extraction de l'année
             raf.seek(pointeur); // Pointeur déplacé sur année
             for (int i = 0; i < ANNEE; i++) {
+
                 anneeLu += raf.readChar();
             }
             annee = completer(anneeLu, ANNEE);
@@ -431,7 +424,6 @@ public class AnnuaireBack {
                 // 2.3. Et on le stock dans le liste "stagiaires"
                 stagiaires.add(stagiaire);
 
-                System.out.println("~ Données stagiaire extrait ~");
                 System.out.println(stagiaire.toString());
 
             } else {
@@ -453,27 +445,22 @@ public class AnnuaireBack {
 
     public static ObservableList<Stagiaire> getStagiairesList(RandomAccessFile raf) throws IOException {
         // COMPARATOR POUR TRI PAR ORDRE ALPHABETIQUE
-//        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
+        Comparator<Stagiaire> comparator = Comparator.comparing(Stagiaire::get_nom);
 
-        System.out.println("getStagiairesList démarrée");
-        System.out.println(raf.length());
         List<Stagiaire> stagiaires = new Vector<Stagiaire>();
 
-        int position = 0;
+        int position = 0; //on commence à lire le fichier au début.
 
-        while (position < raf.length()) {
-            System.out.println("***Nouveau tour***");
-            System.out.println("position = " + position);
+
+        //à chaque tour on lit les données d'un stagiaire, on créé un objet stagiaire et on ajoute le stagiaire à  notre liste observable
+        while(position < raf.length()){
             raf.seek(position);
             Stagiaire stagiaire = extractionDonneesStagiaire(raf, position);
-            System.out.println(stagiaire.toString());
             stagiaires.add(stagiaire);
             position += STAGIAIRELENGTH;
-//            System.out.println(" future position = " + position);
         }
-
         ObservableList<Stagiaire> list = FXCollections.observableArrayList(stagiaires);
-//        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
+        list.sort(comparator); // Utilisation du comparator pour trier par ordre alpha
         return list;
     }
 
@@ -481,6 +468,7 @@ public class AnnuaireBack {
     public static Stagiaire addStagiaire(String nom, String prenom, String departement, String promo, String annee) {
 
         try {
+            RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             String adresse = String.valueOf(raf.length());
             //System.out.println(adresse);
             String nomFormatted = completer(nom, NOM);
@@ -496,6 +484,31 @@ public class AnnuaireBack {
             arbre.addNode(stagiaire);
             arbre.searchInTreeWriteInBin(noeud, adresse, raf);
             return stagiaire;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        //RETIRER DANS L'ARBRE SI NECESSAIRE
+        //arbre.addNode(stagiaire);
+    }
+
+    public static Stagiaire ajoutStagiaire(Stagiaire stg){
+
+        try {
+            RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+            String adresse = String.valueOf(raf.length());
+            //System.out.println(adresse);
+//
+//            Stagiaire stagiaire = new Stagiaire(completer(nom, NOM),
+//                    completer(prenom, PRENOM),
+//                    completer(departement, DEPARTEMENT),
+//                    completer(promo, PROMO),
+//                    completer(annee, ANNEE), adresse, "", "");
+            Node noeud = new Node(stg);
+            arbre.addNode(stg);
+            arbre.searchInTreeWriteInBin(noeud, adresse, raf);
+            return stg;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
