@@ -217,57 +217,7 @@ public class Interface extends Application {
                 }
         );
 
-        //ACTION: AJOUTER UN STAGIAIRE
-        btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
 
-                // Appel méthode addStagiaire
-                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
-                data.add(stagiaire);
-                table.setItems(data);
-
-
-                // Vider les champs
-                nomtxt.clear();
-                prenomtxt.clear();
-                departementtxt.clear();
-                promotxt.clear();
-                anneetxt.clear();
-
-            }
-        });
-
-        //ACTION: SUPPRIMER UN STAGIAIRE
-        btnSupprimer.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
-
-                // Appel méthode addStagiaire
-                //Stagiaire stagiaire = AnnuaireBack.removeStagiaire(nom, prenom, departement, promo, annee);
-                //data.remove(stagiaire);
-                //table.setItems(data);
-
-                // Vider les champs
-                nomtxt.clear();
-                prenomtxt.clear();
-                departementtxt.clear();
-                promotxt.clear();
-                anneetxt.clear();
-            }
-        });
 
         //Ajout choicebox pour la recherche
         Label rechercheLabel= new Label("Rechercher par:");
@@ -518,24 +468,36 @@ public class Interface extends Application {
         ajouter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
+                RandomAccessFile raf = null;
+                try {
+                    raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    // Récupération des valeurs des champs
+                    String nom = nomtxt.getText();
+                    String prenom = prenomtxt.getText();
+                    String departement = departementtxt.getText();
+                    String promo = promotxt.getText();
+                    String annee = anneetxt.getText();
 
-                // Appel méthode addStagiaire
-                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
-                data.add(stagiaire); // data déclaré ligne 38 pour pouvoir être utilisé dans plusieurs méthodes
-                table.setItems(data);
+                    // Appel méthode addStagiaire
+                    Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+                    data.add(stagiaire); // data déclaré ligne 38 pour pouvoir être utilisé dans plusieurs méthodes
+                    table.setItems(data);
 
-                // Vider les champs
-                nomtxt.clear();
-                prenomtxt.clear();
-                departementtxt.clear();
-                promotxt.clear();
-                anneetxt.clear();
+                    // Vider les champs
+                    nomtxt.clear();
+                    prenomtxt.clear();
+                    departementtxt.clear();
+                    promotxt.clear();
+                    anneetxt.clear();
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+
+
 
             }
         });
