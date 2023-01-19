@@ -160,7 +160,6 @@ public class Interface extends Application {
         deptCol.setCellValueFactory(
                 new PropertyValueFactory<Stagiaire, String>("_departement"));
 
-
         //modif tableview
         table.setEditable(true);
         nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -221,9 +220,6 @@ public class Interface extends Application {
             }
         });
 
-
-
-
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
 
@@ -240,7 +236,6 @@ public class Interface extends Application {
         departementtxt.setPromptText("Département");
         departementtxt.setPrefWidth(100);
 
-<<<<<<< HEAD
         TextField promotxt = new TextField();
         promotxt.setPromptText("Promo");
         promotxt.setPrefWidth(100);
@@ -320,9 +315,9 @@ public class Interface extends Application {
                 anneetxt.clear();
             }
         });
-=======
+
         //Ajout choicebox pour la recherche
-       Label rechercheLabel= new Label("Rechercher par:");
+        Label rechercheLabel= new Label("Rechercher par:");
         ComboBox filtreRecherche= new ComboBox();
         filtreRecherche.getItems().addAll("Aucun filtre","Promotion","Année","Nom","Prénom", "Département");
 
@@ -341,12 +336,11 @@ public class Interface extends Application {
         ajouter.getStyleClass().add("item-ajouter");
         modifier.getStyleClass().add("item-modifier");
         supprimer.getStyleClass().add("item-supprimer");
->>>>>>> master
 
         // Ajout des MenuItems au Menu Connexion
         updateMenu.getItems().addAll(ajouter,supprimer,modifier);
         modifier.setDisable(true);
-        supprimer.setDisable(true);
+        supprimer.setDisable(false);
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
@@ -355,11 +349,8 @@ public class Interface extends Application {
         CONTENEURS
         Création Hbox pour la zone éditable */
         HBox zoneEditable = new HBox();
-<<<<<<< HEAD
-        zoneEditable.getChildren().addAll(nomtxt, prenomtxt, departementtxt, promotxt, anneetxt, btnAjouter,btnSupprimer);
-=======
+
         zoneEditable.getChildren().addAll(nomtxt,prenomtxt, departementtxt, promotxt, anneetxt, rechercheLabel, filtreRecherche);
->>>>>>> master
         zoneEditable.setSpacing(10);
         zoneEditable.setSpacing(10.0);
 
@@ -424,14 +415,10 @@ public class Interface extends Application {
                 try {
                     //on créé le fichier binaire à partir du fichier txt
                     raf = newAnnuaire.getRaf();
-<<<<<<< HEAD
 
                     // On parcourt le .bin pour extraire les Stagiaires avec méthode .getStagiairesList(raf)
                     data = AnnuaireBack.getStagiairesList(raf);
 
-=======
-                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
->>>>>>> master
                     // On envoie les données dans le TableView pour affichage sur l'application/interface
                     table.setItems(data);
                     raf.close();
@@ -562,6 +549,55 @@ public class Interface extends Application {
                 promotxt.clear();
                 anneetxt.clear();
 
+            }
+        });
+
+        // ACTION: sélectionner un stagiaire dans le tableau
+        table.getSelectionModel().selectedItemProperty().addListener(
+                new ChangeListener<Stagiaire>() {
+                     @Override
+                     public void changed(ObservableValue<? extends Stagiaire> observable, Stagiaire oldValue, Stagiaire newValue) {
+                         Stagiaire oldStagiaire = oldValue == null ? null : oldValue;
+                         Stagiaire newStagiaire = newValue == null ? null : newValue;
+                         System.out.println(newStagiaire.get_nom());
+                         nomtxt.setText(newStagiaire.get_nom());
+                         prenomtxt.setText(newStagiaire.get_prenom());
+                         departementtxt.setText(newStagiaire.get_departement());
+                         promotxt.setText(newStagiaire.get_promo());
+                         anneetxt.setText((newStagiaire.get_annee()));
+                     }
+                 }
+        );
+
+        //ACTION: SUPPRIMER UN STAGIAIRE
+        supprimer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                // Récupération des valeurs des champs
+                String nom = nomtxt.getText();
+                String prenom = prenomtxt.getText();
+                String departement = departementtxt.getText();
+                String promo = promotxt.getText();
+                String annee = anneetxt.getText();
+
+                Stagiaire stagiaire = table.getSelectionModel().getSelectedItem();
+                data.remove(stagiaire);
+                table.setItems(data);
+
+                // Suppression  du stagiaire dans le bin
+                try {
+                    AnnuaireBack.removeStagiaireBin(stagiaire);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+
+                // Vider les champs
+                nomtxt.clear();
+                prenomtxt.clear();
+                departementtxt.clear();
+                promotxt.clear();
+                anneetxt.clear();
             }
         });
 
