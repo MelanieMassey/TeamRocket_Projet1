@@ -172,65 +172,10 @@ public class Interface extends Application {
         deptCol.setCellValueFactory(
                 new PropertyValueFactory<Stagiaire, String>("_departement"));
 
-        //modif tableview
-        table.setEditable(true);
-        nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
 
-                System.out.println(event.getRowValue().toString());
-                Stagiaire stg = event.getRowValue();
+        ///////MODIFICATION DES STAGIAIRES DANS LA TABLEVIEW
 
-                stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
-                System.out.println("c'est le stagiaire que je modifie");
-                System.out.println(stg.toString());
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
 
-            }
-        });
-        prenomCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        prenomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
-
-                System.out.println(event.getRowValue().toString());
-                Stagiaire stg = event.getRowValue();
-
-                stg.set_prenom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PRENOM));
-                System.out.println("c'est le stagiaire que je modifie");
-                System.out.println(stg.toString());
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
-        deptCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        deptCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {
-            @Override
-            public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
-
-                System.out.println(event.getRowValue().toString());
-                Stagiaire stg = event.getRowValue();
-
-                stg.set_departement(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.DEPARTEMENT));
-                System.out.println("c'est le stagiaire que je modifie");
-                System.out.println(stg.toString());
-                try {
-                    AnnuaireBack.updateInBinary(stg);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-
-            }
-        });
 
         //On ajoute les cinq colonnes à la table
         table.getColumns().addAll(nomCol, prenomCol, deptCol, promoCol, anneeCol);
@@ -276,57 +221,7 @@ public class Interface extends Application {
                 }
         );
 
-        //ACTION: AJOUTER UN STAGIAIRE
-        btnAjouter.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
 
-                // Appel méthode addStagiaire
-                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
-                data.add(stagiaire);
-                table.setItems(data);
-
-
-                // Vider les champs
-                nomtxt.clear();
-                prenomtxt.clear();
-                departementtxt.clear();
-                promotxt.clear();
-                anneetxt.clear();
-
-            }
-        });
-
-        //ACTION: SUPPRIMER UN STAGIAIRE
-        btnSupprimer.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
-
-                // Appel méthode addStagiaire
-                //Stagiaire stagiaire = AnnuaireBack.removeStagiaire(nom, prenom, departement, promo, annee);
-                //data.remove(stagiaire);
-                //table.setItems(data);
-
-                // Vider les champs
-                nomtxt.clear();
-                prenomtxt.clear();
-                departementtxt.clear();
-                promotxt.clear();
-                anneetxt.clear();
-            }
-        });
 
         //Ajout choicebox pour la recherche
         Label rechercheLabel= new Label("Rechercher par:");
@@ -450,17 +345,8 @@ public class Interface extends Application {
             public void handle(ActionEvent event) {
 
                 try {
-
-//                    String filename = "listeStagiaires.bin";
-//                    FileInputStream fileIs = new FileInputStream(filename);
-//                    ObjectInputStream is = new ObjectInputStream(fileIs);
-//                    System.out.println(is);
-//                    System.out.println(is.readChar());
-//                    is.close();
                     RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-//
-                    System.out.println(raf.length());
-                    System.out.println("je suis dans le try et je viens de créér le raf");
+
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
 
 
@@ -585,24 +471,36 @@ public class Interface extends Application {
         ajouter.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                // Récupération des valeurs des champs
-                String nom = nomtxt.getText();
-                String prenom = prenomtxt.getText();
-                String departement = departementtxt.getText();
-                String promo = promotxt.getText();
-                String annee = anneetxt.getText();
+                RandomAccessFile raf = null;
+                try {
+                    raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    // Récupération des valeurs des champs
+                    String nom = nomtxt.getText();
+                    String prenom = prenomtxt.getText();
+                    String departement = departementtxt.getText();
+                    String promo = promotxt.getText();
+                    String annee = anneetxt.getText();
 
-                // Appel méthode addStagiaire
-                Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
-                data.add(stagiaire); // data déclaré ligne 38 pour pouvoir être utilisé dans plusieurs méthodes
-                table.setItems(data);
+                    // Appel méthode addStagiaire
+                    Stagiaire stagiaire = AnnuaireBack.addStagiaire(nom, prenom, departement, promo, annee);
+                    data.add(stagiaire); // data déclaré ligne 38 pour pouvoir être utilisé dans plusieurs méthodes
+                    table.setItems(data);
 
-                // Vider les champs
-                nomtxt.clear();
-                prenomtxt.clear();
-                departementtxt.clear();
-                promotxt.clear();
-                anneetxt.clear();
+                    // Vider les champs
+                    nomtxt.clear();
+                    prenomtxt.clear();
+                    departementtxt.clear();
+                    promotxt.clear();
+                    anneetxt.clear();
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+
+
 
            }
         });
@@ -623,6 +521,7 @@ public class Interface extends Application {
                      }
                  }
         );
+
 
         //ACTION: SUPPRIMER UN STAGIAIRE
         supprimer.setOnAction(new EventHandler<ActionEvent>() {
@@ -732,6 +631,86 @@ public class Interface extends Application {
 
                             JOptionPane.showMessageDialog(null,"Connexion réussie");
                            // dialog.close();
+
+                            //MODIF DU TABLEAU ACTIVEE
+                            table.setEditable(true);
+                            nomCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            nomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne NOM
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    //on remplace le nom changé dans le stagiaire
+                                    stg.set_nom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.NOM));
+
+                                    try {
+                                        AnnuaireBack.updateBinary(table.getItems());
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
+                            prenomCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            prenomCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // Colonne PRENOM
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_prenom(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PRENOM));
+
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
+                            deptCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            deptCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne DEPARTEMENT
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_departement(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.DEPARTEMENT));
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
+                            promoCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            promoCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne PROMO
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_promo(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.PROMO));
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
+                            anneeCol.setCellFactory(TextFieldTableCell.forTableColumn());
+                            anneeCol.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Stagiaire, String>>() {  // colonne ANNEE
+                                @Override
+                                public void handle(TableColumn.CellEditEvent<Stagiaire, String> event) {
+
+                                    Stagiaire stg = event.getRowValue();
+                                    stg.set_annee(AnnuaireBack.completer(event.getNewValue(), AnnuaireBack.ANNEE));
+                                    try {
+                                        AnnuaireBack.updateInBinary(stg);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
+
+                                }
+                            });
                         }
                     }
                     return null;
