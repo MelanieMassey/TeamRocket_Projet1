@@ -373,7 +373,7 @@ public class AnnuaireBack {
 
 
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            System.out.println("Exception");
         }
         return new Stagiaire(nom, prenom, departement, annee, promo, adresse, gauche, droite);
     }
