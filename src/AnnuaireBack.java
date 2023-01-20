@@ -525,17 +525,18 @@ public class AnnuaireBack {
         String departementFormatted = completer(departement, DEPARTEMENT);
         String promoFormatted = completer(promo, PROMO);
         String anneeFormatted = completer(annee, ANNEE);
-        String gauche = "";
-        String droite = "";
+        String adresseFormatted = completer("", ADRESSE);
+        String gaucheFormatted = completer("", LEFTCHILD);
+        String droiteFormatted = completer("", RIGHTCHILD);
 
 
 
-        Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, anneeFormatted, promoFormatted, "", gauche, droite);
+        Stagiaire stagiaire = new Stagiaire(nomFormatted, prenomFormatted, departementFormatted, anneeFormatted, promoFormatted, adresseFormatted, gaucheFormatted, droiteFormatted);
 
         try {
             RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
             Tree arbre = createTreeFromBin(raf);
-            String adresse = completer(String.valueOf(raf.length()), ANNEE);
+            String adresse = completer(String.valueOf(raf.length()), ADRESSE);
             stagiaire.set_adresse(adresse);
             //System.out.println(adresse);
 
