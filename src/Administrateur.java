@@ -47,7 +47,7 @@ public class Administrateur {
 
    public static boolean checkList(Administrateur admin, ObservableList<Administrateur> listeAdminId) {
        for (Administrateur a : listeAdminId) {
-           if (admin.get_identifiant().equals(admin.get_identifiant()) || admin.get_password().equals(admin.get_password()))  return true;
+           if (a.get_identifiant().equals(admin.get_identifiant()) && admin.get_password().equals(a.get_password()))  return true;
            }
     return false;
    }

@@ -29,7 +29,10 @@ import javax.swing.*;
 import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+import static javafx.beans.binding.Bindings.select;
 import static javafx.scene.paint.Color.*;
 
 
@@ -42,15 +45,16 @@ public class Interface extends Application {
     public void start(Stage primaryStage) {
 
 
-
         // Création des menus
         Menu fileMenu1 = new Menu("Connexion");
         Menu fileMenu2 = new Menu("Annuaire");
         Menu fileMenu3 = new Menu("Aide");
 
         // Création du menuItem pour la connexion
-        MenuItem connexion = new MenuItem("S'identifier");
-       // MenuItem modifId = new MenuItem("Modifier ses identifiants");
+        MenuItem connexion = new MenuItem("Se connecter");
+       MenuItem deconnexion = new MenuItem("Se déconnecter");
+       deconnexion.setDisable(true);
+       MenuItem modifId = new MenuItem("Modifier ses identifiants");
         Menu menuModifId = new Menu("Modifier ses paramètres de connnexion");
         menuModifId.setDisable(true);
         MenuItem changeId = new MenuItem("Identifiant");
@@ -58,7 +62,7 @@ public class Interface extends Application {
 
 
         // Ajout des MenuItems au Menu Connexion
-        fileMenu1.getItems().addAll(connexion, menuModifId);
+        fileMenu1.getItems().addAll(connexion, menuModifId, deconnexion);
         menuModifId.getItems().addAll(changeId,changePswd);
 
         // Création des MenuItems du Menu Annuaire
@@ -401,7 +405,7 @@ public class Interface extends Application {
         root.setBottomAnchor(hBoxChoice,40.0);
         root.setRightAnchor(hBoxChoice,100.0);
 
-        root.getChildren().addAll(menubars, vboxTable,zoneEditable, hBoxChoice, searchButton);
+        root.getChildren().addAll(menubars, vboxTable,zoneEditable, hBoxChoice);
 
         Scene scene = new Scene(root, 1000,700);
         scene.getStylesheets().add("Front.css");
@@ -479,32 +483,38 @@ public class Interface extends Application {
             @Override
             public void handle(ActionEvent event) {
                 ObservableList<Stagiaire> result = FXCollections.observableArrayList();
-                String motSearched;
+
                 String selection = filtreRecherche.getValue().toString();
-                System.out.println(selection);
+
 
                 try {
                     RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
                     ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    System.out.println(selection);
+                    String motSearched;
+
 
                     switch (selection) {
                         case "Promotion":
                             motSearched = promotxt.getText();
                             result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "promo");
+                           table.setItems(result);
                             break;
                         case "Année":
                             motSearched = anneetxt.getText();
                             result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "annee");
+                            table.setItems(result);
                             break;
                         case "Nom":
                             motSearched = nomtxt.getText();
                             result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "nom");
-                            table.setItems(result);
+                           table.setItems(result);
+
                             break;
                         case "Prénom":
                             motSearched = prenomtxt.getText();
                             result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "prenom");
-                            table.setItems(result);
+                           table.setItems(result);
                             break;
                         case "Département":
                             motSearched = departementtxt.getText();
@@ -529,9 +539,47 @@ public class Interface extends Application {
                 departementtxt.clear();
 
 
-                }
+            }
 
-            });
+        });
+
+
+        searchButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                ObservableList<Stagiaire> result = FXCollections.observableArrayList();
+
+                String promoSearched = promotxt.getText();
+                String anneeSearched = anneetxt.getText();
+                String nomSearched = nomtxt.getText();
+                String prenomSearched = prenomtxt.getText();
+                String dptSearched = departementtxt.getText();
+
+
+               try {
+                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
+                   // ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
+                    result = AnnuaireBack.rechercherStagiaireBin(raf, promoSearched, "promo");
+                    result = AnnuaireBack.rechercherStagiaireBin(raf, prenomSearched, "prenom");
+                    result = AnnuaireBack.rechercherStagiaireBin(raf, nomSearched, "nom");
+                    result = AnnuaireBack.rechercherStagiaireBin(raf, anneeSearched, "annee");
+                    result = AnnuaireBack.rechercherStagiaireBin(raf, dptSearched, "departement");
+                   table.setItems(result);
+
+
+                    //table.setItems(result);
+                } catch (IOException e) {
+                    System.out.println("erreur de chargement du fichier bin");
+                    throw new RuntimeException(e);
+                }
+                promotxt.clear();
+                prenomtxt.clear();
+                nomtxt.clear();
+                anneetxt.clear();
+                departementtxt.clear();
+            }
+
+        });
 
         //Action: ajouter un stagiaire
         ajouter.setOnAction(new EventHandler<ActionEvent>() {
@@ -556,289 +604,9 @@ public class Interface extends Application {
                 promotxt.clear();
                 anneetxt.clear();
 
-            }
+           }
         });
 
-        //Action rechercher par filtre
-        searchButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                String motSearched;
-              //  ObservableList<Stagiaire> result = FXCollections.observableArrayList();
-               // String selection = filtreRecherche.getValue().toString();
-
-               /* List<String> critereSelection = new Vector<String>();
-                List<String> critere = new Vector<String>();
-                critere.add("Promotion"); critere.add("Année"); critere.add("Nom");
-                critere.add("Prénom"); critere.add("Prénom");
-                for (int i=0; i<critere.size();i++) {
-                    if (critere.get(i) != null) {
-                        critereSelection.add(critere.get(i));
-                    }
-                }*/
-
-                try {
-                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-
-                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
-                    ObservableList<Stagiaire> listResult = FXCollections.observableArrayList();
-                    ObservableList<Stagiaire> toRemove = FXCollections.observableArrayList();
-                    listResult=data;
-                    Collection <Stagiaire> result= new ArrayList <Stagiaire>(data) ;
-
-
-                    String promoSearched = promotxt.getText();
-                    String anneeSearched = anneetxt.getText();
-                    String nomSearched = nomtxt.getText();
-                    String prenomSearched = prenomtxt.getText();
-                    String dptSearched = departementtxt.getText();
-/*
-                    for (Stagiaire s : data) {
-                        if ((!promoSearched.isEmpty()) || ((s.get_promo().equals(promoSearched)))) {
-                            toRemove.add(s);
-                        }
-
-                        if ((anneeSearched.isEmpty())|| (s.get_annee().equals(anneeSearched))) {
-                            toRemove.add(s);
-                        }
-                        if ((!nomSearched.isEmpty()) || (s.get_nom().equals(nomSearched))) {
-                            toRemove.add(s);
-                        }
-                        if ((!prenomSearched.isEmpty()) || (s.get_prenom().equals(prenomSearched))) {
-                            toRemove.add(s);
-                        }
-                        if ((!dptSearched.isEmpty()) || (s.get_departement().equals(dptSearched))) {
-                            toRemove.add(s);
-                        }
-                    }
-                    */
-                   /* for (Stagiaire s : data) {
-                        if ((!promoSearched.isEmpty()) || ((!s.get_promo().equals(promoSearched)))) {
-                            toRemove.add(s);
-                        }
-
-                        if ((anneeSearched.isEmpty())|| (!s.get_annee().equals(anneeSearched))) {
-                            toRemove.add(s);
-                        }
-                        if ((!nomSearched.isEmpty()) || (!s.get_nom().equals(nomSearched))) {
-                            toRemove.add(s);
-                        }
-                        if ((!prenomSearched.isEmpty()) || (!s.get_prenom().equals(prenomSearched))) {
-                            toRemove.add(s);
-                        }
-                        if ((!dptSearched.isEmpty()) || (!s.get_departement().equals(dptSearched))) {
-                            toRemove.add(s);
-                        }
-                    }*/
-/*
-                    for (Stagiaire s : data) {
-                        if ((!promoSearched.isEmpty()) || (!(s.get_promo().equals(promoSearched)))) {
-                            toRemove.add(s);
-                        }
-
-                        if ((!anneeSearched.isEmpty())|| (!(s.get_annee().equals(anneeSearched)))) {
-                            toRemove.add(s);
-                        }
-                        if ((!nomSearched.isEmpty()) || (!(s.get_nom().equals(nomSearched)))) {
-                            toRemove.add(s);
-                        }
-                        if ((!prenomSearched.isEmpty()) || (!(s.get_prenom().equals(prenomSearched)))) {
-                            toRemove.add(s);
-                        }
-                        if ((!dptSearched.isEmpty()) || (!(s.get_departement().equals(dptSearched)))) {
-                            toRemove.add(s);
-                        }
-                    }
-*/
-
-/*
-                     for (Iterator <Stagiaire> it=data.iterator(); it.hasNext();) {
-                           Stagiaire s = it.next();
-                           // iterator= (Iterator<Stagiaire>) iterator.next();
-
-                           if (!promoSearched.isEmpty() || !(s.get_promo().equals(promoSearched))) {
-                               it.remove();
-                           }
-
-                           if (!nomSearched.isEmpty() || !(s.get_nom().equals(nomSearched))) {
-                               it.remove();
-                           }
-
-                           if (!prenomSearched.isEmpty() || !(s.get_prenom().equals(prenomSearched))) {
-                               it.remove();
-
-                           }
-
-                           if (!dptSearched.isEmpty()  || !(s.get_departement().equals(dptSearched))) {
-                               it.remove();
-                           }
-
-                         if (!anneeSearched.isEmpty()  || !(s.get_annee().equals(anneeSearched))) {
-                             it.remove();
-                         }
-                       }
-        */
-
-                     Iterator <Stagiaire> it=data.iterator();
-                     while (it.hasNext()) {
-                        Stagiaire s = it.next();
-                        // iterator= (Iterator<Stagiaire>) iterator.next();
-
-                        if (!promoSearched.isEmpty() || !(s.get_promo().equals(promoSearched))) {
-                            it.remove();
-                        }
-
-                        if (!nomSearched.isEmpty() || !(s.get_nom().equals(nomSearched))) {
-                            it.remove();
-                        }
-
-                        if (!prenomSearched.isEmpty() || !(s.get_prenom().equals(prenomSearched))) {
-                            it.remove();
-
-                        }
-
-                        if (!dptSearched.isEmpty()  || !(s.get_departement().equals(dptSearched))) {
-                            it.remove();
-                        }
-
-                        if (!anneeSearched.isEmpty()  || !(s.get_annee().equals(anneeSearched))) {
-                            it.remove();
-                        }
-                    }
-                /*    for (Iterator <Stagiaire> it=data.iterator(); it.hasNext();){
-                        Stagiaire s= it.next();
-                        // iterator= (Iterator<Stagiaire>) iterator.next();
-
-                        if (s.get_promo()!=promoSearched) {
-                            it.remove();
-                        }
-
-                        if (!(s.get_promo().equals(promoSearched))) {
-                            it.remove();
-                        }
-
-                        if (!(s.get_promo().equals(promoSearched))) {
-                            it.remove();
-
-                        }
-
-                        if (!(s.get_promo().equals(promoSearched))) {
-                            it.remove();
-                        }
-                  */
-
-
-/*
-
-                           else if (!anneeSearched.isEmpty() || !(s.get_annee().equals(anneeSearched))) {
-                                it.remove();
-                                 }
-
-                            else if (!nomSearched.isEmpty() || !(s.get_nom().equals(nomSearched))) {
-                                it.remove();}
-
-                            else if (!prenomSearched.isEmpty() || !(s.get_prenom().equals(prenomSearched))) {
-                                it.remove();}
-
-                            else if (!dptSearched.isEmpty() || !(s.get_departement().equals(dptSearched))) {
-                                    it.remove();
-
-                                }
-
-                            }
-                            */
-
-
-                   /* for (Stagiaire s : listResult) {
-                        if ((!promoSearched.isEmpty())|| (!(s.get_promo().equals(promoSearched)))) {
-                            listResult.remove(s);
-                        }
-
-                        if ((anneeSearched.isEmpty())|| !(s.get_annee().equals(anneeSearched))) {
-                            listResult.remove(s);
-                        }
-                        if ((!nomSearched.isEmpty()) || !(s.get_nom().equals(nomSearched))) {
-                            listResult.remove(s);
-                        }
-                        if ((!prenomSearched.isEmpty()) || !(s.get_prenom().equals(prenomSearched))) {
-                            listResult.remove(s);
-                        }
-                        if ((!dptSearched.isEmpty()) || !(s.get_departement().equals(dptSearched))) {
-                            listResult.remove(s);
-                        }
-                    }
-
-                        */
-                   // listResult.removeAll(toRemove);
-
-                    table.setItems(data);
-                    System.out.println(data);
-
-                } catch (FileNotFoundException e) {
-                    System.out.println("File not found");
-                    throw new RuntimeException(e);
-                } catch (IOException e) {
-
-                    throw new RuntimeException(e);
-                }
-
-                promotxt.clear();
-                prenomtxt.clear();
-                nomtxt.clear();
-                anneetxt.clear();
-                departementtxt.clear();
-
-            }
-
-
-               /* try {
-                    RandomAccessFile raf = new RandomAccessFile("listeStagiaires.bin", "rw");
-                    ObservableList<Stagiaire> data = AnnuaireBack.getStagiairesList(raf);
-
-                    switch (selection) {
-                        case "Promotion":
-                            motSearched = promotxt.getText();
-                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "promotion");
-                            break;
-                        case "Année":
-                            motSearched = anneetxt.getText();
-                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "annee");
-                            break;
-                        case "Nom":
-                            motSearched = nomtxt.getText();
-                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "nom");
-                            table.setItems(result);
-                            break;
-                        case "Prénom":
-                            motSearched = prenomtxt.getText();
-                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "prenom");
-                            table.setItems(result);
-                            break;
-                        case "Département":
-                            motSearched = departementtxt.getText();
-                            result = AnnuaireBack.rechercherStagiaireBin(raf, motSearched, "departement");
-                            table.setItems(result);
-                            break;
-                        case "Aucun filtre":
-                            table.setItems(data);
-                            break;
-                        default:
-                            break;
-                    }
-                    //table.setItems(result);
-                } catch (IOException e) {
-                    System.out.println("erreur de chargement du fichier bin");
-                    throw new RuntimeException(e);
-                }
-                promotxt.clear();
-                prenomtxt.clear();
-                nomtxt.clear();
-                anneetxt.clear();
-                departementtxt.clear();
-                */
-
-
-        });
 
         // ACTION: sélectionner un stagiaire dans le tableau
         table.getSelectionModel().selectedItemProperty().addListener(
@@ -959,6 +727,9 @@ public class Interface extends Application {
                             modifier.setDisable(false);
                             supprimer.setDisable(false);
                             menuModifId.setDisable(false);
+                            connexion.setDisable(true);
+                            deconnexion.setDisable(false);
+
                             JOptionPane.showMessageDialog(null,"Connexion réussie");
                            // dialog.close();
                         }
@@ -973,68 +744,18 @@ public class Interface extends Application {
             }
         });
 
-        /*modifId.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent e) {
+        deconnexion.setOnAction(new EventHandler<ActionEvent>() {
+                                  @Override
+                                  public void handle(ActionEvent event) {
+                                      connexion.setDisable(false);
+                                      modifier.setDisable(true);
+                                      supprimer.setDisable(true);
+                                      menuModifId.setDisable(true);
+                                      deconnexion.setDisable(true);
 
-                //Création d'une boîte de dialogue pour la connexion Administrateur
-                Dialog<String> dialog = new Dialog<>();
-                //dialog.setTitle("Modification Identifiants");
-                dialog.getDialogPane().setBackground((new Background(new BackgroundFill(
-                        LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY))));
-                dialog.getDialogPane().setMinSize(300.0, 300.0);
-                dialog.setHeaderText("Modification de vos identifiants de connexion");
-                dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
 
-                //Création des champs de saisie
-                TextField identifiant = new TextField();
-                identifiant.setPromptText("Identifiant");
-                Label idLabel = new Label("Identifiant:");
-                Label pswLabel = new Label("Mot de passe:");
-                PasswordField password = new PasswordField();
-                password.setPromptText("Mot de passe");
-
-                //création VBox
-                VBox contenu = new VBox();
-                contenu.setAlignment(Pos.CENTER_LEFT);
-                contenu.setSpacing(20);
-                contenu.getChildren().addAll(idLabel, identifiant, pswLabel, password);
-                dialog.getDialogPane().setContent(contenu);
-                // final Button btOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
-                //btOk.addEventFilter(ActionEvent.ACTION, event -> {
-                dialog.setResultConverter(dialogButton -> {
-                    if (dialogButton == ButtonType.OK) {
-
-                        if (id.isEmpty() || pswd.isEmpty()) {
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setHeaderText(null);
-                            alert.setContentText("Merci de renseigner les deux champs");
-                            alert.showAndWait();
-                        } else if (check==false) {
-                            System.out.println("not in the list");
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setHeaderText(null);
-                            alert.setContentText("Identifiants incorrects");
-                            alert.showAndWait();
-
-                            //} else if (listeAdminId.contains(checkAdmin)==true) {
-                        } else if (check==true) {
-                            System.out.println("in the list");
-                            modifier.setDisable(false);
-                            supprimer.setDisable(false);
-                            JOptionPane.showMessageDialog(null,"Connexion réussie");
-                            // dialog.close();
-                        }
-                    }
-                    return null;
-                });
-                Optional<String> result = dialog.showAndWait();
-
-            }
-        });
-
-         */
-
+                                  }
+                              });
 
     }
 

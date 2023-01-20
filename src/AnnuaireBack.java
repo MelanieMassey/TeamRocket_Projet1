@@ -94,6 +94,7 @@ public class AnnuaireBack {
         try {
             //Lecture du fichier text
             FileReader fichierOriginal = new FileReader(PathTxtFile);
+
             BufferedReader bf = new BufferedReader(fichierOriginal);
 
             while ((ligne = bf.readLine()) != null && (linenumber <= 5)) {
