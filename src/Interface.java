@@ -243,7 +243,7 @@ public class Interface extends Application {
         // Ajout des MenuItems au Menu Connexion
         updateMenu.getItems().addAll(ajouter,supprimer,modifier);
         modifier.setDisable(true);
-        supprimer.setDisable(false);
+        supprimer.setDisable(true);
         MenuBar updateBar = new MenuBar();
         updateBar.getMenus().add(updateMenu);
         updateBar.getStyleClass().add("menu-update");
